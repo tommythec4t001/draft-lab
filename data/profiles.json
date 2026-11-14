@@ -1,0 +1,3247 @@
+{
+  "_info": {
+    "o_que_e": "Ficha de cada campeão. É uma base inicial montada a partir do consenso geral da comunidade: revise e ajuste à vontade, pelo próprio app (painel Fichas dos campeões) ou editando este arquivo.",
+    "ad": "Porcentagem do dano que é físico (AD).",
+    "vd": "Porcentagem do dano que é verdadeiro (ignora armadura e resistência mágica). Só aparece nos campeões que têm. O que sobra de 100 depois de ad e vd é dano mágico (AP).",
+    "estilo": "frente (linha de frente), engage, desengage, poke, pick (caçar alvos isolados), dive (mergulhar na backline), peel (proteger aliados), split (split push), teamfight, cc (controle de grupo)",
+    "curva": "inicio, meio ou fim: em que fase do jogo o campeão é mais forte",
+    "perde_para": "Campeões que são bons contra este. Exemplo: Jarvan IV perde para Akali, então o app mostra Jarvan IV como ruim depois que o adversário pega Akali.",
+    "sinergia": "Campeões que combinam bem com este no mesmo time. A sinergia vale nos dois sentidos.",
+    "pendente": "true quando a ficha ainda precisa ser preenchida ou revisada",
+    "minimo": "Toda ficha precisa de pelo menos 3 campeões em perde_para e 3 em sinergia. Fichas com menos ficam marcadas como pendentes."
+  },
+  "Aatrox": {
+    "ad": 100,
+    "estilo": [
+      "frente",
+      "dive",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Fiora",
+      "Irelia",
+      "Vayne",
+      "Gwen"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Diana",
+      "Rell"
+    ]
+  },
+  "Ahri": {
+    "ad": 5,
+    "estilo": [
+      "pick",
+      "poke"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Galio",
+      "Kassadin",
+      "Zed"
+    ],
+    "sinergia": [
+      "Lee Sin",
+      "Sejuani",
+      "Rakan"
+    ]
+  },
+  "Akali": {
+    "ad": 25,
+    "estilo": [
+      "dive",
+      "pick",
+      "split"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Galio",
+      "Malzahar",
+      "Vex",
+      "Renekton"
+    ],
+    "sinergia": [
+      "Shen",
+      "Nocturne",
+      "Taric"
+    ]
+  },
+  "Akshan": {
+    "ad": 95,
+    "estilo": [
+      "pick"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Galio",
+      "Lissandra",
+      "Annie"
+    ],
+    "sinergia": [
+      "Rell",
+      "Nautilus",
+      "Jarvan IV"
+    ]
+  },
+  "Alistar": {
+    "ad": 20,
+    "estilo": [
+      "engage",
+      "peel",
+      "frente",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Morgana",
+      "Janna",
+      "Milio"
+    ],
+    "sinergia": [
+      "Yasuo",
+      "Kalista",
+      "Samira"
+    ]
+  },
+  "Ambessa": {
+    "ad": 100,
+    "estilo": [
+      "dive",
+      "frente"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Gnar",
+      "Jayce",
+      "Vayne"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Rell",
+      "Azir"
+    ]
+  },
+  "Amumu": {
+    "ad": 15,
+    "estilo": [
+      "engage",
+      "teamfight",
+      "cc",
+      "frente"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Morgana",
+      "Lee Sin",
+      "Olaf"
+    ],
+    "sinergia": [
+      "Miss Fortune",
+      "Yasuo",
+      "Orianna"
+    ]
+  },
+  "Anivia": {
+    "ad": 0,
+    "estilo": [
+      "poke",
+      "desengage",
+      "cc"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Fizz",
+      "Zed",
+      "Kassadin"
+    ],
+    "sinergia": [
+      "Jarvan IV",
+      "Ashe",
+      "Sejuani"
+    ]
+  },
+  "Annie": {
+    "ad": 0,
+    "estilo": [
+      "engage",
+      "pick",
+      "cc",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Xerath",
+      "Syndra",
+      "Lux"
+    ],
+    "sinergia": [
+      "Yasuo",
+      "Miss Fortune",
+      "Amumu"
+    ]
+  },
+  "Aphelios": {
+    "ad": 95,
+    "estilo": [
+      "teamfight"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Draven",
+      "Lucian",
+      "Kalista"
+    ],
+    "sinergia": [
+      "Thresh",
+      "Lulu",
+      "Braum"
+    ]
+  },
+  "Ashe": {
+    "ad": 85,
+    "estilo": [
+      "poke",
+      "pick",
+      "cc",
+      "engage"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Draven",
+      "Samira",
+      "Lucian"
+    ],
+    "sinergia": [
+      "Braum",
+      "Seraphine",
+      "Anivia"
+    ]
+  },
+  "Aurelion Sol": {
+    "ad": 0,
+    "estilo": [
+      "poke",
+      "teamfight"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Fizz",
+      "Zed",
+      "Kassadin"
+    ],
+    "sinergia": [
+      "Jarvan IV",
+      "Rell",
+      "Sejuani"
+    ]
+  },
+  "Aurora": {
+    "ad": 0,
+    "estilo": [
+      "pick",
+      "split"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Galio",
+      "Malzahar",
+      "Pantheon"
+    ],
+    "sinergia": [
+      "Nocturne",
+      "Rakan",
+      "Jarvan IV"
+    ]
+  },
+  "Azir": {
+    "ad": 10,
+    "estilo": [
+      "poke",
+      "peel",
+      "teamfight",
+      "desengage"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Fizz",
+      "LeBlanc",
+      "Qiyana"
+    ],
+    "sinergia": [
+      "Sejuani",
+      "Rell",
+      "Alistar"
+    ]
+  },
+  "Bard": {
+    "ad": 10,
+    "estilo": [
+      "pick",
+      "peel",
+      "engage"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Leona",
+      "Nautilus",
+      "Pyke"
+    ],
+    "sinergia": [
+      "Ezreal",
+      "Sivir",
+      "Kalista"
+    ]
+  },
+  "Bel'Veth": {
+    "ad": 95,
+    "estilo": [
+      "dive",
+      "split"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Rammus",
+      "Kindred",
+      "Elise"
+    ],
+    "sinergia": [
+      "Ivern",
+      "Lulu",
+      "Orianna"
+    ]
+  },
+  "Blitzcrank": {
+    "ad": 10,
+    "estilo": [
+      "pick",
+      "engage",
+      "cc"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Morgana",
+      "Braum",
+      "Janna"
+    ],
+    "sinergia": [
+      "Draven",
+      "Samira",
+      "Lucian"
+    ]
+  },
+  "Brand": {
+    "ad": 0,
+    "estilo": [
+      "poke",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Blitzcrank",
+      "Nautilus",
+      "Pyke"
+    ],
+    "sinergia": [
+      "Ezreal",
+      "Varus",
+      "Jhin"
+    ]
+  },
+  "Braum": {
+    "ad": 30,
+    "estilo": [
+      "peel",
+      "desengage",
+      "frente",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Brand",
+      "Zyra",
+      "Xerath"
+    ],
+    "sinergia": [
+      "Lucian",
+      "Kalista",
+      "Aphelios"
+    ]
+  },
+  "Briar": {
+    "ad": 100,
+    "estilo": [
+      "dive",
+      "engage"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Rammus",
+      "Jax",
+      "Fiddlesticks"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Ahri",
+      "Lulu"
+    ]
+  },
+  "Caitlyn": {
+    "ad": 100,
+    "estilo": [
+      "poke",
+      "split"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Samira",
+      "Draven",
+      "Kalista"
+    ],
+    "sinergia": [
+      "Lux",
+      "Karma",
+      "Morgana"
+    ]
+  },
+  "Camille": {
+    "ad": 70,
+    "vd": 25,
+    "estilo": [
+      "dive",
+      "pick",
+      "split"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Jax",
+      "Renekton",
+      "Darius"
+    ],
+    "sinergia": [
+      "Galio",
+      "Twisted Fate",
+      "Taliyah"
+    ]
+  },
+  "Cassiopeia": {
+    "ad": 0,
+    "estilo": [
+      "teamfight",
+      "cc"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Syndra",
+      "Xerath",
+      "Zoe"
+    ],
+    "sinergia": [
+      "Rell",
+      "Amumu",
+      "Sejuani"
+    ]
+  },
+  "Cho'Gath": {
+    "ad": 10,
+    "vd": 20,
+    "estilo": [
+      "frente",
+      "cc",
+      "teamfight"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Vayne",
+      "Fiora",
+      "Gwen"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Lulu",
+      "Yasuo"
+    ]
+  },
+  "Corki": {
+    "ad": 30,
+    "estilo": [
+      "poke"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Fizz",
+      "LeBlanc",
+      "Talon"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Sejuani",
+      "Jarvan IV"
+    ]
+  },
+  "Darius": {
+    "ad": 85,
+    "vd": 15,
+    "estilo": [
+      "frente",
+      "split"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Vayne",
+      "Quinn",
+      "Gnar"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Lulu",
+      "Janna"
+    ]
+  },
+  "Diana": {
+    "ad": 0,
+    "estilo": [
+      "dive",
+      "engage",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Lissandra",
+      "Galio",
+      "Kassadin"
+    ],
+    "sinergia": [
+      "Miss Fortune",
+      "Yasuo",
+      "Malphite"
+    ]
+  },
+  "Dr. Mundo": {
+    "ad": 50,
+    "estilo": [
+      "frente",
+      "split"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Vayne",
+      "Fiora",
+      "Gwen"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Taric",
+      "Orianna"
+    ]
+  },
+  "Draven": {
+    "ad": 100,
+    "estilo": [
+      "pick",
+      "teamfight"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Kalista",
+      "Varus",
+      "Lucian"
+    ],
+    "sinergia": [
+      "Thresh",
+      "Leona",
+      "Nautilus"
+    ]
+  },
+  "Ekko": {
+    "ad": 0,
+    "estilo": [
+      "dive",
+      "pick"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Lissandra",
+      "Galio",
+      "Malzahar"
+    ],
+    "sinergia": [
+      "Shen",
+      "Rakan",
+      "Jarvan IV"
+    ]
+  },
+  "Elise": {
+    "ad": 0,
+    "estilo": [
+      "pick",
+      "dive"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Olaf",
+      "Volibear",
+      "Jax"
+    ],
+    "sinergia": [
+      "Ahri",
+      "Twisted Fate",
+      "LeBlanc"
+    ]
+  },
+  "Evelynn": {
+    "ad": 0,
+    "estilo": [
+      "pick"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Rek'Sai",
+      "Graves",
+      "Kindred"
+    ],
+    "sinergia": [
+      "Leona",
+      "Twisted Fate",
+      "Lux"
+    ]
+  },
+  "Ezreal": {
+    "ad": 75,
+    "estilo": [
+      "poke"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Draven",
+      "Varus",
+      "Caitlyn"
+    ],
+    "sinergia": [
+      "Karma",
+      "Yuumi",
+      "Bard"
+    ]
+  },
+  "Fiddlesticks": {
+    "ad": 0,
+    "estilo": [
+      "engage",
+      "teamfight",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Graves",
+      "Rek'Sai",
+      "Kindred"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Kennen",
+      "Galio"
+    ]
+  },
+  "Fiora": {
+    "ad": 75,
+    "vd": 25,
+    "estilo": [
+      "split",
+      "dive"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Poppy",
+      "Kennen",
+      "Pantheon"
+    ],
+    "sinergia": [
+      "Twisted Fate",
+      "Lulu",
+      "Taric"
+    ]
+  },
+  "Fizz": {
+    "ad": 0,
+    "estilo": [
+      "dive",
+      "pick"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Galio",
+      "Lissandra",
+      "Malzahar"
+    ],
+    "sinergia": [
+      "Rakan",
+      "Amumu",
+      "Malphite"
+    ]
+  },
+  "Galio": {
+    "ad": 0,
+    "estilo": [
+      "engage",
+      "peel",
+      "frente",
+      "teamfight",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Ryze",
+      "Kassadin",
+      "Ziggs"
+    ],
+    "sinergia": [
+      "Twisted Fate",
+      "Camille",
+      "Nocturne"
+    ]
+  },
+  "Gangplank": {
+    "ad": 80,
+    "estilo": [
+      "poke",
+      "split",
+      "teamfight"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Irelia",
+      "Riven",
+      "Kled"
+    ],
+    "sinergia": [
+      "Sejuani",
+      "Gragas",
+      "Orianna"
+    ]
+  },
+  "Garen": {
+    "ad": 85,
+    "vd": 15,
+    "estilo": [
+      "frente",
+      "split"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Vayne",
+      "Quinn",
+      "Teemo"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Janna",
+      "Taric"
+    ]
+  },
+  "Gnar": {
+    "ad": 90,
+    "estilo": [
+      "frente",
+      "engage",
+      "poke",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Jayce",
+      "Camille",
+      "Irelia"
+    ],
+    "sinergia": [
+      "Sejuani",
+      "Orianna",
+      "Rakan"
+    ]
+  },
+  "Gragas": {
+    "ad": 0,
+    "estilo": [
+      "engage",
+      "desengage",
+      "peel",
+      "frente",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Olaf",
+      "Lee Sin",
+      "Kindred"
+    ],
+    "sinergia": [
+      "Yasuo",
+      "Azir",
+      "Kalista"
+    ]
+  },
+  "Graves": {
+    "ad": 100,
+    "estilo": [
+      "split",
+      "pick"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Rammus",
+      "Volibear",
+      "Jax"
+    ],
+    "sinergia": [
+      "Twisted Fate",
+      "Orianna",
+      "Ahri"
+    ]
+  },
+  "Gwen": {
+    "ad": 0,
+    "vd": 20,
+    "estilo": [
+      "split",
+      "dive"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Jax",
+      "Kennen",
+      "Pantheon"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Orianna",
+      "Twisted Fate"
+    ]
+  },
+  "Hecarim": {
+    "ad": 100,
+    "estilo": [
+      "engage",
+      "dive"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Rammus",
+      "Poppy",
+      "Olaf"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Yuumi",
+      "Lulu"
+    ]
+  },
+  "Heimerdinger": {
+    "ad": 0,
+    "estilo": [
+      "poke",
+      "desengage"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Fizz",
+      "Irelia",
+      "Jayce"
+    ],
+    "sinergia": [
+      "Caitlyn",
+      "Ziggs",
+      "Varus"
+    ]
+  },
+  "Hwei": {
+    "ad": 0,
+    "estilo": [
+      "poke",
+      "pick",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Zed",
+      "Fizz",
+      "LeBlanc"
+    ],
+    "sinergia": [
+      "Jarvan IV",
+      "Varus",
+      "Sejuani"
+    ]
+  },
+  "Illaoi": {
+    "ad": 100,
+    "estilo": [
+      "frente",
+      "split",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Vayne",
+      "Fiora",
+      "Gwen"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Lulu",
+      "Taric"
+    ]
+  },
+  "Irelia": {
+    "ad": 100,
+    "estilo": [
+      "dive",
+      "split"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Jax",
+      "Malphite",
+      "Poppy"
+    ],
+    "sinergia": [
+      "Rakan",
+      "Orianna",
+      "Taliyah"
+    ]
+  },
+  "Ivern": {
+    "ad": 0,
+    "estilo": [
+      "peel",
+      "desengage"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Rek'Sai",
+      "Graves",
+      "Nidalee"
+    ],
+    "sinergia": [
+      "Kog'Maw",
+      "Bel'Veth",
+      "Twitch"
+    ]
+  },
+  "Janna": {
+    "ad": 0,
+    "estilo": [
+      "desengage",
+      "peel",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Brand",
+      "Zyra",
+      "Vel'Koz"
+    ],
+    "sinergia": [
+      "Kog'Maw",
+      "Jinx",
+      "Twitch"
+    ]
+  },
+  "Jarvan IV": {
+    "ad": 100,
+    "estilo": [
+      "engage",
+      "dive",
+      "teamfight",
+      "cc"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Akali",
+      "Olaf",
+      "Poppy"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Miss Fortune",
+      "Taliyah"
+    ]
+  },
+  "Jax": {
+    "ad": 100,
+    "estilo": [
+      "split",
+      "dive"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Kennen",
+      "Malphite",
+      "Pantheon"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Twisted Fate",
+      "Taric"
+    ]
+  },
+  "Jayce": {
+    "ad": 100,
+    "estilo": [
+      "poke"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Malphite",
+      "Rumble",
+      "K'Sante"
+    ],
+    "sinergia": [
+      "Varus",
+      "Ezreal",
+      "Nidalee"
+    ]
+  },
+  "Jhin": {
+    "ad": 100,
+    "estilo": [
+      "poke",
+      "pick"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Draven",
+      "Samira",
+      "Kalista"
+    ],
+    "sinergia": [
+      "Xerath",
+      "Morgana",
+      "Zyra"
+    ]
+  },
+  "Jinx": {
+    "ad": 100,
+    "estilo": [
+      "teamfight"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Draven",
+      "Caitlyn",
+      "Kalista"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Janna",
+      "Thresh"
+    ]
+  },
+  "K'Sante": {
+    "ad": 90,
+    "estilo": [
+      "frente",
+      "engage",
+      "peel",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Vayne",
+      "Fiora",
+      "Gwen"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Azir",
+      "Viktor"
+    ]
+  },
+  "Kai'Sa": {
+    "ad": 60,
+    "estilo": [
+      "dive",
+      "pick",
+      "teamfight"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Draven",
+      "Lucian",
+      "Ashe"
+    ],
+    "sinergia": [
+      "Nautilus",
+      "Rell",
+      "Alistar"
+    ]
+  },
+  "Kalista": {
+    "ad": 100,
+    "estilo": [
+      "engage",
+      "pick"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Caitlyn",
+      "Ashe",
+      "Varus"
+    ],
+    "sinergia": [
+      "Renata Glasc",
+      "Thresh",
+      "Alistar"
+    ]
+  },
+  "Karma": {
+    "ad": 0,
+    "estilo": [
+      "poke",
+      "peel",
+      "desengage"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Nautilus",
+      "Pyke",
+      "Blitzcrank"
+    ],
+    "sinergia": [
+      "Caitlyn",
+      "Ezreal",
+      "Lucian"
+    ]
+  },
+  "Karthus": {
+    "ad": 0,
+    "estilo": [
+      "teamfight"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Kha'Zix",
+      "Nidalee",
+      "Graves"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Seraphine",
+      "Amumu"
+    ]
+  },
+  "Kassadin": {
+    "ad": 0,
+    "estilo": [
+      "dive",
+      "pick"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Pantheon",
+      "Talon",
+      "Irelia"
+    ],
+    "sinergia": [
+      "Rakan",
+      "Lulu",
+      "Taric"
+    ]
+  },
+  "Katarina": {
+    "ad": 30,
+    "estilo": [
+      "dive",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Galio",
+      "Lissandra",
+      "Malzahar"
+    ],
+    "sinergia": [
+      "Jarvan IV",
+      "Amumu",
+      "Rell"
+    ]
+  },
+  "Kayle": {
+    "ad": 40,
+    "estilo": [
+      "split",
+      "teamfight"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Renekton",
+      "Darius",
+      "Pantheon"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Taric",
+      "Orianna"
+    ]
+  },
+  "Kayn": {
+    "ad": 100,
+    "estilo": [
+      "dive",
+      "pick"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Rammus",
+      "Elise",
+      "Graves"
+    ],
+    "sinergia": [
+      "Twisted Fate",
+      "Ahri",
+      "Lux"
+    ]
+  },
+  "Kennen": {
+    "ad": 0,
+    "estilo": [
+      "engage",
+      "teamfight",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Irelia",
+      "Riven",
+      "Pantheon"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Jarvan IV",
+      "Fiddlesticks"
+    ]
+  },
+  "Kha'Zix": {
+    "ad": 100,
+    "estilo": [
+      "pick",
+      "dive"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Rek'Sai",
+      "Kindred",
+      "Rammus"
+    ],
+    "sinergia": [
+      "Twisted Fate",
+      "Ahri",
+      "Lux"
+    ]
+  },
+  "Kindred": {
+    "ad": 100,
+    "estilo": [
+      "pick",
+      "teamfight"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Rek'Sai",
+      "Graves",
+      "Lee Sin"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Lulu",
+      "Ahri"
+    ]
+  },
+  "Kled": {
+    "ad": 100,
+    "estilo": [
+      "engage",
+      "dive"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Quinn",
+      "Vayne",
+      "Gnar"
+    ],
+    "sinergia": [
+      "Rakan",
+      "Orianna",
+      "Twisted Fate"
+    ]
+  },
+  "Kog'Maw": {
+    "ad": 50,
+    "estilo": [
+      "teamfight"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Draven",
+      "Caitlyn",
+      "Samira"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Janna",
+      "Ivern"
+    ]
+  },
+  "LeBlanc": {
+    "ad": 0,
+    "estilo": [
+      "pick"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Galio",
+      "Lissandra",
+      "Malzahar"
+    ],
+    "sinergia": [
+      "Rakan",
+      "Elise",
+      "Nocturne"
+    ]
+  },
+  "Lee Sin": {
+    "ad": 100,
+    "estilo": [
+      "pick",
+      "engage",
+      "dive"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Poppy",
+      "Rammus",
+      "Warwick"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Yasuo",
+      "Ahri"
+    ]
+  },
+  "Leona": {
+    "ad": 0,
+    "estilo": [
+      "engage",
+      "frente",
+      "cc"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Morgana",
+      "Janna",
+      "Braum"
+    ],
+    "sinergia": [
+      "Draven",
+      "Samira",
+      "Kai'Sa"
+    ]
+  },
+  "Lillia": {
+    "ad": 0,
+    "estilo": [
+      "teamfight",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Rek'Sai",
+      "Graves",
+      "Kha'Zix"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Seraphine",
+      "Amumu"
+    ]
+  },
+  "Lissandra": {
+    "ad": 0,
+    "estilo": [
+      "engage",
+      "peel",
+      "cc",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Kassadin",
+      "Xerath",
+      "Ziggs"
+    ],
+    "sinergia": [
+      "Jarvan IV",
+      "Sejuani",
+      "Nautilus"
+    ]
+  },
+  "Locke": {
+    "ad": 5,
+    "vd": 10,
+    "estilo": [
+      "pick",
+      "dive",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Fizz",
+      "Diana",
+      "Akali",
+      "Katarina",
+      "Ahri",
+      "Yasuo"
+    ],
+    "sinergia": [
+      "Shen",
+      "Nasus",
+      "Rell",
+      "Xayah",
+      "Wukong",
+      "Senna"
+    ]
+  },
+  "Lucian": {
+    "ad": 100,
+    "estilo": [
+      "pick"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Caitlyn",
+      "Ashe",
+      "Varus"
+    ],
+    "sinergia": [
+      "Nami",
+      "Braum",
+      "Milio"
+    ]
+  },
+  "Lulu": {
+    "ad": 0,
+    "estilo": [
+      "peel",
+      "desengage"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Nautilus",
+      "Pyke",
+      "Brand"
+    ],
+    "sinergia": [
+      "Kog'Maw",
+      "Twitch",
+      "Zeri"
+    ]
+  },
+  "Lux": {
+    "ad": 0,
+    "estilo": [
+      "poke",
+      "pick",
+      "peel"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Pyke",
+      "Blitzcrank",
+      "Nautilus"
+    ],
+    "sinergia": [
+      "Caitlyn",
+      "Varus",
+      "Jhin"
+    ]
+  },
+  "Malphite": {
+    "ad": 15,
+    "estilo": [
+      "engage",
+      "frente",
+      "teamfight",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Gwen",
+      "Mordekaiser",
+      "Sylas"
+    ],
+    "sinergia": [
+      "Yasuo",
+      "Miss Fortune",
+      "Orianna"
+    ]
+  },
+  "Malzahar": {
+    "ad": 0,
+    "estilo": [
+      "pick",
+      "cc"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Xerath",
+      "Ziggs",
+      "Zoe"
+    ],
+    "sinergia": [
+      "Nocturne",
+      "Lee Sin",
+      "Rengar"
+    ]
+  },
+  "Maokai": {
+    "ad": 10,
+    "estilo": [
+      "engage",
+      "peel",
+      "frente",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Brand",
+      "Morgana",
+      "Janna"
+    ],
+    "sinergia": [
+      "Ashe",
+      "Kalista",
+      "Varus"
+    ]
+  },
+  "Master Yi": {
+    "ad": 85,
+    "vd": 15,
+    "estilo": [
+      "dive"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Rammus",
+      "Poppy",
+      "Elise"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Taric",
+      "Kayle"
+    ]
+  },
+  "Mel": {
+    "ad": 0,
+    "estilo": [
+      "poke",
+      "desengage"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Zed",
+      "Fizz",
+      "LeBlanc"
+    ],
+    "sinergia": [
+      "Varus",
+      "Ezreal",
+      "Jarvan IV"
+    ]
+  },
+  "Milio": {
+    "ad": 0,
+    "estilo": [
+      "peel",
+      "desengage"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Blitzcrank",
+      "Nautilus",
+      "Pyke"
+    ],
+    "sinergia": [
+      "Lucian",
+      "Zeri",
+      "Kog'Maw"
+    ]
+  },
+  "Miss Fortune": {
+    "ad": 100,
+    "estilo": [
+      "teamfight",
+      "poke"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Draven",
+      "Lucian",
+      "Kalista"
+    ],
+    "sinergia": [
+      "Leona",
+      "Amumu",
+      "Seraphine"
+    ]
+  },
+  "Mordekaiser": {
+    "ad": 0,
+    "estilo": [
+      "frente",
+      "split",
+      "pick"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Vayne",
+      "Fiora",
+      "Olaf"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Taric",
+      "Orianna"
+    ]
+  },
+  "Morgana": {
+    "ad": 0,
+    "estilo": [
+      "peel",
+      "pick",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Zyra",
+      "Brand",
+      "Xerath"
+    ],
+    "sinergia": [
+      "Jhin",
+      "Caitlyn",
+      "Varus"
+    ]
+  },
+  "Naafiri": {
+    "ad": 100,
+    "estilo": [
+      "dive",
+      "pick"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Galio",
+      "Lissandra",
+      "Malzahar"
+    ],
+    "sinergia": [
+      "Rell",
+      "Jarvan IV",
+      "Nocturne"
+    ]
+  },
+  "Nami": {
+    "ad": 0,
+    "estilo": [
+      "peel",
+      "poke",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Leona",
+      "Pyke",
+      "Blitzcrank"
+    ],
+    "sinergia": [
+      "Lucian",
+      "Samira",
+      "Draven"
+    ]
+  },
+  "Nasus": {
+    "ad": 80,
+    "estilo": [
+      "split",
+      "frente"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Teemo",
+      "Vayne",
+      "Quinn"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Taric",
+      "Orianna"
+    ]
+  },
+  "Nautilus": {
+    "ad": 25,
+    "estilo": [
+      "engage",
+      "pick",
+      "frente",
+      "cc"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Morgana",
+      "Braum",
+      "Janna"
+    ],
+    "sinergia": [
+      "Kai'Sa",
+      "Samira",
+      "Draven"
+    ]
+  },
+  "Neeko": {
+    "ad": 0,
+    "estilo": [
+      "engage",
+      "pick",
+      "teamfight",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Fizz",
+      "Kassadin",
+      "Zed"
+    ],
+    "sinergia": [
+      "Miss Fortune",
+      "Jarvan IV",
+      "Yasuo"
+    ]
+  },
+  "Nidalee": {
+    "ad": 0,
+    "estilo": [
+      "poke",
+      "pick"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Rammus",
+      "Volibear",
+      "Olaf"
+    ],
+    "sinergia": [
+      "Jayce",
+      "Varus",
+      "Ezreal"
+    ]
+  },
+  "Nilah": {
+    "ad": 100,
+    "estilo": [
+      "dive",
+      "teamfight"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Caitlyn",
+      "Ashe",
+      "Varus"
+    ],
+    "sinergia": [
+      "Taric",
+      "Rell",
+      "Alistar"
+    ]
+  },
+  "Nocturne": {
+    "ad": 100,
+    "estilo": [
+      "engage",
+      "dive",
+      "pick"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Rammus",
+      "Jax",
+      "Poppy"
+    ],
+    "sinergia": [
+      "Galio",
+      "Twisted Fate",
+      "Shen"
+    ]
+  },
+  "Nunu & Willump": {
+    "ad": 0,
+    "estilo": [
+      "engage",
+      "pick",
+      "frente",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Olaf",
+      "Graves",
+      "Kindred"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Lux",
+      "Ahri"
+    ]
+  },
+  "Olaf": {
+    "ad": 75,
+    "vd": 25,
+    "estilo": [
+      "dive",
+      "frente"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Kindred",
+      "Lillia",
+      "Nidalee"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Orianna",
+      "Twisted Fate"
+    ]
+  },
+  "Orianna": {
+    "ad": 0,
+    "estilo": [
+      "teamfight",
+      "peel",
+      "poke",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "LeBlanc",
+      "Fizz",
+      "Zed"
+    ],
+    "sinergia": [
+      "Jarvan IV",
+      "Wukong",
+      "Malphite"
+    ]
+  },
+  "Ornn": {
+    "ad": 30,
+    "estilo": [
+      "engage",
+      "frente",
+      "teamfight",
+      "cc"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Fiora",
+      "Vayne",
+      "Gwen"
+    ],
+    "sinergia": [
+      "Yasuo",
+      "Orianna",
+      "Azir"
+    ]
+  },
+  "Pantheon": {
+    "ad": 100,
+    "estilo": [
+      "pick",
+      "dive",
+      "engage"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Malphite",
+      "Poppy",
+      "Braum"
+    ],
+    "sinergia": [
+      "Draven",
+      "Twisted Fate",
+      "Samira"
+    ]
+  },
+  "Poppy": {
+    "ad": 70,
+    "estilo": [
+      "peel",
+      "desengage",
+      "frente",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Vayne",
+      "Mordekaiser",
+      "Gwen"
+    ],
+    "sinergia": [
+      "Jinx",
+      "Kog'Maw",
+      "Twitch"
+    ]
+  },
+  "Pyke": {
+    "ad": 85,
+    "vd": 15,
+    "estilo": [
+      "pick",
+      "engage"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Braum",
+      "Tahm Kench",
+      "Alistar"
+    ],
+    "sinergia": [
+      "Samira",
+      "Draven",
+      "Lucian"
+    ]
+  },
+  "Qiyana": {
+    "ad": 100,
+    "estilo": [
+      "engage",
+      "pick",
+      "dive",
+      "teamfight"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Galio",
+      "Lissandra",
+      "Malzahar"
+    ],
+    "sinergia": [
+      "Rakan",
+      "Jarvan IV",
+      "Yasuo"
+    ]
+  },
+  "Quinn": {
+    "ad": 100,
+    "estilo": [
+      "split",
+      "pick"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Malphite",
+      "Pantheon",
+      "Poppy"
+    ],
+    "sinergia": [
+      "Twisted Fate",
+      "Lulu",
+      "Orianna"
+    ]
+  },
+  "Rakan": {
+    "ad": 0,
+    "estilo": [
+      "engage",
+      "desengage",
+      "peel",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Morgana",
+      "Janna",
+      "Leona"
+    ],
+    "sinergia": [
+      "Xayah",
+      "Kai'Sa",
+      "Samira"
+    ]
+  },
+  "Rammus": {
+    "ad": 5,
+    "estilo": [
+      "engage",
+      "frente",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Lillia",
+      "Nidalee",
+      "Elise"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Yasuo",
+      "Miss Fortune"
+    ]
+  },
+  "Rek'Sai": {
+    "ad": 100,
+    "estilo": [
+      "engage",
+      "pick",
+      "dive"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Jax",
+      "Poppy",
+      "Volibear"
+    ],
+    "sinergia": [
+      "Twisted Fate",
+      "Galio",
+      "Orianna"
+    ]
+  },
+  "Rell": {
+    "ad": 0,
+    "estilo": [
+      "engage",
+      "frente",
+      "cc",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Janna",
+      "Morgana",
+      "Braum"
+    ],
+    "sinergia": [
+      "Varus",
+      "Miss Fortune",
+      "Azir"
+    ]
+  },
+  "Renata Glasc": {
+    "ad": 0,
+    "estilo": [
+      "peel",
+      "desengage",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Pyke",
+      "Nautilus",
+      "Blitzcrank"
+    ],
+    "sinergia": [
+      "Kalista",
+      "Lucian",
+      "Kog'Maw"
+    ]
+  },
+  "Renekton": {
+    "ad": 100,
+    "estilo": [
+      "dive",
+      "frente"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Vayne",
+      "Gnar",
+      "Quinn"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Orianna",
+      "Twisted Fate"
+    ]
+  },
+  "Rengar": {
+    "ad": 100,
+    "estilo": [
+      "pick",
+      "dive"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Rek'Sai",
+      "Elise",
+      "Rammus"
+    ],
+    "sinergia": [
+      "Twisted Fate",
+      "Lux",
+      "Malzahar"
+    ]
+  },
+  "Riven": {
+    "ad": 100,
+    "estilo": [
+      "dive",
+      "split"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Renekton",
+      "Poppy",
+      "Jax"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Orianna",
+      "Taliyah"
+    ]
+  },
+  "Rumble": {
+    "ad": 0,
+    "estilo": [
+      "teamfight",
+      "poke"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Gragas",
+      "Kennen",
+      "Camille"
+    ],
+    "sinergia": [
+      "Jarvan IV",
+      "Sejuani",
+      "Rell"
+    ]
+  },
+  "Ryze": {
+    "ad": 0,
+    "estilo": [
+      "teamfight",
+      "split"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Talon",
+      "Zed",
+      "LeBlanc"
+    ],
+    "sinergia": [
+      "Sejuani",
+      "Jarvan IV",
+      "Galio"
+    ]
+  },
+  "Samira": {
+    "ad": 100,
+    "estilo": [
+      "dive",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Caitlyn",
+      "Ashe",
+      "Varus"
+    ],
+    "sinergia": [
+      "Nautilus",
+      "Rell",
+      "Alistar"
+    ]
+  },
+  "Sejuani": {
+    "ad": 20,
+    "estilo": [
+      "engage",
+      "frente",
+      "cc",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Kindred",
+      "Nidalee",
+      "Graves"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Azir",
+      "Yasuo"
+    ]
+  },
+  "Senna": {
+    "ad": 100,
+    "estilo": [
+      "poke",
+      "peel"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Pyke",
+      "Nautilus",
+      "Blitzcrank"
+    ],
+    "sinergia": [
+      "Tahm Kench",
+      "Seraphine",
+      "Braum"
+    ]
+  },
+  "Seraphine": {
+    "ad": 0,
+    "estilo": [
+      "poke",
+      "peel",
+      "teamfight",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Blitzcrank",
+      "Pyke",
+      "Nautilus"
+    ],
+    "sinergia": [
+      "Miss Fortune",
+      "Senna",
+      "Jhin"
+    ]
+  },
+  "Sett": {
+    "ad": 80,
+    "vd": 20,
+    "estilo": [
+      "frente",
+      "engage",
+      "teamfight"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Vayne",
+      "Quinn",
+      "Teemo"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Samira",
+      "Lulu"
+    ]
+  },
+  "Shaco": {
+    "ad": 70,
+    "estilo": [
+      "pick"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Rammus",
+      "Warwick",
+      "Lee Sin"
+    ],
+    "sinergia": [
+      "Twisted Fate",
+      "Lux",
+      "Ahri"
+    ]
+  },
+  "Shen": {
+    "ad": 50,
+    "estilo": [
+      "peel",
+      "frente",
+      "engage",
+      "split"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Gwen",
+      "Mordekaiser",
+      "Fiora"
+    ],
+    "sinergia": [
+      "Akali",
+      "Kai'Sa",
+      "Nocturne"
+    ]
+  },
+  "Shyvana": {
+    "ad": 50,
+    "estilo": [
+      "frente",
+      "teamfight",
+      "dive"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Elise",
+      "Rek'Sai",
+      "Lee Sin"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Lulu",
+      "Ahri"
+    ]
+  },
+  "Singed": {
+    "ad": 0,
+    "estilo": [
+      "frente",
+      "split"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Vayne",
+      "Quinn",
+      "Teemo"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Orianna",
+      "Taric"
+    ]
+  },
+  "Sion": {
+    "ad": 80,
+    "estilo": [
+      "engage",
+      "frente",
+      "teamfight",
+      "cc"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Vayne",
+      "Fiora",
+      "Gwen"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Yasuo",
+      "Kalista"
+    ]
+  },
+  "Sivir": {
+    "ad": 100,
+    "estilo": [
+      "teamfight",
+      "engage"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Draven",
+      "Caitlyn",
+      "Lucian"
+    ],
+    "sinergia": [
+      "Karma",
+      "Bard",
+      "Rell"
+    ]
+  },
+  "Skarner": {
+    "ad": 60,
+    "estilo": [
+      "engage",
+      "pick",
+      "frente",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Nidalee",
+      "Kindred",
+      "Lillia"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Azir",
+      "Ahri"
+    ]
+  },
+  "Smolder": {
+    "ad": 100,
+    "estilo": [
+      "poke",
+      "teamfight"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Draven",
+      "Lucian",
+      "Caitlyn"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Milio",
+      "Janna"
+    ]
+  },
+  "Sona": {
+    "ad": 0,
+    "estilo": [
+      "teamfight",
+      "poke",
+      "peel"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Blitzcrank",
+      "Nautilus",
+      "Pyke"
+    ],
+    "sinergia": [
+      "Miss Fortune",
+      "Ezreal",
+      "Taric"
+    ]
+  },
+  "Soraka": {
+    "ad": 0,
+    "estilo": [
+      "peel",
+      "desengage"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Blitzcrank",
+      "Pyke",
+      "Nautilus"
+    ],
+    "sinergia": [
+      "Twitch",
+      "Kog'Maw",
+      "Jinx"
+    ]
+  },
+  "Swain": {
+    "ad": 0,
+    "estilo": [
+      "frente",
+      "teamfight",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Xerath",
+      "Ziggs",
+      "Vel'Koz"
+    ],
+    "sinergia": [
+      "Ashe",
+      "Miss Fortune",
+      "Varus"
+    ]
+  },
+  "Sylas": {
+    "ad": 0,
+    "estilo": [
+      "dive",
+      "pick",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Galio",
+      "Malzahar",
+      "Cassiopeia"
+    ],
+    "sinergia": [
+      "Jarvan IV",
+      "Rell",
+      "Nocturne"
+    ]
+  },
+  "Syndra": {
+    "ad": 0,
+    "estilo": [
+      "pick",
+      "poke"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Kassadin",
+      "Fizz",
+      "Yasuo"
+    ],
+    "sinergia": [
+      "Jarvan IV",
+      "Nocturne",
+      "Sejuani"
+    ]
+  },
+  "Tahm Kench": {
+    "ad": 25,
+    "estilo": [
+      "peel",
+      "frente",
+      "desengage"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Vayne",
+      "Gwen",
+      "Fiora"
+    ],
+    "sinergia": [
+      "Senna",
+      "Kog'Maw",
+      "Twitch"
+    ]
+  },
+  "Taliyah": {
+    "ad": 0,
+    "estilo": [
+      "poke",
+      "pick",
+      "teamfight",
+      "cc"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Fizz",
+      "Kassadin",
+      "Lee Sin"
+    ],
+    "sinergia": [
+      "Yasuo",
+      "Jarvan IV",
+      "Camille"
+    ]
+  },
+  "Talon": {
+    "ad": 100,
+    "estilo": [
+      "pick",
+      "dive"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Lissandra",
+      "Malzahar",
+      "Galio"
+    ],
+    "sinergia": [
+      "Rakan",
+      "Pantheon",
+      "Nocturne"
+    ]
+  },
+  "Taric": {
+    "ad": 0,
+    "estilo": [
+      "peel",
+      "desengage",
+      "teamfight",
+      "cc"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Brand",
+      "Zyra",
+      "Vel'Koz"
+    ],
+    "sinergia": [
+      "Master Yi",
+      "Kalista",
+      "Ezreal"
+    ]
+  },
+  "Teemo": {
+    "ad": 30,
+    "estilo": [
+      "poke",
+      "split"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Kennen",
+      "Malphite",
+      "Pantheon"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Ezreal",
+      "Caitlyn"
+    ]
+  },
+  "Thresh": {
+    "ad": 20,
+    "estilo": [
+      "pick",
+      "engage",
+      "peel",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Morgana",
+      "Braum",
+      "Janna"
+    ],
+    "sinergia": [
+      "Aphelios",
+      "Jinx",
+      "Draven"
+    ]
+  },
+  "Tristana": {
+    "ad": 95,
+    "estilo": [
+      "dive",
+      "teamfight"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Caitlyn",
+      "Draven",
+      "Samira"
+    ],
+    "sinergia": [
+      "Leona",
+      "Nautilus",
+      "Rell"
+    ]
+  },
+  "Trundle": {
+    "ad": 100,
+    "estilo": [
+      "split",
+      "frente",
+      "dive"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Kindred",
+      "Lillia",
+      "Graves"
+    ],
+    "sinergia": [
+      "Twisted Fate",
+      "Lulu",
+      "Orianna"
+    ]
+  },
+  "Tryndamere": {
+    "ad": 100,
+    "estilo": [
+      "split",
+      "dive"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Malphite",
+      "Poppy",
+      "Jax"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Taric",
+      "Twisted Fate"
+    ]
+  },
+  "Twisted Fate": {
+    "ad": 20,
+    "estilo": [
+      "pick"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Kassadin",
+      "Fizz",
+      "Akali"
+    ],
+    "sinergia": [
+      "Nocturne",
+      "Camille",
+      "Galio"
+    ]
+  },
+  "Twitch": {
+    "ad": 100,
+    "estilo": [
+      "teamfight",
+      "pick"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Caitlyn",
+      "Draven",
+      "Lucian"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Yuumi",
+      "Taric"
+    ]
+  },
+  "Udyr": {
+    "ad": 50,
+    "estilo": [
+      "dive",
+      "frente"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Lillia",
+      "Nidalee",
+      "Kindred"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Orianna",
+      "Ahri"
+    ]
+  },
+  "Urgot": {
+    "ad": 100,
+    "estilo": [
+      "frente",
+      "split",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Fiora",
+      "Vayne",
+      "Gwen"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Lulu",
+      "Janna"
+    ]
+  },
+  "Varus": {
+    "ad": 70,
+    "estilo": [
+      "poke",
+      "pick"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Draven",
+      "Samira",
+      "Kalista"
+    ],
+    "sinergia": [
+      "Rell",
+      "Karma",
+      "Ashe"
+    ]
+  },
+  "Vayne": {
+    "ad": 80,
+    "vd": 20,
+    "estilo": [
+      "split",
+      "teamfight"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Caitlyn",
+      "Draven",
+      "Varus"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Janna",
+      "Taric"
+    ]
+  },
+  "Veigar": {
+    "ad": 0,
+    "estilo": [
+      "pick",
+      "cc"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Xerath",
+      "Ziggs",
+      "Syndra"
+    ],
+    "sinergia": [
+      "Amumu",
+      "Rell",
+      "Jarvan IV"
+    ]
+  },
+  "Vel'Koz": {
+    "ad": 0,
+    "estilo": [
+      "poke",
+      "pick"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Pyke",
+      "Blitzcrank",
+      "Nautilus"
+    ],
+    "sinergia": [
+      "Caitlyn",
+      "Varus",
+      "Jhin"
+    ]
+  },
+  "Vex": {
+    "ad": 0,
+    "estilo": [
+      "engage",
+      "pick",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Xerath",
+      "Ziggs",
+      "Kassadin"
+    ],
+    "sinergia": [
+      "Jarvan IV",
+      "Rell",
+      "Sejuani"
+    ]
+  },
+  "Vi": {
+    "ad": 100,
+    "estilo": [
+      "engage",
+      "pick",
+      "dive"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Poppy",
+      "Rammus",
+      "Jax"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Ahri",
+      "Yasuo"
+    ]
+  },
+  "Viego": {
+    "ad": 100,
+    "estilo": [
+      "dive",
+      "pick"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Rek'Sai",
+      "Elise",
+      "Poppy"
+    ],
+    "sinergia": [
+      "Twisted Fate",
+      "Orianna",
+      "Ahri"
+    ]
+  },
+  "Viktor": {
+    "ad": 0,
+    "estilo": [
+      "poke",
+      "teamfight",
+      "cc"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Fizz",
+      "Zed",
+      "LeBlanc"
+    ],
+    "sinergia": [
+      "Sejuani",
+      "Jarvan IV",
+      "Rell"
+    ]
+  },
+  "Vladimir": {
+    "ad": 0,
+    "estilo": [
+      "teamfight",
+      "dive"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Talon",
+      "Zed",
+      "Kennen"
+    ],
+    "sinergia": [
+      "Amumu",
+      "Malphite",
+      "Rell"
+    ]
+  },
+  "Volibear": {
+    "ad": 50,
+    "estilo": [
+      "dive",
+      "frente",
+      "engage"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Kindred",
+      "Lillia",
+      "Graves"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Lulu",
+      "Ahri"
+    ]
+  },
+  "Warwick": {
+    "ad": 60,
+    "estilo": [
+      "dive",
+      "pick"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Kindred",
+      "Graves",
+      "Lillia"
+    ],
+    "sinergia": [
+      "Ahri",
+      "Twisted Fate",
+      "Lulu"
+    ]
+  },
+  "Wukong": {
+    "ad": 100,
+    "estilo": [
+      "engage",
+      "dive",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Poppy",
+      "Jax",
+      "Rammus"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Yasuo",
+      "Azir"
+    ]
+  },
+  "Xayah": {
+    "ad": 100,
+    "estilo": [
+      "teamfight",
+      "pick"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Draven",
+      "Caitlyn",
+      "Ashe"
+    ],
+    "sinergia": [
+      "Rakan",
+      "Nautilus",
+      "Alistar"
+    ]
+  },
+  "Xerath": {
+    "ad": 0,
+    "estilo": [
+      "poke"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Fizz",
+      "Zed",
+      "Blitzcrank"
+    ],
+    "sinergia": [
+      "Jhin",
+      "Varus",
+      "Caitlyn"
+    ]
+  },
+  "Xin Zhao": {
+    "ad": 100,
+    "estilo": [
+      "engage",
+      "dive",
+      "pick"
+    ],
+    "curva": "inicio",
+    "perde_para": [
+      "Poppy",
+      "Rammus",
+      "Jax"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Azir",
+      "Yasuo"
+    ]
+  },
+  "Yasuo": {
+    "ad": 100,
+    "estilo": [
+      "teamfight",
+      "dive"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Malzahar",
+      "Renekton",
+      "Annie"
+    ],
+    "sinergia": [
+      "Malphite",
+      "Diana",
+      "Alistar"
+    ]
+  },
+  "Yone": {
+    "ad": 70,
+    "estilo": [
+      "engage",
+      "dive",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Renekton",
+      "Lissandra",
+      "Annie"
+    ],
+    "sinergia": [
+      "Malphite",
+      "Diana",
+      "Rell"
+    ]
+  },
+  "Yorick": {
+    "ad": 100,
+    "estilo": [
+      "split"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Fiora",
+      "Gwen",
+      "Camille"
+    ],
+    "sinergia": [
+      "Twisted Fate",
+      "Lulu",
+      "Orianna"
+    ]
+  },
+  "Yunara": {
+    "ad": 65,
+    "estilo": [
+      "teamfight"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Zeri",
+      "Twitch",
+      "Tristana",
+      "Jinx",
+      "Xayah"
+    ],
+    "sinergia": [
+      "Braum",
+      "Garen",
+      "Malphite",
+      "Zoe",
+      "Wukong"
+    ]
+  },
+  "Yuumi": {
+    "ad": 0,
+    "estilo": [
+      "peel"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Pyke",
+      "Nautilus",
+      "Leona"
+    ],
+    "sinergia": [
+      "Ezreal",
+      "Twitch",
+      "Zeri"
+    ]
+  },
+  "Zaahen": {
+    "ad": 90,
+    "vd": 5,
+    "estilo": [
+      "dive",
+      "split",
+      "teamfight"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Teemo",
+      "Jax",
+      "Garen",
+      "Camille",
+      "Fiora"
+    ],
+    "sinergia": [
+      "Evelynn",
+      "LeBlanc",
+      "Rakan",
+      "Soraka",
+      "Zeri"
+    ]
+  },
+  "Zac": {
+    "ad": 0,
+    "estilo": [
+      "engage",
+      "frente",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Graves",
+      "Kindred",
+      "Nidalee"
+    ],
+    "sinergia": [
+      "Orianna",
+      "Miss Fortune",
+      "Yasuo"
+    ]
+  },
+  "Zed": {
+    "ad": 100,
+    "estilo": [
+      "pick",
+      "dive"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Lissandra",
+      "Malzahar",
+      "Galio"
+    ],
+    "sinergia": [
+      "Rakan",
+      "Nautilus",
+      "Pantheon"
+    ]
+  },
+  "Zeri": {
+    "ad": 100,
+    "estilo": [
+      "teamfight",
+      "dive"
+    ],
+    "curva": "fim",
+    "perde_para": [
+      "Draven",
+      "Caitlyn",
+      "Samira"
+    ],
+    "sinergia": [
+      "Lulu",
+      "Milio",
+      "Yuumi"
+    ]
+  },
+  "Ziggs": {
+    "ad": 0,
+    "estilo": [
+      "poke"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Fizz",
+      "Zed",
+      "Kassadin"
+    ],
+    "sinergia": [
+      "Caitlyn",
+      "Varus",
+      "Sejuani"
+    ]
+  },
+  "Zilean": {
+    "ad": 0,
+    "estilo": [
+      "peel",
+      "desengage"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Pyke",
+      "Blitzcrank",
+      "Nautilus"
+    ],
+    "sinergia": [
+      "Kog'Maw",
+      "Twitch",
+      "Jinx"
+    ]
+  },
+  "Zoe": {
+    "ad": 0,
+    "estilo": [
+      "poke",
+      "pick"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Fizz",
+      "Kassadin",
+      "Yasuo"
+    ],
+    "sinergia": [
+      "Lee Sin",
+      "Jarvan IV",
+      "Rakan"
+    ]
+  },
+  "Zyra": {
+    "ad": 0,
+    "estilo": [
+      "poke",
+      "teamfight",
+      "cc"
+    ],
+    "curva": "meio",
+    "perde_para": [
+      "Pyke",
+      "Blitzcrank",
+      "Nautilus"
+    ],
+    "sinergia": [
+      "Jhin",
+      "Varus",
+      "Brand"
+    ]
+  }
+}

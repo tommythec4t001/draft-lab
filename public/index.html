@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Draft Lab</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect width='30' height='30' rx='7' fill='%23161A17'/%3E%3Crect x='7' y='7' width='4.5' height='16' rx='1.5' fill='%23018D3E'/%3E%3Crect x='12.75' y='7' width='4.5' height='16' rx='1.5' fill='%23FDF7E6'/%3E%3Crect x='18.5' y='7' width='4.5' height='16' rx='1.5' fill='%23E71506'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<header class="top">
+  <div class="logo" aria-label="Draft Lab">
+    <span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="word">Draft Lab</span>
+    <span class="patch" id="patch"></span>
+  </div>
+  <form class="search" id="searchForm" role="search" autocomplete="off">
+    <svg aria-hidden="true" viewBox="0 0 20 20"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M13 13l4.5 4.5"/></svg>
+    <input id="searchQ" type="search" placeholder="Buscar jogador (Nome#TAG)" aria-label="Buscar jogador pelo Riot ID" spellcheck="false" maxlength="24">
+    <select id="searchReg" aria-label="Servidor do jogador"></select>
+  </form>
+  <div class="top-actions">
+    <button class="gear" id="gearBtn" type="button" aria-label="Configurações" title="Configurações">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M10.3 2.6h3.4l.5 2.6c.6.2 1.2.5 1.7.9l2.5-.9 1.7 2.9-2 1.8c.1.6.1 1.3 0 1.9l2 1.8-1.7 2.9-2.5-.9c-.5.4-1.1.7-1.7.9l-.5 2.6h-3.4l-.5-2.6c-.6-.2-1.2-.5-1.7-.9l-2.5.9-1.7-2.9 2-1.8c-.1-.6-.1-1.3 0-1.9l-2-1.8 1.7-2.9 2.5.9c.5-.4 1.1-.7 1.7-.9z"/><circle cx="12" cy="12" r="3.2"/></svg>
+    </button>
+    <span class="conn" id="status" role="status">Conectando…</span>
+  </div>
+  <nav class="tabs" aria-label="Seções">
+    <button class="tab" data-view="live" aria-current="page">Draft ao vivo</button>
+    <button class="tab" data-view="pro">Fearless ao vivo</button>
+    <button class="tab" data-view="champs">Campeões</button>
+    <button class="tab" data-view="lb">Leaderboard</button>
+    <button class="tab" data-view="matches">Partidas</button>
+    <button class="tab" data-view="perf">Desempenho</button>
+  </nav>
+</header>
+
+<main class="page">
+  <div class="view" id="view-live">
+  <section class="idle" id="empty">
+    <h1 id="emptyTitle">Esperando o champ select</h1>
+    <p id="emptyText">Abra o cliente do LoL e entre numa fila. Assim que o champ select começar, o draft e as sugestões aparecem aqui.</p>
+    <button class="btn" id="tryReplay">Ver com uma gravação de exemplo</button>
+  </section>
+
+  <section class="board" id="board" hidden>
+    <div class="team ally" id="teamA" aria-label="Seu time"></div>
+    <div class="center">
+      <p class="phase" id="phase"></p>
+      <p class="turn" id="turn"></p>
+      <div class="clock"><div class="clock-bar"><i id="timerFill"></i></div><span class="clock-num" id="timeLeft"></span></div>
+      <div class="bans">
+        <div class="banset ally"><span class="banlabel">Seus bans</span><div class="banrow" id="bansA"></div></div>
+        <div class="banset enemy"><span class="banlabel">Bans do inimigo</span><div class="banrow" id="bansE"></div></div>
+      </div>
+    </div>
+    <div class="team enemy" id="teamE" aria-label="Time inimigo"></div>
+  </section>
+
+  <div class="importbar" id="importBar" hidden></div>
+
+  <section class="advice" id="sugBox" hidden aria-labelledby="sugTitle">
+    <div class="advice-head">
+      <h2 id="sugTitle">Sugestões</h2>
+      <p id="sugSub"></p>
+    </div>
+    <div class="advice-cols" id="suggest"></div>
+  </section>
+
+  <section class="comps" id="compBox" hidden aria-label="Composição dos times">
+    <div class="compcard ally" id="compA"></div>
+    <div class="compcard enemy" id="compE"></div>
+  </section>
+
+  </div>
+
+  <div class="view" id="view-matches" hidden>
+    <div class="you" id="youMatches"></div>
+    <div class="mfilters" role="group" aria-label="Filas">
+      <button class="chip" data-fila="" aria-pressed="true">Todas</button>
+      <button class="chip" data-fila="420" aria-pressed="false">Solo/Duo</button>
+      <button class="chip" data-fila="440" aria-pressed="false">Flex</button>
+      <button class="chip" data-fila="400" aria-pressed="false">Normal</button>
+      <span class="grow"></span>
+      <span class="note" id="mMsg" role="status"></span>
+      <button class="btn" id="mRefresh">Buscar partidas novas</button>
+    </div>
+    <div class="mlist" id="mList"></div>
+  </div>
+
+  <div class="view" id="view-perf" hidden>
+    <div class="you" id="youPerf"></div>
+    <div class="mfilters">
+      <div class="seg" id="pRoles" role="group" aria-label="Rota"></div>
+      <label class="field inline" for="pQueue">Fila <select id="pQueue"><option value="420">Solo/Duo</option><option value="">Todas</option></select></label>
+      <label class="field inline" for="pN">Partidas <select id="pN"><option>10</option><option selected>20</option><option>50</option></select></label>
+    </div>
+    <p class="perf-intro" id="pIntro"></p>
+    <div class="perf" id="pGroups"></div>
+  </div>
+
+  <div class="view" id="view-champs" hidden>
+    <div class="vhead">
+      <h1 class="page-title">Campeões</h1>
+      <input class="filter" id="cFilter" type="search" placeholder="Filtrar campeões" aria-label="Filtrar campeões pelo nome" spellcheck="false">
+      <div class="seg" id="cRoles" role="group" aria-label="Rota"></div>
+    </div>
+    <div class="cgrid" id="cGrid"></div>
+  </div>
+
+  <div class="view" id="view-champ" hidden>
+    <button class="back" id="cBack">← Todos os campeões</button>
+    <div id="cDetail"></div>
+  </div>
+
+  <div class="view" id="view-lb" hidden>
+    <div class="vhead">
+      <h1 class="page-title">Leaderboard</h1>
+      <div class="seg" id="lbReg" role="group" aria-label="Região"></div>
+      <div class="seg" id="lbFila" role="group" aria-label="Fila"></div>
+    </div>
+    <p class="note" id="lbMsg" role="status"></p>
+    <div class="lb" id="lbList"></div>
+    <div class="pager" id="lbPager"></div>
+  </div>
+
+  <div class="view" id="view-player" hidden>
+    <div id="pfBody"></div>
+  </div>
+
+  <div class="view" id="view-pro" hidden>
+    <div class="pro-layout">
+      <aside class="pro-side" aria-label="Partidas">
+        <div class="pro-side-head">
+          <h1 class="page-title">Fearless ao vivo</h1>
+          <button class="btn small" id="proRefresh" type="button">Atualizar</button>
+        </div>
+        <label class="field"><span class="sr">Liga</span><select id="proLiga" aria-label="Liga"></select></label>
+        <p class="note" id="proMsg" role="status"></p>
+        <div id="proList"></div>
+      </aside>
+      <section class="pro-main" id="proMain" aria-live="polite">
+        <div class="idle small"><p>Escolha uma partida ao lado. As que estão acontecendo agora aparecem primeiro.</p></div>
+      </section>
+    </div>
+  </div>
+
+  <div class="view" id="view-settings" hidden>
+    <h1 class="page-title">Configurações</h1>
+  <button class="cfg-link" id="openLolCfg" type="button">
+    <span class="cfg-link-icon" aria-hidden="true">LoL</span>
+    <span><b>Configs LoL</b><small>Ajuste o jogo com um clique: +FPS para rodar mais liso, com volta ao que era quando quiser.</small></span>
+    <span class="cfg-link-go" aria-hidden="true">→</span>
+  </button>
+
+  <section class="drawer" id="statsPanel" aria-labelledby="statsTitle">
+    <div class="drawer-text">
+      <h2 id="statsTitle">Estatísticas de soloQ</h2>
+      <p>O Draft Lab baixa ranqueadas solo/duo do patch atual pela API oficial da Riot e calcula win rate por rota, matchups e duplas. A coleta roda enquanto o app está aberto e continua de onde parou.</p>
+      <div class="progress" id="soloStatus"></div>
+    </div>
+    <div class="drawer-form">
+      <label class="field wide" for="key">Chave da Riot
+        <input type="password" id="key" placeholder="RGAPI-…" autocomplete="off" spellcheck="false">
+      </label>
+      <label class="field" for="platform">Servidor <select id="platform"></select></label>
+      <label class="field" for="elo">Elo das partidas <select id="elo"></select></label>
+      <label class="check"><input type="checkbox" id="coleta"> Coletar enquanto o app estiver aberto</label>
+      <div class="form-end">
+        <button class="btn primary" id="saveCfg">Salvar e coletar</button>
+        <span class="note" id="cfgMsg" role="status"></span>
+      </div>
+      <p class="fine">A chave é grátis e vale 24 horas: entre em <a href="https://developer.riotgames.com" target="_blank" rel="noopener">developer.riotgames.com</a> e copie a Development API Key. Ela fica salva só neste computador.</p>
+    </div>
+  </section>
+
+  <section class="drawer" id="replayPanel" aria-labelledby="replayTitle">
+    <div class="drawer-text">
+      <h2 id="replayTitle">Gravações</h2>
+      <p>Cada champ select seu fica gravado, sem nomes nem ids de conta. Reproduza um para rever o draft ou testar sem entrar na fila.</p>
+    </div>
+    <div class="drawer-form">
+      <label class="field wide" for="rec">Gravação <select id="rec"></select></label>
+      <label class="field" for="speed">Velocidade
+        <select id="speed"><option value="1">1x</option><option value="2">2x</option><option value="4" selected>4x</option><option value="8">8x</option></select>
+      </label>
+      <label class="check"><input type="checkbox" id="record"> Gravar meus champ selects</label>
+      <div class="form-end">
+        <button class="btn primary" id="play">Reproduzir</button>
+        <button class="btn" id="stop" hidden>Voltar ao cliente</button>
+        <span class="note" id="msg" role="status"></span>
+      </div>
+    </div>
+  </section>
+
+  </div>
+
+  <div class="view" id="view-lolcfg" hidden>
+    <button class="back" id="lolBack" type="button">← Configurações</button>
+    <h1 class="page-title">Configs LoL</h1>
+    <p class="lead">O Draft Lab muda as configurações pelo próprio cliente do LoL, do mesmo jeito que a tela de configurações dele. Antes de mudar, guarda como estava: o botão <b>Restaurar</b> desfaz tudo.</p>
+    <p class="note" id="lolState" role="status"></p>
+    <div class="lolcfg">
+      <section class="lolcard fps" aria-labelledby="fpsTitle">
+        <h2 id="fpsTitle"><span class="big">+FPS</span>Mais quadros por segundo</h2>
+        <ul class="lolwhat">
+          <li>Sombras, ambiente, efeitos e personagens no mais leve que ainda deixa ler as habilidades</li>
+          <li>Desliga V-Sync, anti-serrilhado, contorno, grama balançando e animações da interface</li>
+          <li>Cliente do LoL em modo de baixo desempenho e fechado durante a partida</li>
+          <li>Windows no plano de energia Alto desempenho e o LoL na placa de vídeo dedicada</li>
+        </ul>
+        <p class="note">O limite de FPS e o modo de tela ficam como estão.</p>
+        <div class="row"><button class="btn primary" id="fpsBtn" type="button">Aplicar +FPS</button><button class="btn" id="restoreBtn" type="button" hidden>Restaurar como estava</button></div>
+        <div id="fpsOut"></div>
+      </section>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <span id="source"></span>
+    <span id="updated"></span>
+  </footer>
+</main>
+<script src="/chave.js"></script>
+<script src="/engine.js"></script>
+<script src="/app.js"></script>
+<script src="/you.js"></script>
+<script src="/mundo.js"></script>
+<script src="/pro.js"></script>
+<script src="/build.js"></script>
+<script src="/lolcfg.js"></script>
+<script src="/pessoal.js"></script>
+</body>
+</html>

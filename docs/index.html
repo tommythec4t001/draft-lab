@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Draft Lab — Live Fearless Draft and champion select companion for League of Legends</title>
+<meta name="description" content="Draft Lab is a free Windows app for League of Legends: follow professional Fearless Draft series live, get draft help in champion select, and explore builds ranked by Win Probability Added.">
+<style>
+:root{
+  --fundo:#141815;--sup:#1C211D;--sup2:#232A25;--linha:#2E372F;--linha2:#3B463D;
+  --creme:#FDF7E6;--apagado:#B9BBAF;--fraco:#868A80;
+  --verde:#018D3E;--verde2:#2FCB72;--vermelho:#E71506;--verm2:#FF6B5E;--azul:#5B8CFF;
+  --display:Bahnschrift,"DIN Alternate","Avenir Next Condensed","Roboto Condensed","Arial Narrow",sans-serif;
+  --texto:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html{background:var(--fundo);scroll-behavior:smooth}
+body{margin:0;color:var(--creme);font:16px/1.6 var(--texto);background:var(--fundo);-webkit-font-smoothing:antialiased}
+a{color:var(--verde2)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+header.top{position:sticky;top:0;z-index:5;background:rgba(20,24,21,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--linha)}
+header.top .wrap{display:flex;align-items:center;gap:20px;height:64px}
+.logo{display:flex;align-items:center;gap:10px;font:600 22px var(--display);font-stretch:condensed;color:var(--creme);text-decoration:none}
+.logo i{display:flex;gap:3px}.logo i b{width:6px;height:20px;border-radius:2px}
+.logo i b:nth-child(1){background:var(--verde)}.logo i b:nth-child(2){background:var(--creme)}.logo i b:nth-child(3){background:var(--vermelho)}
+nav.links{margin-left:auto;display:flex;gap:22px;font-size:14px}
+nav.links a{color:var(--apagado);text-decoration:none}nav.links a:hover{color:var(--creme)}
+.hero{padding:88px 0 56px}
+.tag{display:inline-flex;align-items:center;gap:8px;font:700 12px var(--texto);letter-spacing:.12em;text-transform:uppercase;color:var(--verm2);background:rgba(231,21,6,.12);border:1px solid rgba(231,21,6,.35);border-radius:999px;padding:5px 12px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--vermelho);box-shadow:0 0 0 3px rgba(231,21,6,.25)}
+h1{font:700 clamp(40px,6vw,68px)/1.02 var(--display);font-stretch:condensed;margin:20px 0 18px;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--verde2)}
+.lead{font-size:19px;color:var(--apagado);max-width:720px;margin:0 0 28px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;font:600 15px var(--texto);text-decoration:none;border:1px solid var(--linha2);color:var(--creme);background:var(--sup)}
+.btn.primary{background:var(--verde);border-color:var(--verde)}
+.btn small{font-weight:400;color:var(--apagado)}.btn.primary small{color:#d6f5e2}
+section{padding:64px 0;border-top:1px solid var(--linha)}
+h2{font:700 clamp(30px,4vw,42px)/1.1 var(--display);font-stretch:condensed;margin:0 0 12px}
+.sub{color:var(--apagado);max-width:760px;margin:0 0 32px;font-size:17px}
+.grid2{display:grid;grid-template-columns:1.05fr 1fr;gap:36px;align-items:center}
+.list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:14px}
+.list li{display:grid;grid-template-columns:28px 1fr;gap:10px}
+.list li::before{content:"";width:10px;height:10px;margin-top:9px;border-radius:3px;background:var(--verde2)}
+.list b{color:var(--creme)}
+.list span{color:var(--apagado)}
+/* Mock da série Fearless */
+.mock{background:var(--sup);border:1px solid var(--linha2);border-radius:16px;padding:18px;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+.mhead{display:flex;align-items:center;gap:8px;color:var(--apagado);font-size:13px;margin-bottom:12px}
+.live{font:700 11px var(--texto);letter-spacing:.08em;color:#fff;background:var(--vermelho);border-radius:5px;padding:2px 7px;margin-left:auto}
+.score{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin-bottom:14px}
+.team{font:700 24px var(--display);font-stretch:condensed}.team.r{text-align:right}
+.sc{font:700 38px var(--display);display:flex;gap:10px}.sc span{color:var(--fraco)}
+.games{display:flex;gap:6px;margin-bottom:14px}
+.g{font:600 12px var(--texto);border:1px solid var(--linha2);border-radius:999px;padding:4px 10px;color:var(--apagado)}
+.g.on{color:var(--creme);border-color:var(--creme)}.g.now{color:var(--verm2);border-color:rgba(231,21,6,.5)}
+.box{background:var(--sup2);border-radius:12px;padding:12px;margin-bottom:10px}
+.box h4{margin:0 0 8px;font:600 13px var(--texto);color:var(--apagado)}
+.box h4 b{color:var(--creme)}
+.icons{display:flex;flex-wrap:wrap;gap:6px}
+.icons img{width:38px;height:38px;border-radius:7px;background:var(--fundo)}
+.icons.locked img{filter:grayscale(1) brightness(.55)}
+.box{position:relative}.more{position:absolute;right:12px;top:12px;font:600 12px var(--texto);color:var(--fraco)}
+.tier{display:grid;grid-template-columns:42px 1fr;border-radius:10px;overflow:hidden;background:var(--fundo);margin-top:6px}
+.tl{display:grid;place-items:center;font:800 22px var(--display);color:#141716}
+.t-s{background:#FF7F7F}.t-a{background:#FFBF7F}.t-b{background:#FFDF7F}
+.tier .icons{padding:7px}
+/* Recursos */
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.card{background:var(--sup);border:1px solid var(--linha);border-radius:14px;padding:22px}
+.card h3{font:600 22px var(--display);font-stretch:condensed;margin:0 0 8px}
+.card p{color:var(--apagado);margin:0;font-size:15px}
+.card .k{font:700 12px var(--texto);letter-spacing:.1em;text-transform:uppercase;color:var(--verde2);margin-bottom:10px;display:block}
+/* WPA mock */
+.wpa{width:100%;border-collapse:collapse;font-size:14px}
+.wpa th{text-align:left;color:var(--apagado);font-weight:600;font-size:12.5px;padding:8px 10px;border-bottom:1px solid var(--linha2)}
+.wpa td{padding:8px 10px;border-bottom:1px solid var(--linha)}
+.wpa td.n,.wpa th.n{text-align:right}
+.up{color:var(--verde2);font-weight:700}.down{color:var(--verm2);font-weight:700}
+.it{display:flex;align-items:center;gap:10px}.it img{width:28px;height:28px;border-radius:6px}
+.formula{font:600 18px var(--display);background:var(--sup2);border:1px solid var(--linha2);border-radius:10px;padding:14px 16px;display:inline-block;margin:6px 0 18px}
+/* Riot API */
+.api{width:100%;border-collapse:collapse;font-size:15px}
+.api td,.api th{padding:12px 14px;border-bottom:1px solid var(--linha);vertical-align:top;text-align:left}
+.api th{color:var(--apagado);font-size:13px;font-weight:600}
+.api code{font:13px ui-monospace,Consolas,monospace;color:var(--creme);background:var(--sup2);border-radius:5px;padding:2px 6px}
+.policy{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 28px}
+footer{border-top:1px solid var(--linha);padding:36px 0 48px;color:var(--fraco);font-size:13.5px}
+footer p{max-width:900px}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.policy{grid-template-columns:1fr}nav.links{display:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="logo" href="#"><i><b></b><b></b><b></b></i>Draft Lab</a>
+  <nav class="links"><a href="#fearless">Fearless Live</a><a href="#champselect">Champion select</a><a href="#builds">Builds &amp; WPA</a><a href="#riot-api">Riot API usage</a><a href="#privacy">Privacy</a></nav>
+</div></header>
+
+<main>
+<div class="wrap hero">
+  <span class="tag"><i class="dot"></i>Live Fearless Draft</span>
+  <h1>Follow every <em>Fearless</em> series<br>as it happens.</h1>
+  <p class="lead">Draft Lab is a free Windows app for League of Legends. Follow professional Fearless Draft series game by game, see which champions are already locked out for the rest of the series, and get clear draft help in your own champion select.</p>
+  <div class="cta">
+    <a class="btn primary" href="https://github.com/tommythec4t001/draft-lab/releases">Download for Windows <small>free</small></a>
+    <a class="btn" href="https://github.com/tommythec4t001/draft-lab">Source code on GitHub</a>
+  </div>
+</div>
+
+<section id="fearless"><div class="wrap grid2">
+  <div>
+    <h2>Fearless Draft, live</h2>
+    <p class="sub">In Fearless Draft, a champion picked in one game can't be picked again for the rest of the series, by either team. Every game changes the next one. Draft Lab makes that layer visible while the series is being played.</p>
+    <ul class="list">
+      <li><div><b>Live series board.</b> <span>CBLOL, LCK, LEC, LPL, LTA, Worlds, MSI and more, with the series score updating game by game.</span></div></li>
+      <li><div><b>Locked champions.</b> <span>Every champion already used in the series, grouped by the team that picked it.</span></div></li>
+      <li><div><b>What's still available.</b> <span>The champions free for the next game, in a tier list ranked by their competitive priority this season.</span></div></li>
+      <li><div><b>Draft reading.</b> <span>Lane-by-lane advantages, a draft rating for both sides with the reasons behind it, and a team composition breakdown.</span></div></li>
+    </ul>
+  </div>
+  <div class="mock" aria-label="Example of the Fearless Live screen">
+    <div class="mhead">LCK · Best of 5 · Fearless <span class="live">LIVE</span></div>
+    <div class="score"><div class="team">T1</div><div class="sc">2<span>–</span>1</div><div class="team r">Gen.G</div></div>
+    <div class="games"><span class="g on">Game 1</span><span class="g on">Game 2</span><span class="g on">Game 3</span><span class="g now">Game 4 ●</span><span class="g">Game 5</span></div>
+    <div class="box"><h4>Locked for game 4 · <b>30 champions</b></h4>
+      <div class="icons locked" data-c="Renekton Vi Azir Varus Rell KSante Sejuani Orianna Kalista Nautilus Gnar XinZhao Taliyah Ezreal Karma Jax"></div><span class="more">+14</span></div>
+    <div class="box"><h4>Free for game 4, by competitive priority</h4>
+      <div class="tier"><span class="tl t-s">S</span><div class="icons" data-c="Ambessa Corki Skarner Rumble Yone"></div></div>
+      <div class="tier"><span class="tl t-a">A</span><div class="icons" data-c="Aurora Poppy Galio Ashe Braum Viego"></div></div>
+      <div class="tier"><span class="tl t-b">B</span><div class="icons" data-c="Aatrox Sylas Nidalee Xayah Rakan Hwei"></div></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="champselect"><div class="wrap">
+  <h2>Help in your own champion select</h2>
+  <p class="sub">When your champion select starts, Draft Lab opens with it and reads the draft through the League Client. It suggests options and explains why. You make every decision.</p>
+  <div class="cards">
+    <div class="card"><span class="k">Suggestions</span><h3>One clear list per team</h3><p>Picks and bans ranked for the current draft, each with short reasons: lane counters by champion class, synergies with your team and Solo/Duo win rates with enough games behind them.</p></div>
+    <div class="card"><span class="k">Your team</span><h3>Composition at a glance</h3><p>Physical and magic damage split, frontline, engage, crowd control, power curve, and warnings like "the enemy has dive and nobody protects your carries".</p></div>
+    <div class="card"><span class="k">One click</span><h3>Import runes and items</h3><p>Review the rune page, summoner spells and item set first, then import them into the client. Draft Lab uses one page of its own and never deletes your pages without asking.</p></div>
+  </div>
+</div></section>
+
+<section id="builds"><div class="wrap grid2">
+  <div>
+    <h2>Builds ranked by what actually wins</h2>
+    <p class="sub">An item's win rate is biased: players who are already ahead buy different items. Draft Lab ranks items, runes and summoner spells by <b>Win Probability Added</b>.</p>
+    <div class="formula">WPA = win rate − win probability just before the choice</div>
+    <ul class="list">
+      <li><div><b>Items and boots:</b> <span>the win probability before each purchase comes from the game minute and the team gold difference at that moment.</span></div></li>
+      <li><div><b>Runes, spells and starting items:</b> <span>from the lane matchup, right after the draft.</span></div></li>
+      <li><div><b>Also on every champion page:</b> <span>matchups (good and bad against), high-elo match history, leaderboards for Solo/Duo and Flex, and player lookup by Riot ID.</span></div></li>
+    </ul>
+  </div>
+  <div class="mock" aria-label="Example of the item table">
+    <div class="mhead">Darius · Top · 1st item</div>
+    <table class="wpa">
+      <thead><tr><th>Item</th><th class="n">WPA</th><th class="n">Buys</th><th class="n">Pre-buy WP</th><th class="n">Win rate</th></tr></thead>
+      <tbody>
+        <tr><td><span class="it"><img data-i="6610" alt="">Sundered Sky</span></td><td class="n up">+0.62</td><td class="n">3,412</td><td class="n">49.1%</td><td class="n">49.7%</td></tr>
+        <tr><td><span class="it"><img data-i="3071" alt="">Black Cleaver</span></td><td class="n up">+0.18</td><td class="n">2,087</td><td class="n">50.4%</td><td class="n">50.6%</td></tr>
+        <tr><td><span class="it"><img data-i="3078" alt="">Trinity Force</span></td><td class="n down">−0.41</td><td class="n">1,204</td><td class="n">51.9%</td><td class="n">51.5%</td></tr>
+      </tbody>
+    </table>
+    <p style="color:var(--fraco);font-size:12.5px;margin:10px 0 0">Illustrative numbers.</p>
+  </div>
+</div></section>
+
+<section id="riot-api"><div class="wrap">
+  <h2>How Draft Lab uses Riot data</h2>
+  <p class="sub">Statistics are aggregated: no individual player is profiled. Requests are cached and rate limited. With a production key, the key stays on Draft Lab's own server and never ships inside the app.</p>
+  <table class="api">
+    <thead><tr><th>Feature</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td>Solo/Duo statistics, builds, WPA and matchups</td><td><code>MATCH-V5</code> matches and timelines, <code>LEAGUE-V4</code> to find high-elo players</td></tr>
+      <tr><td>Leaderboards (Solo/Duo and Flex)</td><td><code>LEAGUE-V4</code>, <code>ACCOUNT-V1</code> for Riot IDs</td></tr>
+      <tr><td>Player lookup by exact Riot ID</td><td><code>ACCOUNT-V1</code>, <code>SUMMONER-V4</code>, <code>LEAGUE-V4</code>, <code>MATCH-V5</code></td></tr>
+      <tr><td>Champion select assistant, rune and item import</td><td>League Client, on the player's own computer</td></tr>
+      <tr><td>Fearless Draft Live</td><td>Public esports schedule and game data (no Riot API key)</td></tr>
+      <tr><td>Champion, item and rune data and art</td><td>Data Dragon</td></tr>
+    </tbody>
+  </table>
+</div></section>
+
+<section id="privacy"><div class="wrap">
+  <h2>Fair play and privacy</h2>
+  <div class="policy">
+    <ul class="list">
+      <li><div><b>No in-game advantages.</b> <span>Draft Lab works before the game: champion select and statistics. It doesn't show information during a match that the game itself doesn't show.</span></div></li>
+      <li><div><b>Enemies stay anonymous.</b> <span>Only the champions picked by the enemy team are used, never who they are.</span></div></li>
+      <li><div><b>You decide.</b> <span>Suggestions always offer several options with reasons. Nothing is picked, banned or imported without a click from you.</span></div></li>
+    </ul>
+    <ul class="list">
+      <li><div><b>Free.</b> <span>No betting, no gambling, no ads in the game or in the client.</span></div></li>
+      <li><div><b>Your data stays with you.</b> <span>Settings and history live on your computer. Draft Lab has no accounts and sells no data.</span></div></li>
+      <li><div><b>Contact.</b> <span><a href="https://github.com/tommythec4t001/draft-lab/issues">github.com/tommythec4t001/draft-lab/issues</a></span></div></li>
+    </ul>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <p>Draft Lab isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</p>
+  <p>© 2026 Draft Lab</p>
+</div></footer>
+
+<script>
+// Ícones de campeões e itens do Data Dragon (o CDN público da Riot)
+const V = '16.22.1', DD = 'https://ddragon.leagueoflegends.com/cdn/' + V + '/img/';
+for (const el of document.querySelectorAll('.icons[data-c]')) {
+  el.innerHTML = el.dataset.c.split(' ').map((c) => `<img src="${DD}champion/${c}.png" alt="${c}" title="${c}">`).join('');
+}
+for (const img of document.querySelectorAll('img[data-i]')) img.src = `${DD}item/${img.dataset.i}.png`;
+</script>
+</body>
+</html>

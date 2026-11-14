@@ -1,0 +1,61 @@
+{
+  "name": "draft-lab",
+  "productName": "Draft Lab",
+  "version": "0.20.0",
+  "description": "Acompanha o champ select do cliente do LoL ao vivo e sugere picks e bans com fichas e estatísticas de soloQ",
+  "author": "Enzo Di Giacomo Marquezini Neves",
+  "type": "module",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "node server.js",
+    "app": "electron .",
+    "dist": "electron-builder --win nsis",
+    "test": "node test/run.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "build": {
+    "appId": "com.draftlab.app",
+    "productName": "Draft Lab",
+    "copyright": "Draft Lab",
+    "asar": false,
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "package.json",
+      "server.js",
+      "lib/**",
+      "public/**",
+      "electron/**",
+      "pessoal/**",
+      "data/profiles.json",
+      "data/roles.json",
+      "data/adc.json",
+      "data/suporte.json",
+      "data/topo.json",
+      "data/meio.json",
+      "data/selva.json",
+      "data/lcu-gravacoes/exemplo_torneio.jsonl"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "electron/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Draft Lab",
+      "runAfterFinish": true
+    }
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "45.3.2",
+    "electron-builder": "26.18.0"
+  }
+}

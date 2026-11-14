@@ -1,0 +1,37 @@
+{
+  "_info": {
+    "o_que_e": "Counterpicks da selva por classe, no mesmo esquema do topo.json e do meio.json. Base: vídeo de arquétipos da selva.",
+    "classes": "Classe de cada caçador. Um campeão fica em uma classe só. Todos passam a valer como opção de selva no app.",
+    "grupos": "Grupos extras usados nas exceções. Um campeão pode estar em vários grupos.",
+    "tabela": "Diferente das outras rotas: aqui a tabela vem das win rates reais do vídeo (Mestre+), não da teoria do começo de jogo. Cada ponto é 1% de vitória acima de 50% (ex.: Tank contra Skirmisher, 52,2% → 2), limitado a ±2. Por isso o Tank sai na frente de quase todos, mesmo perdendo o começo do jogo.",
+    "excecoes": "Campeão contra campeão, grupo ou classe. Vale antes da tabela e também ao contrário.",
+    "notas": "Observação mostrada nos motivos da sugestão (a teoria do começo de jogo de cada classe)."
+  },
+  "classes": {
+    "High Tempo": ["Lee Sin", "Jarvan IV", "Vi", "Elise", "Nidalee", "Nocturne", "Diana", "Ivern", "Darius"],
+    "Farmer": ["Master Yi", "Kindred", "Bel'Veth", "Karthus", "Lillia", "Kayn", "Fiddlesticks"],
+    "Skirmisher": ["Viego", "Graves", "Xin Zhao", "Wukong", "Hecarim", "Sylas", "Briar", "Naafiri", "Shyvana", "Udyr", "Warwick", "Rek'Sai"],
+    "Tank": ["Cho'Gath", "Zac", "Nunu", "Skarner", "Sejuani", "Amumu", "Rammus"],
+    "Assassino": ["Talon", "Kha'Zix", "Qiyana", "Shaco", "Rengar", "Evelynn", "Ekko", "Quinn", "Zed"]
+  },
+  "grupos": {},
+  "tabela": {
+    "High Tempo": { "High Tempo": 0, "Farmer": -1.4, "Skirmisher": 0.1, "Tank": -1.5, "Assassino": 0.1 },
+    "Farmer": { "High Tempo": 1.4, "Farmer": 0, "Skirmisher": 0.5, "Tank": -0.7, "Assassino": 0.4 },
+    "Skirmisher": { "High Tempo": -0.1, "Farmer": -0.5, "Skirmisher": 0, "Tank": -2, "Assassino": 0.4 },
+    "Tank": { "High Tempo": 1.5, "Farmer": 0.7, "Skirmisher": 2, "Tank": 0, "Assassino": 2 },
+    "Assassino": { "High Tempo": -0.1, "Farmer": -0.4, "Skirmisher": -0.4, "Tank": -2, "Assassino": 0 }
+  },
+  "excecoes": [
+    { "campeao": "Master Yi", "contra": "Rengar", "valor": 2 },
+    { "campeao": "Hecarim", "contra": "Qiyana", "valor": 2 },
+    { "campeao": "Zac", "contra": "Lee Sin", "valor": 2 }
+  ],
+  "notas": {
+    "High Tempo": "forte no começo: ganha o ritmo de Farmers e Tanks com ganks garantidos",
+    "Farmer": "fraco no começo; fica forte com 2 a 3 itens",
+    "Skirmisher": "ganha as brigas 1v1, 2v2 e 3v3 no rio",
+    "Tank": "tem impacto mesmo atrás em ouro; a melhor classe jogando de trás",
+    "Assassino": "tudo ou nada: precisa ficar forte para matar o carry"
+  }
+}

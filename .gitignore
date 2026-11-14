@@ -1,0 +1,22 @@
+# Dependências e builds
+node_modules/
+dist/
+
+# Recursos pessoais (painel do Tab): só no computador do Enzo
+pessoal/
+
+# Dados de cada usuário: chave da Riot, cache, coleta, histórico, gravações e registros
+data/config.json
+data/cache/
+data/soloq/
+data/partidas.json
+data/lol-config-backup.json
+data/lcu-gravacoes/*
+!data/lcu-gravacoes/exemplo_torneio.jsonl
+data/*.log
+*.log
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini

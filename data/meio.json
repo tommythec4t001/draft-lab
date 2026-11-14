@@ -1,0 +1,39 @@
+{
+  "_info": {
+    "o_que_e": "Counterpicks do meio por classe, no mesmo esquema do topo.json. Base: vídeo de arquétipos do meio (do maior para o menor alcance: Mago de Artilharia, Mago de Controle, Mago de Batalha, Skirmisher, Assassino).",
+    "classes": "Classe de cada mid laner. Um campeão fica em uma classe só. Todos passam a valer como opção de meio no app.",
+    "grupos": "Grupos extras usados nas exceções. Um campeão pode estar em vários grupos.",
+    "tabela": "Como a classe da linha se sai contra a classe da coluna. 2 = ganha, 0 = equilibrado, -2 = perde. Cada classe ganha de duas e perde para duas, em círculo.",
+    "excecoes": "Campeão contra campeão, grupo ou classe. Vale antes da tabela e também ao contrário.",
+    "notas": "Observação mostrada nos motivos da sugestão."
+  },
+  "classes": {
+    "Mago de Artilharia": ["Xerath", "Lux", "Vel'Koz", "Ziggs", "Mel"],
+    "Mago de Controle": ["Syndra", "Orianna", "Viktor", "Azir", "Ahri", "Anivia", "Aurelion Sol", "Hwei", "Malzahar", "Taliyah", "Veigar", "Annie", "Aurora", "Vex", "Zoe"],
+    "Mago de Batalha": ["Ryze", "Cassiopeia", "Vladimir", "Swain", "Kassadin", "Lissandra", "Twisted Fate", "Galio"],
+    "Skirmisher": ["Yone", "Yasuo", "Irelia", "Sylas", "Ekko", "Akshan"],
+    "Assassino": ["Zed", "Fizz", "LeBlanc", "Locke", "Akali", "Diana", "Katarina"]
+  },
+  "grupos": {},
+  "tabela": {
+    "Mago de Artilharia": { "Mago de Artilharia": 0, "Mago de Controle": 2, "Mago de Batalha": 2, "Skirmisher": -2, "Assassino": -2 },
+    "Mago de Controle": { "Mago de Artilharia": -2, "Mago de Controle": 0, "Mago de Batalha": 2, "Skirmisher": 2, "Assassino": -2 },
+    "Mago de Batalha": { "Mago de Artilharia": -2, "Mago de Controle": -2, "Mago de Batalha": 0, "Skirmisher": 2, "Assassino": 2 },
+    "Skirmisher": { "Mago de Artilharia": 2, "Mago de Controle": -2, "Mago de Batalha": -2, "Skirmisher": 0, "Assassino": 2 },
+    "Assassino": { "Mago de Artilharia": 2, "Mago de Controle": 2, "Mago de Batalha": -2, "Skirmisher": -2, "Assassino": 0 }
+  },
+  "excecoes": [
+    { "campeao": "Vex", "contra": "Assassino", "valor": 2 },
+    { "campeao": "Lissandra", "contra": "Assassino", "valor": 2 },
+    { "campeao": "Malzahar", "contra": "Assassino", "valor": 2 },
+    { "campeao": "Annie", "contra": "Assassino", "valor": 2 },
+    { "campeao": "Vladimir", "contra": "Mago de Artilharia", "valor": 0 }
+  ],
+  "notas": {
+    "Mago de Artilharia": "muito vulnerável a quem fecha a distância",
+    "Mago de Controle": "depende de um feitiço defensivo; sem ele, fica vulnerável",
+    "Mago de Batalha": "fraco no começo, cresce com itens e níveis",
+    "Skirmisher": "sofre com quem interrompe o avanço e se afasta",
+    "Assassino": "tudo ou nada: cresce muito se conseguir impacto no mapa"
+  }
+}

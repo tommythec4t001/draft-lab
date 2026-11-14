@@ -1,0 +1,205 @@
+{
+  "_info": {
+    "o_que_e": "Counterpicks do topo por classe, no mesmo esquema do suporte.json. Base: vídeo de arquétipos do topo (Juggernaut, Bruiser/Diver, Duelista/Skirmisher, Tank, Ranged).",
+    "classes": "Classe de cada top laner. Um campeão fica em uma classe só. Todos passam a valer como opção de topo no app.",
+    "grupos": "Grupos extras usados nas exceções. Um campeão pode estar em vários grupos.",
+    "tabela": "Como a classe da linha se sai contra a classe da coluna. No topo a diferença entre classes é pequena (o vídeo mostra win rates quase iguais no Mestre+), por isso a tabela usa 1.5 e as exceções de campeão usam 2.",
+    "excecoes": "Campeão contra campeão, grupo ou classe. Vale antes da tabela e também ao contrário.",
+    "notas": "Observação mostrada nos motivos da sugestão."
+  },
+  "classes": {
+    "Juggernaut": [
+      "Darius",
+      "Garen",
+      "Mordekaiser",
+      "Nasus",
+      "Illaoi",
+      "Sett",
+      "Dr. Mundo",
+      "Singed",
+      "Tahm Kench",
+      "Trundle",
+      "Volibear",
+      "Yorick"
+    ],
+    "Bruiser": [
+      "Renekton",
+      "Pantheon",
+      "Olaf",
+      "Aatrox",
+      "Ambessa",
+      "Kled",
+      "Urgot"
+    ],
+    "Duelista": [
+      "Fiora",
+      "Camille",
+      "Jax",
+      "Irelia",
+      "Yone",
+      "Tryndamere",
+      "Gwen",
+      "Riven",
+      "Yasuo",
+      "Zaahen"
+    ],
+    "Tank": [
+      "Malphite",
+      "Ornn",
+      "Shen",
+      "K'Sante",
+      "Cho'Gath",
+      "Sion"
+    ],
+    "Ranged": [
+      "Gnar",
+      "Jayce",
+      "Teemo",
+      "Kayle",
+      "Kennen",
+      "Rumble",
+      "Gangplank",
+      "Vayne",
+      "Varus",
+      "Gragas",
+      "Quinn"
+    ]
+  },
+  "grupos": {},
+  "tabela": {
+    "Juggernaut": {
+      "Juggernaut": 0,
+      "Bruiser": 0,
+      "Duelista": 0,
+      "Tank": 1.5,
+      "Ranged": -1.5
+    },
+    "Bruiser": {
+      "Juggernaut": 0,
+      "Bruiser": 0,
+      "Duelista": 0,
+      "Tank": -1.5,
+      "Ranged": 1.5
+    },
+    "Duelista": {
+      "Juggernaut": 0,
+      "Bruiser": 0,
+      "Duelista": 0,
+      "Tank": 1.5,
+      "Ranged": 0
+    },
+    "Tank": {
+      "Juggernaut": -1.5,
+      "Bruiser": 1.5,
+      "Duelista": -1.5,
+      "Tank": 0,
+      "Ranged": 1.5
+    },
+    "Ranged": {
+      "Juggernaut": 1.5,
+      "Bruiser": -1.5,
+      "Duelista": 0,
+      "Tank": -1.5,
+      "Ranged": 0
+    }
+  },
+  "excecoes": [
+    {
+      "campeao": "Darius",
+      "contra": "Renekton",
+      "valor": 1
+    },
+    {
+      "campeao": "Nasus",
+      "contra": "Jayce",
+      "valor": 2
+    },
+    {
+      "campeao": "Garen",
+      "contra": "Jax",
+      "valor": 2
+    },
+    {
+      "campeao": "Sett",
+      "contra": "Jax",
+      "valor": -2
+    },
+    {
+      "campeao": "Renekton",
+      "contra": "Sett",
+      "valor": 2
+    },
+    {
+      "campeao": "Renekton",
+      "contra": "Gangplank",
+      "valor": 0
+    },
+    {
+      "campeao": "Renekton",
+      "contra": "Kennen",
+      "valor": 0
+    },
+    {
+      "campeao": "Pantheon",
+      "contra": "Jayce",
+      "valor": 2
+    },
+    {
+      "campeao": "Irelia",
+      "contra": "Jayce",
+      "valor": 2
+    },
+    {
+      "campeao": "Yone",
+      "contra": "Jayce",
+      "valor": -2
+    },
+    {
+      "campeao": "Shen",
+      "contra": "Jayce",
+      "valor": 2
+    },
+    {
+      "campeao": "Fiora",
+      "contra": "K'Sante",
+      "valor": 2
+    },
+    {
+      "campeao": "Irelia",
+      "contra": "Malphite",
+      "valor": -2
+    },
+    {
+      "campeao": "Irelia",
+      "contra": "Shen",
+      "valor": -2
+    },
+    {
+      "campeao": "Shen",
+      "contra": "Ambessa",
+      "valor": 2
+    },
+    {
+      "campeao": "K'Sante",
+      "contra": "Kayle",
+      "valor": -2
+    },
+    {
+      "campeao": "Gnar",
+      "contra": "Ambessa",
+      "valor": 2
+    },
+    {
+      "campeao": "Teemo",
+      "contra": "Ambessa",
+      "valor": 2
+    }
+  ],
+  "notas": {
+    "Juggernaut": "precisa conseguir chegar perto",
+    "Bruiser": "precisa ter como fechar a distância",
+    "Duelista": "confira se o kit dele vence tanques",
+    "Tank": "perde a rota com frequência, mas tem valor garantido no fim do jogo",
+    "Ranged": "precisa converter a vantagem da rota em vitória"
+  }
+}

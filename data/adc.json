@@ -1,0 +1,35 @@
+{
+  "_info": {
+    "o_que_e": "Counterpicks da rota de ADC por classe. Edite à vontade: nomes de campeões, classes, a tabela e as prioridades.",
+    "classes": "Classe de cada ADC. Um campeão fica em uma classe só. Os da classe Mage Bot também passam a valer como opção de ADC no app.",
+    "tabela": "Como a classe da linha se sai contra a classe da coluna. 2 = ganha, 1 = leve vantagem, 0.5 = vai razoavelmente bem, 0 = equilibrado ou depende dos campeões, -1 = leve desvantagem, -2 = perde.",
+    "prioridades": "Exceções dentro de um confronto 'Minha classe x Classe inimiga'. 'priorize' sobe o campeão para o topo da classe e conta como bom contra o ADC inimigo, mesmo quando a classe perde. 'evite' piora ainda mais o campeão nesse confronto.",
+    "dano": "Quando o time ainda não escolheu o ADC: com pouco dano físico, os ADCs de dano AD ganham prioridade; com o time quase todo físico, os Mage Bots ganham prioridade."
+  },
+  "classes": {
+    "Lane Bully": ["Caitlyn", "Draven", "Kalista", "Lucian", "Miss Fortune", "Samira"],
+    "Skirm": ["Kai'Sa", "Tristana", "Xayah", "Yunara", "Zeri"],
+    "Poke": ["Ashe", "Corki", "Ezreal", "Jhin", "Varus", "Sivir"],
+    "Scaler": ["Aphelios", "Jinx", "Kog'Maw", "Smolder", "Twitch", "Vayne"],
+    "Mage Bot": ["Ziggs", "Karthus", "Aurelion Sol", "Vel'Koz", "Seraphine", "Hwei", "Viktor"]
+  },
+  "classe_magica": "Mage Bot",
+  "tabela": {
+    "Lane Bully": { "Lane Bully": 0, "Skirm": 0.5, "Poke": -2, "Scaler": 2 },
+    "Skirm": { "Lane Bully": -1, "Skirm": 0, "Poke": 2, "Scaler": 0.5 },
+    "Poke": { "Lane Bully": 0.5, "Skirm": -2, "Poke": 0, "Scaler": -1 },
+    "Scaler": { "Lane Bully": -2, "Skirm": 0.5, "Poke": 1, "Scaler": 0 },
+    "Mage Bot": { "Lane Bully": 0, "Skirm": 0, "Poke": 0, "Scaler": 0 }
+  },
+  "prioridades": {
+    "Scaler x Scaler": { "priorize": ["Twitch"] },
+    "Scaler x Lane Bully": { "priorize": ["Jinx"] },
+    "Lane Bully x Poke": { "priorize": ["Kalista"], "evite": ["Caitlyn"] },
+    "Poke x Lane Bully": { "priorize": ["Jhin"] },
+    "Poke x Poke": { "priorize": ["Ezreal"] },
+    "Skirm x Poke": { "priorize": ["Kai'Sa"] },
+    "Skirm x Skirm": { "priorize": ["Xayah"] },
+    "Mage Bot x Lane Bully": { "priorize": ["Ziggs"] }
+  },
+  "dano": { "pouco_fisico": 40, "muito_fisico": 70 }
+}

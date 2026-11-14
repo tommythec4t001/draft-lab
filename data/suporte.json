@@ -1,0 +1,51 @@
+{
+  "_info": {
+    "o_que_e": "Counterpicks da rota de suporte por classe, no mesmo esquema do adc.json. Edite à vontade.",
+    "classes": "Classe de cada suporte. Um campeão fica em uma classe só. Todos passam a valer como opção de suporte no app.",
+    "grupos": "Grupos extras usados nas exceções (ex.: Tanques). Um campeão pode estar em vários grupos.",
+    "tabela": "Como a classe da linha se sai contra a classe da coluna. 2 = ganha, 1 = leve vantagem, 0 = equilibrado ou depende, -1 = leve desvantagem, -2 = perde.",
+    "excecoes": "Campeão contra campeão, grupo ou classe. Vale antes da tabela e também ao contrário (Braum bom contra Nautilus = Nautilus ruim contra Braum).",
+    "sinergia_adc": "Classes de ADC (do adc.json) que combinam com cada classe de suporte.",
+    "duplas_ruins": "Pares de campeões que combinam mal no mesmo time.",
+    "notas": "Observação mostrada nos motivos da sugestão."
+  },
+  "classes": {
+    "Enchanter": ["Lulu", "Nami", "Milio", "Janna", "Sona", "Soraka", "Renata Glasc", "Karma"],
+    "Engage": ["Leona", "Alistar", "Rell", "Rakan", "Nautilus", "Maokai"],
+    "Warden": ["Braum", "Poppy", "Taric", "Tahm Kench", "Shen"],
+    "Hook": ["Blitzcrank", "Thresh", "Pyke", "Morgana"],
+    "Mage": ["Lux", "Vel'Koz", "Xerath", "Zyra", "Brand", "Swain", "Neeko", "Seraphine", "Zilean"],
+    "Misfit": ["Senna", "Bard", "Yuumi"]
+  },
+  "grupos": {
+    "Tanques": ["Leona", "Alistar", "Rell", "Nautilus", "Maokai", "Braum", "Poppy", "Taric", "Tahm Kench", "Shen"]
+  },
+  "tabela": {
+    "Enchanter": { "Enchanter": 0, "Engage": -2, "Warden": -1, "Hook": -2, "Mage": 2, "Misfit": 2 },
+    "Engage": { "Enchanter": 2, "Engage": 0, "Warden": 0, "Hook": 0, "Mage": 0, "Misfit": 0 },
+    "Warden": { "Enchanter": 1, "Engage": 0, "Warden": 0, "Hook": 0, "Mage": 0, "Misfit": 0 },
+    "Hook": { "Enchanter": 2, "Engage": 0, "Warden": 0, "Hook": 0, "Mage": 0, "Misfit": 2 },
+    "Mage": { "Enchanter": -2, "Engage": 0, "Warden": 0, "Hook": 0, "Mage": 0, "Misfit": 0 },
+    "Misfit": { "Enchanter": -2, "Engage": 0, "Warden": 0, "Hook": -2, "Mage": 0, "Misfit": 0 }
+  },
+  "excecoes": [
+    { "campeao": "Nautilus", "contra": "Engage", "valor": -2 },
+    { "campeao": "Braum", "contra": "Nautilus", "valor": 2 },
+    { "campeao": "Braum", "contra": "Rell", "valor": -2 },
+    { "campeao": "Janna", "contra": "Engage", "valor": 2 },
+    { "campeao": "Janna", "contra": "Hook", "valor": -2 },
+    { "campeao": "Pyke", "contra": "Mage", "valor": 2 },
+    { "campeao": "Pyke", "contra": "Tanques", "valor": -2 },
+    { "campeao": "Yuumi", "contra": "Mage", "valor": 2 },
+    { "campeao": "Yuumi", "contra": "Hook", "valor": -2 },
+    { "campeao": "Yuumi", "contra": "Engage", "valor": -2 },
+    { "campeao": "Senna", "contra": "Blitzcrank", "valor": -3 },
+    { "campeao": "Bard", "contra": "Enchanter", "valor": -2 }
+  ],
+  "sinergia_adc": {
+    "Engage": ["Mage Bot", "Skirm"],
+    "Warden": ["Scaler"]
+  },
+  "duplas_ruins": [["Ezreal", "Yuumi"]],
+  "notas": { "Mage": "forte no começo do jogo" }
+}
