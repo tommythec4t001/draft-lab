@@ -87,6 +87,8 @@ h2{font:700 clamp(30px,4vw,42px)/1.1 var(--display);font-stretch:condensed;margi
 .policy{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 28px}
 footer{border-top:1px solid var(--linha);padding:36px 0 48px;color:var(--fraco);font-size:13.5px}
 footer p{max-width:900px}
+.flinks{display:flex;flex-wrap:wrap;gap:8px 22px;margin:0 0 14px;font-size:14px}
+.flinks a{color:var(--apagado);text-decoration:none}.flinks a:hover{color:var(--creme)}
 @media (max-width:900px){.grid2{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.policy{grid-template-columns:1fr}nav.links{display:none}}
 </style>
 </head>
@@ -194,13 +196,14 @@ footer p{max-width:900px}
     <ul class="list">
       <li><div><b>Free.</b> <span>No betting, no gambling, no ads in the game or in the client.</span></div></li>
       <li><div><b>Your data stays with you.</b> <span>Settings and history live on your computer. Draft Lab has no accounts and sells no data.</span></div></li>
-      <li><div><b>Contact.</b> <span><a href="https://github.com/tommythec4t001/draft-lab/issues">github.com/tommythec4t001/draft-lab/issues</a></span></div></li>
+      <li><div><b>The details.</b> <span>Read the <a href="privacy.html">Privacy Policy</a> and the <a href="terms.html">Terms of Service</a>. Questions: <a href="https://github.com/tommythec4t001/draft-lab/issues">GitHub issues</a>.</span></div></li>
     </ul>
   </div>
 </div></section>
 </main>
 
 <footer><div class="wrap">
+  <nav class="flinks"><a href="terms.html">Terms of Service</a><a href="privacy.html">Privacy Policy</a><a href="https://github.com/tommythec4t001/draft-lab">Source code</a><a href="https://github.com/tommythec4t001/draft-lab/issues">Contact</a></nav>
   <p>Draft Lab isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</p>
   <p>© 2026 Draft Lab</p>
 </div></footer>

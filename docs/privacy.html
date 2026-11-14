@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — Draft Lab</title>
+<meta name="description" content="What data Draft Lab uses, where it is kept and who it is shared with.">
+<link rel="stylesheet" href="legal.css">
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="logo" href="./"><i><b></b><b></b><b></b></i>Draft Lab</a>
+  <nav class="links"><a href="./">Home</a><a href="./#riot-api">Riot API usage</a><a href="terms.html">Terms of Service</a><a class="on" href="privacy.html">Privacy Policy</a></nav>
+</div></header>
+
+<main class="wrap doc">
+  <aside class="toc">
+    <b>On this page</b>
+    <ol>
+      <li><a href="#who">Who we are</a></li>
+      <li><a href="#on-your-computer">Data on your computer</a></li>
+      <li><a href="#client">The League client</a></li>
+      <li><a href="#services">Services the app connects to</a></li>
+      <li><a href="#server">The Draft Lab server</a></li>
+      <li><a href="#website">This website</a></li>
+      <li><a href="#other-players">Other players' data</a></li>
+      <li><a href="#dont">What we don't do</a></li>
+      <li><a href="#rights">Your rights</a></li>
+      <li><a href="#security">Security</a></li>
+      <li><a href="#children">Children</a></li>
+      <li><a href="#changes">Changes</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ol>
+  </aside>
+
+  <article>
+    <span class="kicker">Legal</span>
+    <h1>Privacy Policy</h1>
+    <p class="date">Effective November 14, 2026</p>
+
+    <div class="summary">
+      <h2>The short version</h2>
+      <ul>
+        <li><b>No accounts.</b> You don't sign up for Draft Lab.</li>
+        <li><b>Your data stays on your computer.</b> Settings and match history are saved locally, and you can delete them at any time.</li>
+        <li><b>No ads, no analytics, no tracking.</b> We don't sell or share data with advertisers.</li>
+        <li><b>Enemy players stay anonymous.</b> Draft Lab only uses the champions they pick.</li>
+        <li><b>The Riot API key is never shipped in the app.</b> With a production key, Riot API requests go through a Draft Lab server that keeps as little as possible.</li>
+      </ul>
+    </div>
+
+    <h2 id="who">1. Who we are</h2>
+    <p>Draft Lab is a free, independent League of Legends app maintained by an independent developer in Brazil ("we", "us"). This policy explains what data the Draft Lab desktop app, this website and the Draft Lab server use. For questions, see <a href="#contact">Contact</a>.</p>
+
+    <h2 id="on-your-computer">2. Data on your computer</h2>
+    <p>Draft Lab saves the following in its data folder on your computer. It isn't sent to us.</p>
+    <table>
+      <thead><tr><th>Data</th><th>What it is used for</th></tr></thead>
+      <tbody>
+        <tr><td>Settings</td><td>Your region, rank filter, display options and the Riot ID you enter, plus your account's Riot ID code (PUUID) so your matches can be found.</td></tr>
+        <tr><td>Your match history</td><td>A summary of your recent matches. For you: what the app shows (champion, KDA, items and so on). For the other nine players: only champion, team, role and result, with no names or account IDs.</td></tr>
+        <tr><td>Aggregated statistics</td><td>Win rates, matchups, runes and items counted across many ranked Solo/Duo matches.</td></tr>
+        <tr><td>Recent high-elo matches</td><td>Up to 60 recent Diamond+ matches per champion and role, as returned by the Riot API: the player's public Riot ID, rank, KDA, opponent champion and result. These appear on champion pages.</td></tr>
+        <tr><td>Caches</td><td>Copies of public data (champions, items, esports schedules, competitive priority) so the app loads faster and makes fewer requests.</td></tr>
+        <tr><td>Game settings backup</td><td>Your previous graphics settings, saved before the "+FPS" preset changes them, so you can restore them.</td></tr>
+      </tbody>
+    </table>
+    <p>Uninstalling Draft Lab, or deleting its data folder, removes all of this.</p>
+
+    <h2 id="client">3. The League client</h2>
+    <p>When the League client is open, Draft Lab connects to it on your own computer to read your current summoner, your champion select, your rune pages, your item sets and your game settings. This connection never leaves your computer. In champion select, teammates' names are only shown when the client itself shows them, and enemy players are never identified.</p>
+
+    <h2 id="services">4. Services the app connects to</h2>
+    <p>To work, the app requests data from these services. Like any website, each one receives your IP address with the request and handles it under its own privacy policy.</p>
+    <table>
+      <thead><tr><th>Service</th><th>What is requested</th></tr></thead>
+      <tbody>
+        <tr><td>Riot Games API</td><td>Leaderboards, player lookups for Riot IDs you search, ranked matches and timelines for statistics, and your own match history. See the <a href="https://www.riotgames.com/en/privacy-notice">Riot Games Privacy Notice</a>.</td></tr>
+        <tr><td>Data Dragon (Riot Games)</td><td>Champion, item and rune data and images.</td></tr>
+        <tr><td>League of Legends esports data</td><td>Public schedules, picks and bans and live game status for Fearless Draft Live.</td></tr>
+        <tr><td>gol.gg</td><td>Public pick and ban statistics from professional matches, used for the competitive priority tier list.</td></tr>
+        <tr><td>GitHub</td><td>Hosts this website and the app downloads. See the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub Privacy Statement</a>.</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="server">5. The Draft Lab server</h2>
+    <p>Draft Lab never ships a Riot API key inside the app. Once Draft Lab has a production key, the app sends its Riot API requests to a server we run, which forwards them to Riot. That server:</p>
+    <ul>
+      <li>receives the request itself (for example a Riot ID you search, a region or a match ID) and your IP address;</li>
+      <li>uses them only to answer the request, cache public responses and apply rate limits so the service stays fair for everyone;</li>
+      <li>keeps cached responses only as long as they are useful, and keeps request logs, including IP addresses, for no more than 30 days;</li>
+      <li>doesn't create accounts or profiles, doesn't combine requests to track people, and doesn't share data with anyone except Riot Games, which receives the request needed to answer it.</li>
+    </ul>
+    <div class="note"><p>We will update this section if the server's behavior changes.</p></div>
+
+    <h2 id="website">6. This website</h2>
+    <p>This website is hosted on GitHub Pages. It has no cookies, no analytics and no ads. GitHub may log visitors' IP addresses for security, as described in its privacy statement. Champion and item images on the home page load from Riot's Data Dragon.</p>
+
+    <h2 id="other-players">7. Other players' data</h2>
+    <p>Leaderboards, player lookups and recent high-elo matches show public information returned by the Riot API, such as Riot IDs, ranks and match results. Draft Lab shows this information to help players study the game, and in line with the Riot Developer Policies. It doesn't attach this information to enemy players in your champion select, and it doesn't build profiles of players.</p>
+    <p>If you'd like your Riot ID removed from data held on a Draft Lab server, contact us and we'll remove it. Data saved inside the app stays on each user's own computer and is replaced as new matches come in.</p>
+
+    <h2 id="dont">8. What we don't do</h2>
+    <ul>
+      <li>We don't sell data or share it with advertisers or data brokers.</li>
+      <li>We don't show ads or use analytics or telemetry in the app.</li>
+      <li>We don't ask for your Riot account password and never sign in on your behalf.</li>
+      <li>We don't show any information during a match.</li>
+    </ul>
+
+    <h2 id="rights">9. Your rights</h2>
+    <p>Depending on where you live, laws such as Brazil's LGPD or the EU's GDPR give you rights to access, correct, delete or object to the use of your personal data. Most Draft Lab data is on your own computer, where you control it fully. For anything held on a Draft Lab server, contact us and we'll respond within 15 days.</p>
+
+    <h2 id="security">10. Security</h2>
+    <p>The app's local server only accepts connections from your own computer. Requests to Riot and other services use HTTPS. With a production key, the key stays on our server and is never sent to the app or to users.</p>
+
+    <h2 id="children">11. Children</h2>
+    <p>Draft Lab isn't directed at children under 13, or under the minimum age to have a Riot account in their country. We don't knowingly collect data from them.</p>
+
+    <h2 id="changes">12. Changes</h2>
+    <p>We may update this policy. When we do, we'll change the effective date above, and for important changes we'll also mention it in the app's release notes.</p>
+
+    <h2 id="contact">13. Contact</h2>
+    <p>Questions or requests about privacy? Open an issue at <a href="https://github.com/tommythec4t001/draft-lab/issues">github.com/tommythec4t001/draft-lab/issues</a>. Please don't post personal information in a public issue; ask for a private contact and we'll reply there.</p>
+  </article>
+</main>
+
+<footer><div class="wrap">
+  <nav class="flinks"><a href="./">Home</a><a href="terms.html">Terms of Service</a><a href="privacy.html">Privacy Policy</a><a href="https://github.com/tommythec4t001/draft-lab">Source code</a><a href="https://github.com/tommythec4t001/draft-lab/issues">Contact</a></nav>
+  <p>Draft Lab isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</p>
+  <p>© 2026 Draft Lab</p>
+</div></footer>
+</body>
+</html>
