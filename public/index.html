@@ -29,6 +29,7 @@
   <nav class="tabs" aria-label="Seções">
     <button class="tab" data-view="live" aria-current="page">Draft ao vivo</button>
     <button class="tab" data-view="pro">Fearless ao vivo</button>
+    <button class="tab" data-view="inhouse">InHouse</button>
     <button class="tab" data-view="champs">Campeões</button>
     <button class="tab" data-view="lb">Leaderboard</button>
     <button class="tab" data-view="matches">Partidas</button>
@@ -146,6 +147,51 @@
     </div>
   </div>
 
+  <div class="view" id="view-inhouse" hidden>
+    <div class="vhead"><h1 class="page-title">InHouse</h1><span class="ih-serv" id="ihServInfo" hidden>Servidor: <b id="ihServTxt"></b> <button class="linkbtn" id="ihTrocarServ" type="button">trocar</button></span></div>
+    <p class="note ih-intro">Draft alternado de torneio com os 10 jogadores, para partidas personalizadas: cada time recebe um link, os capitães banem e cada jogador trava o próprio campeão. Funciona no navegador de qualquer um; aqui no Draft Lab a sala vem com a análise ao lado.</p>
+    <p class="note" id="ihMsg" role="status"></p>
+
+    <section class="ih-card" id="ihServidor" hidden>
+      <h2 class="ih-h">Servidor InHouse</h2>
+      <p class="note">As salas ficam num servidor online, para os 10 jogadores se conectarem. Cole o endereço do servidor publicado (veja inhouse/LEIA-ME.md).</p>
+      <form class="ih-row" id="ihServForm"><label class="field wide" for="ihServUrl">Endereço<input id="ihServUrl" placeholder="https://draft-lab-inhouse.seu-nome.workers.dev" autocomplete="off" spellcheck="false"></label><button class="btn primary" type="submit">Salvar</button></form>
+    </section>
+
+    <div class="ih-inicio" id="ihInicio" hidden>
+      <section class="ih-card">
+        <h2 class="ih-h">Criar sala</h2>
+        <form class="ih-form" id="ihForm">
+          <label class="field" for="ihTimeA">Time 1<input id="ihTimeA" maxlength="24" placeholder="Time do capitão 1" required></label>
+          <label class="field" for="ihTimeB">Time 2<input id="ihTimeB" maxlength="24" placeholder="Time do capitão 2" required></label>
+          <label class="field" for="ihSerie">Formato<select id="ihSerie"><option value="1">MD1</option><option value="3">MD3</option><option value="5">MD5</option></select></label>
+          <label class="field" for="ihTempo">Tempo por ação<select id="ihTempo"><option value="20">20 s</option><option value="30" selected>30 s</option><option value="45">45 s</option><option value="60">60 s</option><option value="90">90 s</option></select></label>
+          <label class="check ih-cheio" id="ihLinhaFearless"><input type="checkbox" id="ihFearless" checked> Fearless: campeão escolhido num jogo fica bloqueado nos próximos jogos da série</label>
+          <label class="field ih-cheio" for="ihTitulo">Nome da partida (opcional)<input id="ihTitulo" maxlength="60" placeholder="Nome e senha da personalizada, por exemplo"></label>
+          <label class="field ih-cheio" for="ihWebhook">Webhook do Discord (opcional)<input id="ihWebhook" placeholder="https://discord.com/api/webhooks/…" autocomplete="off" spellcheck="false"></label>
+          <div class="ih-cheio"><button class="btn primary" id="ihCriar" type="submit">Criar sala</button></div>
+        </form>
+        <div class="ih-criada" id="ihCriada" hidden>
+          <div id="ihLinks"></div>
+          <button class="btn primary" id="ihCopiarMsg" type="button">Copiar mensagem para o Discord</button>
+        </div>
+      </section>
+      <section class="ih-card">
+        <h2 class="ih-h">Entrar numa sala</h2>
+        <p class="note">Cole o link que recebeu no Discord: o do seu time para jogar, ou o de espectador para assistir.</p>
+        <form class="ih-row" id="ihAbrirForm"><label class="field wide" for="ihLink">Link da sala<input id="ihLink" placeholder="https://…/sala/…" autocomplete="off" spellcheck="false"></label><button class="btn primary" type="submit">Abrir</button></form>
+      </section>
+    </div>
+
+    <section class="ih-sala" id="ihSala" hidden>
+      <div class="ih-barra"><span class="note" id="ihSalaInfo"></span><a class="btn small" id="ihNavegador" target="_blank" rel="noopener">Abrir no navegador</a><button class="btn small" id="ihFechar" type="button">Fechar sala</button></div>
+      <div class="ih-grid">
+        <iframe id="ihFrame" title="Sala de draft InHouse" referrerpolicy="no-referrer"></iframe>
+        <aside class="ih-analise" id="ihAnalise" aria-live="polite"></aside>
+      </div>
+    </section>
+  </div>
+
   <div class="view" id="view-settings" hidden>
     <h1 class="page-title">Configurações</h1>
   <button class="cfg-link" id="openLolCfg" type="button">
@@ -228,6 +274,7 @@
 <script src="/you.js"></script>
 <script src="/mundo.js"></script>
 <script src="/pro.js"></script>
+<script src="/inhouse.js"></script>
 <script src="/build.js"></script>
 <script src="/lolcfg.js"></script>
 <script src="/pessoal.js"></script>

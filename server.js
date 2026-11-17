@@ -26,6 +26,7 @@ import { REGIOES, LB_REGIOES, FILAS, leaderboard, buscarJogador, campeaoDetalhe,
 import { agenda, partida, imageUrlOf, setEsportsBase } from './lib/esports.js';
 import { prioridade, tierOf, setGolggBase } from './lib/meta.js';
 import { aplicarFps, restaurar, temBackup } from './lib/lolconfig.js';
+import { urlDe, normalizarUrl, linkDeSala, criarSala } from './lib/inhouse.js';
 
 if (process.env.GOLGG_BASE) setGolggBase(process.env.GOLGG_BASE);
 if (process.env.ESPORTS_BASE) setEsportsBase(process.env.ESPORTS_BASE + '/persisted/gw', process.env.ESPORTS_BASE + '/livestats/v1');
@@ -269,8 +270,13 @@ const SECURITY = {
   'Cross-Origin-Resource-Policy': 'same-origin',
   'Cross-Origin-Opener-Policy': 'same-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
-  'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+  'Content-Security-Policy': '',
 };
+// A aba InHouse mostra a sala do servidor InHouse num quadro: só esse endereço pode aparecer em quadros.
+const CSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'";
+function permitirQuadro(origem) { SECURITY['Content-Security-Policy'] = origem ? `${CSP}; frame-src ${origem}` : CSP; }
+permitirQuadro(normalizarUrl(process.env.INHOUSE_URL) || null);
+getConfig().then((c) => permitirQuadro(urlDe(c) || null)).catch(() => {});
 const LOCAL_HOST = /^(127\.0\.0\.1|localhost|\[::1\])(?::(\d{1,5}))?$/;
 const MAX_STREAMS = 40; // telas abertas ao mesmo tempo no canal ao vivo
 let streams = 0;
@@ -494,6 +500,29 @@ async function handle(req, res) {
   if (pro && m === 'GET') {
     try { return send(res, 200, await partida(pro[1])); }
     catch (err) { return fail(res, 502, /inválido|não encontrada/.test(err.message) ? err.message : 'Não consegui falar com a API do lolesports: ' + err.message); }
+  }
+
+  // --- InHouse (salas de draft para partidas personalizadas) ---
+  if (p === '/api/inhouse' && m === 'GET') return send(res, 200, { url: urlDe(await getConfig()) });
+  if (p === '/api/inhouse' && m === 'PUT') {
+    const b = await body(req);
+    const u = normalizarUrl(b.url);
+    if (u === null) return fail(res, 400, 'Use o endereço do servidor que começa com https://, sem nada depois do domínio.');
+    const cfg = await getConfig();
+    cfg.inhouse = u;
+    await writeJSON(CONFIG, cfg);
+    permitirQuadro(urlDe(cfg) || null);
+    return send(res, 200, { url: urlDe(cfg) });
+  }
+  if (p === '/api/inhouse/criar' && m === 'POST') {
+    try { return send(res, 201, await criarSala(urlDe(await getConfig()), await body(req))); }
+    catch (err) { return fail(res, 502, err.message); }
+  }
+  if (p === '/api/inhouse/abrir' && m === 'POST') {
+    const base = urlDe(await getConfig());
+    const link = linkDeSala(base, (await body(req)).link);
+    if (!link) return fail(res, 400, base ? `Cole um link de sala do servidor ${base}.` : 'Configure o endereço do servidor InHouse primeiro.');
+    return send(res, 200, { link });
   }
 
   // --- Configs LoL ---

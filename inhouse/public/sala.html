@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sala de draft · Draft Lab InHouse</title>
+<meta name="description" content="Draft alternado de torneio em tempo real para InHouses de League of Legends, com séries Fearless.">
+<meta property="og:title" content="Draft Lab InHouse">
+<meta property="og:description" content="Picks e bans em tempo real, séries MD3 e MD5 em Fearless.">
+<link rel="stylesheet" href="/base.css">
+<link rel="stylesheet" href="/sala.css">
+</head>
+<body>
+<header class="barra">
+  <a class="logo" href="/" target="_blank" rel="noopener"><i><b></b><b></b><b></b></i>Draft Lab <small>InHouse</small></a>
+  <div class="placar" id="placar"></div>
+  <div class="quem" id="quem"></div>
+</header>
+<main class="sala" id="sala">
+  <section class="time" id="col-azul"></section>
+  <section class="centro">
+    <div class="bans" id="bans"></div>
+    <div class="fase" id="fase"></div>
+    <div id="meio"></div>
+  </section>
+  <section class="time" id="col-vermelho"></section>
+</main>
+<section class="extras" id="extras"></section>
+<div class="conexao" id="conexao">Conectando…</div>
+<div class="toast" id="toast"></div>
+<script src="/sala.js"></script>
+</body>
+</html>

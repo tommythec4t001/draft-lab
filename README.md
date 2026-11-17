@@ -112,6 +112,14 @@ A aba **Fearless ao vivo** acompanha as partidas do CBLOL, LCK, LEC, LPL, LTA, M
 - A API só mostra os campeões quando o jogo começa: a seleção de campeões e os bans não aparecem.
 - Essa API não é documentada oficialmente pela Riot, então pode mudar sem aviso. Tudo o que depende dela fica em `lib/esports.js`.
 
+## InHouse (draft com os 10 jogadores)
+
+A aba **InHouse** cria uma sala de draft alternado de torneio para partidas personalizadas. Cada time recebe um link: os capitães banem e cada jogador trava o próprio campeão, pelo navegador, sem instalar nada. Séries MD3 e MD5 com Fearless, placar, escolha de lado de quem perdeu, aviso no Discord por webhook e estatísticas por campeão de todas as InHouses.
+
+No Draft Lab, a sala abre dentro do app com as sugestões de pick e ban e a composição dos times ao lado (já sem os campeões travados pelo Fearless).
+
+As salas ficam num servidor online (pasta `inhouse/`, na Cloudflare). Como publicar e como o bot do Discord cria salas: `inhouse/LEIA-ME.md`.
+
 ## Configs LoL (+FPS)
 
 Na **engrenagem** do topo, botão **Configs LoL**. Precisa do cliente do LoL aberto (as mudanças passam por ele, como na tela de configurações do próprio cliente) e vale a partir da próxima partida. Não funciona no meio de uma partida, porque o jogo grava as configurações dele ao fechar.

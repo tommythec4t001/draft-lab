@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Draft Lab InHouse · criar sala de draft</title>
+<meta name="description" content="Crie uma sala de draft alternado de torneio para a sua InHouse de League of Legends: links por time, espectador, séries Fearless e aviso no Discord.">
+<link rel="stylesheet" href="/base.css">
+<style>
+.topo{display:flex;align-items:center;gap:20px;padding:14px 24px;border-bottom:1px solid var(--linha)}
+.topo nav{margin-left:auto;display:flex;gap:20px;font-size:14px}
+.topo nav a{color:var(--apagado);text-decoration:none}.topo nav a:hover{color:var(--creme)}
+.wrap{max-width:1080px;margin:0 auto;padding:44px 24px 64px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:36px}
+h1{font:700 clamp(34px,4.6vw,50px)/1.05 var(--display);font-stretch:condensed;margin:0 0 12px}
+h1 em{font-style:normal;color:var(--verde2)}
+.lead{color:var(--apagado);font-size:16.5px;margin:0 0 26px;max-width:560px}
+.cartao{background:var(--sup);border:1px solid var(--linha);border-radius:16px;padding:22px}
+.form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.form .cheio{grid-column:1 / -1}
+.chave{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--apagado);cursor:pointer}
+.chave input{width:18px;height:18px;accent-color:var(--verde)}
+.links{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.link{display:grid;grid-template-columns:120px minmax(0,1fr) auto;align-items:center;gap:10px;background:var(--sup2);border-radius:10px;padding:10px 12px}
+.link b{font-size:14px}.link code{font:12.5px ui-monospace,Consolas,monospace;color:var(--apagado);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.link.azul b{color:var(--azul-lado)}.link.verm b{color:var(--verm-lado)}
+.passos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;counter-reset:p}
+.passos li{display:grid;grid-template-columns:32px 1fr;gap:12px;counter-increment:p;color:var(--apagado);font-size:14.5px}
+.passos li::before{content:counter(p);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--sup2);border:1px solid var(--linha2);color:var(--creme);font-weight:700;font-size:13px}
+.passos b{color:var(--creme)}
+.lateral h2{font:700 22px var(--display);font-stretch:condensed;margin:0 0 14px}
+.lateral .cartao+.cartao{margin-top:18px}
+pre{background:var(--fundo);border:1px solid var(--linha2);border-radius:10px;padding:12px;font:12.5px/1.5 ui-monospace,Consolas,monospace;color:var(--apagado);overflow:auto;margin:10px 0 0}
+#resultado{display:none;margin-top:18px}
+#resultado.on{display:block}
+@media (max-width:900px){.wrap{grid-template-columns:1fr}.form{grid-template-columns:1fr}.link{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="topo">
+  <a class="logo" href="/"><i><b></b><b></b><b></b></i>Draft Lab <small>InHouse</small></a>
+  <nav><a href="/estatisticas">Estatísticas</a><a href="https://tommythec4t001.github.io/draft-lab/" target="_blank" rel="noopener">Draft Lab</a></nav>
+</header>
+<main class="wrap">
+  <section>
+    <h1>Draft de torneio para a sua <em>InHouse</em></h1>
+    <p class="lead">Cada time recebe o seu link. Os capitães banem, cada jogador trava o próprio campeão e o espectador acompanha tudo em tempo real. Séries MD3 e MD5 com Fearless.</p>
+    <div class="cartao">
+      <form class="form" id="form">
+        <div class="campo"><label for="timeA">Time 1</label><input id="timeA" maxlength="24" placeholder="Time do Zirigude" required></div>
+        <div class="campo"><label for="timeB">Time 2</label><input id="timeB" maxlength="24" placeholder="Time da Abelinha" required></div>
+        <div class="campo"><label for="serie">Formato</label><select id="serie"><option value="1">MD1 (um jogo)</option><option value="3">MD3 (melhor de 3)</option><option value="5">MD5 (melhor de 5)</option></select></div>
+        <div class="campo"><label for="tempo">Tempo por ação</label><select id="tempo"><option value="20">20 segundos</option><option value="30" selected>30 segundos</option><option value="45">45 segundos</option><option value="60">60 segundos</option><option value="90">90 segundos</option></select></div>
+        <label class="chave cheio" id="linha-fearless" hidden><input type="checkbox" id="fearless" checked> Fearless: campeão escolhido num jogo fica bloqueado nos próximos jogos da série</label>
+        <div class="campo cheio"><label for="titulo">Nome da partida (opcional)</label><input id="titulo" maxlength="60" placeholder="KABUM_s4_l2227 : Open Low"></div>
+        <div class="campo cheio"><label for="webhook">Webhook do Discord (opcional)</label><input id="webhook" placeholder="https://discord.com/api/webhooks/…"><small>Se preencher, o draft e o resultado de cada jogo aparecem no canal desse webhook.</small></div>
+        <div class="cheio"><button class="btn primario" type="submit" id="criar">Criar sala</button></div>
+      </form>
+      <div id="resultado">
+        <div class="links" id="links"></div>
+        <div class="linha-acoes" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+          <button class="btn primario" id="copiar-msg">Copiar mensagem para o Discord</button>
+          <a class="btn" id="abrir-esp" target="_blank" rel="noopener">Abrir como espectador</a>
+          <button class="btn" id="nova">Criar outra sala</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <aside class="lateral">
+    <div class="cartao">
+      <h2>Como funciona</h2>
+      <ol class="passos">
+        <li><span><b>Crie a sala</b> com os nomes dos times e mande a mensagem no Discord.</span></li>
+        <li><span><b>Cada jogador abre o link do seu time</b>, digita o nick e escolhe a rota. O primeiro a entrar vira capitão.</span></li>
+        <li><span><b>Os capitães confirmam</b> e o draft alternado de torneio começa: 10 bans e 10 picks com tempo.</span></li>
+        <li><span><b>Joguem a personalizada</b> e o capitão informa quem venceu. Numa série Fearless, quem perdeu escolhe o lado do próximo jogo.</span></li>
+      </ol>
+    </div>
+    <div class="cartao">
+      <h2>Para o bot do servidor</h2>
+      <p style="color:var(--apagado);margin:0;font-size:14px">O bot pode criar salas sozinho e colar os links no canal:</p>
+      <pre id="exemplo-api"></pre>
+      <p style="color:var(--apagado);margin:10px 0 0;font-size:14px">A resposta traz <code>links.A</code>, <code>links.B</code>, <code>links.espectador</code> e uma <code>mensagem</code> pronta para o Discord. O placar fica em <code>GET /api/salas/{id}</code>.</p>
+    </div>
+  </aside>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  let toastT;
+  const toast = (m, ok) => { const t = $('toast'); t.textContent = m; t.className = `toast on${ok ? ' ok' : ''}`; clearTimeout(toastT); toastT = setTimeout(() => (t.className = 'toast'), 3500); };
+  const copiar = async (txt, ok) => { try { await navigator.clipboard.writeText(txt); toast(ok, true); } catch { prompt('Copie:', txt); } };
+  $('exemplo-api').textContent = `POST ${location.origin}/api/salas\nContent-Type: application/json\n\n{\n  "timeA": "Time do Zirigude",\n  "timeB": "Time da Abelinha",\n  "serie": 3,\n  "fearless": true,\n  "tempo": 30,\n  "titulo": "KABUM_s4_l2227 : Open Low",\n  "webhook": "https://discord.com/api/webhooks/..."\n}`;
+  const serie = $('serie');
+  const ajustar = () => { $('linha-fearless').hidden = serie.value === '1'; };
+  serie.addEventListener('change', ajustar);
+  ajustar();
+  let ultima = null;
+  $('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = $('criar');
+    btn.disabled = true;
+    btn.textContent = 'Criando…';
+    try {
+      const r = await fetch('/api/salas', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ timeA: $('timeA').value, timeB: $('timeB').value, serie: Number(serie.value), fearless: $('fearless').checked, tempo: Number($('tempo').value), titulo: $('titulo').value, webhook: $('webhook').value }),
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.erro || 'Não consegui criar a sala.');
+      ultima = d;
+      const linha = (cls, rot, url) => `<div class="link ${cls}"><b>${esc(rot)}</b><code title="${esc(url)}">${esc(url)}</code><button class="btn peq" data-url="${esc(url)}">Copiar</button></div>`;
+      $('links').innerHTML = linha('azul', d.config.timeA, d.links.A) + linha('verm', d.config.timeB, d.links.B) + linha('', 'Espectador', d.links.espectador);
+      for (const b of $('links').querySelectorAll('[data-url]')) b.addEventListener('click', () => copiar(b.dataset.url, 'Link copiado.'));
+      $('abrir-esp').href = d.links.espectador;
+      $('form').hidden = true;
+      $('resultado').className = 'on';
+    } catch (err) {
+      toast(err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Criar sala';
+    }
+  });
+  $('copiar-msg').addEventListener('click', () => ultima && copiar(ultima.mensagem, 'Mensagem copiada. É só colar no Discord.'));
+  $('nova').addEventListener('click', () => { $('form').hidden = false; $('resultado').className = ''; });
+})();
+</script>
+</body>
+</html>

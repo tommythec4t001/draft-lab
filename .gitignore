@@ -20,3 +20,5 @@ data/*.log
 .DS_Store
 Thumbs.db
 desktop.ini
+inhouse/.wrangler/
+inhouse/node_modules/

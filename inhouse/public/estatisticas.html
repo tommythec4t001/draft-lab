@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estatísticas das InHouses · Draft Lab</title>
+<link rel="stylesheet" href="/base.css">
+<style>
+.topo{display:flex;align-items:center;gap:20px;padding:14px 24px;border-bottom:1px solid var(--linha)}
+.topo nav{margin-left:auto;display:flex;gap:20px;font-size:14px}
+.topo nav a{color:var(--apagado);text-decoration:none}.topo nav a:hover{color:var(--creme)}
+.wrap{max-width:1180px;margin:0 auto;padding:36px 24px 64px}
+h1{font:700 40px/1.1 var(--display);font-stretch:condensed;margin:0 0 6px}
+.sub{color:var(--apagado);margin:0 0 22px}
+.resumo{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.resumo div{background:var(--sup);border:1px solid var(--linha);border-radius:12px;padding:12px 18px;min-width:150px}
+.resumo b{display:block;font:700 28px var(--display)}
+.resumo span{color:var(--fraco);font-size:13px}
+.grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:22px;align-items:start}
+.cartao{background:var(--sup);border:1px solid var(--linha);border-radius:14px;padding:16px}
+.cartao h2{font:700 12px var(--texto);letter-spacing:.12em;text-transform:uppercase;color:var(--fraco);margin:0 0 10px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{color:var(--fraco);font-weight:600;font-size:12.5px;text-align:right;padding:8px;border-bottom:1px solid var(--linha2);cursor:pointer;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+td{padding:7px 8px;border-bottom:1px solid var(--linha);text-align:right;color:var(--apagado)}
+td:first-child{color:var(--creme)}
+.c{display:flex;align-items:center;gap:10px}.c img{width:30px;height:30px;border-radius:6px}
+.wr-bom{color:var(--verde2)}.wr-ruim{color:var(--verm-lado)}
+.jogo{padding:10px 0;border-top:1px solid var(--linha);font-size:13.5px;color:var(--apagado)}
+.jogo:first-of-type{border-top:0}
+.jogo .l{display:flex;align-items:center;gap:8px;margin-top:4px}
+.jogo .l img{width:26px;height:26px;border-radius:5px}
+.jogo .l span{min-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jogo .venc{color:var(--verde2);font-weight:700}
+.filtro{display:flex;gap:8px;margin-bottom:18px}
+.filtro button{padding:7px 12px;border-radius:999px;border:1px solid var(--linha2);background:transparent;color:var(--apagado);font-size:13px}
+.filtro button.on{color:var(--creme);border-color:var(--creme)}
+.vazio{color:var(--fraco);padding:20px 0}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="topo">
+  <a class="logo" href="/"><i><b></b><b></b><b></b></i>Draft Lab <small>InHouse</small></a>
+  <nav><a href="/">Criar sala</a></nav>
+</header>
+<main class="wrap">
+  <h1>Estatísticas das InHouses</h1>
+  <p class="sub">Picks, bans e vitórias de todos os jogos com resultado informado nas salas do Draft Lab.</p>
+  <div class="filtro" id="filtro"><button data-d="7">7 dias</button><button data-d="30" class="on">30 dias</button><button data-d="90">90 dias</button></div>
+  <div class="resumo" id="resumo"></div>
+  <div class="grid">
+    <div class="cartao"><h2>Campeões</h2><div id="tabela"></div></div>
+    <div class="cartao"><h2>Últimos jogos</h2><div id="jogos"></div></div>
+  </div>
+</main>
+<script>
+(async () => {
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const ROTA = { T: 'Topo', J: 'Selva', M: 'Meio', A: 'Atirador', S: 'Suporte' };
+  const { dd } = await (await fetch('/api/config')).json();
+  const versao = (await (await fetch(`${dd}/api/versions.json`)).json())[0];
+  const nomes = {};
+  try { const d = await (await fetch(`${dd}/cdn/${versao}/data/pt_BR/champion.json`)).json(); for (const c of Object.values(d.data)) nomes[c.id] = c.name; } catch { /* usa os ids */ }
+  const icone = (c) => `${dd}/cdn/${versao}/img/champion/${c}.png`;
+  const nome = (c) => nomes[c] || c;
+  let dados = null;
+  let ordem = 'presenca';
+
+  async function carregar(dias) {
+    dados = await (await fetch(`/api/estatisticas?dias=${dias}`)).json();
+    const jogos = await (await fetch('/api/jogos?limite=15')).json();
+    $('resumo').innerHTML = `<div><b>${dados.jogos}</b><span>jogos</span></div><div><b>${dados.jogos ? Math.round((dados.vitoriasAzul / dados.jogos) * 100) : 0}%</b><span>vitórias do lado azul</span></div><div><b>${dados.campeoes.filter((c) => c.picks).length}</b><span>campeões escolhidos</span></div>`;
+    tabela();
+    $('jogos').innerHTML = jogos.length ? jogos.map((j) => {
+      const l = (lado, cor) => `<div class="l"><span class="${j.vencedor === lado ? 'venc' : ''}" style="color:${cor}">${esc(j[lado].nome)}</span>${['T', 'J', 'M', 'A', 'S'].map((v) => j[lado].picks[v]).filter(Boolean).map((c) => `<img src="${esc(icone(c))}" title="${esc(nome(c))}" alt="">`).join('')}</div>`;
+      return `<div class="jogo">${new Date(j.fim).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}${j.titulo ? ` · ${esc(j.titulo)}` : ''}${l('azul', 'var(--azul-lado)')}${l('vermelho', 'var(--verm-lado)')}</div>`;
+    }).join('') : '<div class="vazio">Nenhum jogo registrado ainda.</div>';
+  }
+
+  function tabela() {
+    const lista = [...dados.campeoes].sort((a, b) => (b[ordem] ?? -1) - (a[ordem] ?? -1));
+    if (!lista.length) { $('tabela').innerHTML = '<div class="vazio">Nenhum jogo registrado ainda. Os jogos aparecem aqui quando o capitão informa o resultado na sala.</div>'; return; }
+    const th = (k, t) => `<th data-k="${k}">${t}${ordem === k ? ' ▾' : ''}</th>`;
+    $('tabela').innerHTML = `<table><thead><tr><th>Campeão</th>${th('presenca', 'Presença')}${th('picks', 'Picks')}${th('bans', 'Bans')}${th('winrate', 'Vitórias')}<th>Rotas</th></tr></thead><tbody>${lista.map((c) => {
+      const rotas = Object.entries(c.rotas).sort((a, b) => b[1] - a[1]).map(([v]) => ROTA[v]).join(', ');
+      const wr = c.winrate == null ? '—' : `<span class="${c.picks >= 3 ? (c.winrate >= 55 ? 'wr-bom' : c.winrate <= 45 ? 'wr-ruim' : '') : ''}">${c.winrate}%</span>`;
+      return `<tr><td><div class="c"><img src="${esc(icone(c.champ))}" alt="">${esc(nome(c.champ))}</div></td><td>${c.presenca}%</td><td>${c.picks}</td><td>${c.bans}</td><td>${wr}</td><td style="text-align:left">${esc(rotas)}</td></tr>`;
+    }).join('')}</tbody></table>`;
+    for (const h of $('tabela').querySelectorAll('[data-k]')) h.addEventListener('click', () => { ordem = h.dataset.k; tabela(); });
+  }
+
+  for (const b of $('filtro').querySelectorAll('button')) b.addEventListener('click', () => {
+    for (const x of $('filtro').querySelectorAll('button')) x.classList.toggle('on', x === b);
+    carregar(b.dataset.d);
+  });
+  carregar(30);
+})();
+</script>
+</body>
+</html>

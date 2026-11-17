@@ -64,7 +64,7 @@
     const f = focusOf(d);
     if (!f) return null;
     const mine = f.acting === d.mySide;
-    const banned = new Set([...d.bans.B, ...d.bans.R].map(nameOf).filter(Boolean));
+    const banned = new Set([...d.bans.B, ...d.bans.R, ...(d.fora || [])].map(nameOf).filter(Boolean)); // fora: travados pelo Fearless (InHouse)
     const picked = new Set([...lockedNames(d, 'B'), ...lockedNames(d, 'R')]);
     // Hovers dos aliados: ninguém quer banir ou roubar o campeão que o colega já declarou.
     const allyHovers = new Set(d.players[d.mySide].filter((p) => !p.champion && p.hover && p.cellId !== f.actor?.cellId).map((p) => nameOf(p.hover)));
@@ -468,6 +468,7 @@
       for (const x of CHAMPS) if (x.key) BYKEY[String(x.key)] = x;
       REL = E.relations(CHAMPS, c.adc, c.sup, c.top, c.mid, c.jg);
       $('patch').textContent = c.version ? 'Patch ' + c.version.split('.').slice(0, 2).join('.') : '';
+      document.dispatchEvent(new CustomEvent('dl:champs'));
     } catch { msg('Não consegui carregar a lista de campeões.', 'err'); }
   }
 
@@ -502,8 +503,22 @@
     hadSession = has;
   });
 
+  // InHouse (inhouse.js): o mesmo painel de sugestões e composição, para um draft montado a partir da sala.
+  function analiseInhouse(d, { tituloA = null, tituloE = null } = {}) {
+    const s = suggestions(d, null);
+    const mine = d.mySide, theirs = other(mine);
+    const an = (side) => E.analyze(lockedNames(d, side).map((n) => CHAMPS.find((c) => c.name === n)).filter(Boolean));
+    const A = an(mine), O = an(theirs);
+    return {
+      sug: s && { title: s.title, sub: s.sub, kind: s.kind, html: CHAMPS.length ? oneList(s.groups) : '<p class="empty-col">Lista de campeões indisponível.</p>' },
+      compA: compHTML(A, O, true, mine, tituloA),
+      compE: compHTML(O, A, false, theirs, tituloE),
+    };
+  }
+
   // O que as outras telas (you.js) usam daqui
   window.DL = {
+    analiseInhouse,
     api, esc, fmt, champ, nameOf, compHTML,
     get CHAMPS() { return CHAMPS; }, get REL() { return REL; }, get snap() { return SNAP; },
     get stats() { return { stats: STATS, lane: LANE, duo: DUO, solo: SOLO, soloStatus: SOLO_ST }; },

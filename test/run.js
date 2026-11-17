@@ -10,6 +10,9 @@ const files = readdirSync(join(ROOT, 'test')).filter((f) => f.endsWith('.test.js
   .sort((a, b) => (ORDER.indexOf(a.split('.')[0]) + 1 || 99) - (ORDER.indexOf(b.split('.')[0]) + 1 || 99))
   .map((f) => join(ROOT, 'test', f));
 const pessoal = join(ROOT, 'pessoal');
+// Servidor das salas InHouse (pasta inhouse/)
+const ih = join(ROOT, 'inhouse', 'test');
+if (existsSync(ih)) files.push(...readdirSync(ih).filter((f) => f.endsWith('.test.js')).map((f) => join(ih, f)));
 if (existsSync(pessoal)) files.push(...readdirSync(pessoal).filter((f) => f.endsWith('.test.js')).map((f) => join(pessoal, f)));
 for (const f of files) {
   const r = spawnSync(process.execPath, [f], { stdio: 'inherit', cwd: ROOT });
