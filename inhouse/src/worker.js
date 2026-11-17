@@ -15,7 +15,6 @@ const DD_PADRAO = 'https://ddragon.leagueoflegends.com';
 const LIMPEZA = 3 * 24 * 3600 * 1000; // sala parada há 3 dias é apagada
 const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type', 'access-control-allow-methods': 'GET, POST, OPTIONS' };
 const ID = /^[A-Za-z0-9]{8}$/;
-const WEBHOOK = /^https:\/\/(?:(?:canary|ptb)\.)?(?:discord|discordapp)\.com\/api\/webhooks\/\d{5,30}\/[\w-]{20,100}$/;
 
 export const json = (dados, status = 200) =>
   new Response(JSON.stringify(dados), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', ...CORS } });
@@ -64,8 +63,6 @@ async function criarSala(req, env, origem) {
   let corpo;
   try { corpo = await req.json(); } catch { return json({ erro: 'Envie os dados da sala em JSON.' }, 400); }
   corpo = corpo && typeof corpo === 'object' ? corpo : {};
-  const webhook = typeof corpo.webhook === 'string' && corpo.webhook.trim() ? corpo.webhook.trim() : null;
-  if (webhook && !WEBHOOK.test(webhook)) return json({ erro: 'O webhook precisa ser um link de webhook do Discord.' }, 400);
   let lista;
   try { lista = await campeoes(env); } catch { return json({ erro: 'Não consegui carregar a lista de campeões. Tente de novo.' }, 502); }
   const id = aleatorio(8);
@@ -73,7 +70,7 @@ async function criarSala(req, env, origem) {
   const partida = { nome: nomePartida(env.NOME_PARTIDA, n), senha: aleatorio(4) };
   const r = await sala(env, id).fetch('https://sala/criar', {
     method: 'POST',
-    body: JSON.stringify({ id, campeoes: lista.ids, nomes: lista.nomes, versao: lista.versao, dd: lista.dd, config: corpo, partida, webhook, origem }),
+    body: JSON.stringify({ id, campeoes: lista.ids, nomes: lista.nomes, versao: lista.versao, dd: lista.dd, config: corpo, partida }),
   });
   if (!r.ok) return json({ erro: 'Não consegui criar a sala.' }, 500);
   const { config } = await r.json();
@@ -121,13 +118,11 @@ export class Sala {
     this.ctx = ctx;
     this.env = env;
     this.s = null;
-    this.extra = null; // webhook e origem: ficam fora do estado do draft
   }
 
   async carregar() {
     if (!this.s) {
       this.s = (await this.ctx.storage.get('s')) || null;
-      this.extra = (await this.ctx.storage.get('extra')) || {};
     }
     return this.s;
   }
@@ -147,8 +142,6 @@ export class Sala {
       if (await this.carregar()) return json({ erro: 'Sala já existe.' }, 409);
       const d = await req.json();
       this.s = novaSala({ id: d.id, campeoes: d.campeoes, nomes: d.nomes, versao: d.versao, dd: d.dd, partida: d.partida, config: d.config });
-      this.extra = { webhook: d.webhook || null, origem: d.origem || '' };
-      await this.ctx.storage.put('extra', this.extra);
       await this.salvar();
       await this.agendar();
       return json({ ok: true, config: { timeA: this.s.times.A.nome, timeB: this.s.times.B.nome, ...this.s.config } });
@@ -231,33 +224,11 @@ export class Sala {
     await this.agendar();
   }
 
-  // Avisos: arquivo de estatísticas e canal do Discord. No Discord vai só uma linha por resultado:
-  // os picks ficam na sala (o link mostra tudo), para não encher o chat.
+  // Resultado de cada jogo vai para o arquivo de estatísticas.
   async avisar(ev) {
     if (ev.tipo !== 'resultado') return;
-    const resumo = resumoJogo(this.s, ev.jogo);
-    await arquivo(this.env).fetch('https://arquivo/jogo', { method: 'POST', body: JSON.stringify(resumo) });
-    await this.discord(linhaResultado(this.s, ev.jogo, this.extra?.origem));
+    await arquivo(this.env).fetch('https://arquivo/jogo', { method: 'POST', body: JSON.stringify(resumoJogo(this.s, ev.jogo)) });
   }
-
-  async discord(texto) {
-    const url = this.extra?.webhook;
-    if (!url || !texto) return;
-    await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ username: 'Draft Lab InHouse', content: texto, allowed_mentions: { parse: [] }, flags: 4 }) });
-  }
-}
-
-const placar = (s) => `${s.jogos.filter((j) => j.vencedor === 'A').length} x ${s.jogos.filter((j) => j.vencedor === 'B').length}`;
-
-// Uma linha por resultado, com o link da sala para quem quiser ver o draft.
-export function linhaResultado(s, n, origem) {
-  const j = s.jogos[n - 1];
-  if (!j?.vencedor) return null;
-  const v = s.times[j.vencedor].nome;
-  const p = s.times[j.vencedor === 'A' ? 'B' : 'A'].nome;
-  const link = origem ? ` · ${origem}/sala/${s.id}` : '';
-  if (s.fase === 'encerrada') return `🏆 **${v}** venceu ${s.config.serie > 1 ? `a série contra **${p}** (${placar(s)})` : `contra **${p}**`}${link}`;
-  return `**${v}** venceu o jogo ${n} contra **${p}** · placar ${placar(s)}${link}`;
 }
 
 // ---------------- Arquivo (estatísticas) ----------------

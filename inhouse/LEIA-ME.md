@@ -8,7 +8,7 @@ Salas de draft alternado de torneio para partidas personalizadas (InHouse): os 1
 - **Nome e senha da personalizada** saem prontos: o servidor gera o nome com um número que sobe 1 a cada sala, e sorteia a senha. Ninguém escolhe.
 - **Tempo por ação** (20 a 90 s). Acabou o tempo: no ban, trava o que o capitão marcou (ou fica sem ban); no pick, trava a marcação mais antiga de quem ainda não escolheu; sem marcação, o draft espera alguém travar.
 - **Séries MD3 e MD5 com Fearless**: campeão escolhido num jogo fica bloqueado nos próximos. Quem perde escolhe o lado do próximo jogo.
-- **Discord**: com um webhook, cada resultado vira uma linha no canal (sem os picks, para não encher o chat; o link da sala mostra o draft).
+- **Discord**: a sala não posta nada sozinha. Quem cria a sala recebe uma mensagem curta (times, nome, senha e link) para colar no canal.
 - **Estatísticas**: todo jogo com resultado entra nas estatísticas por campeão (`/estatisticas`). Os nicks não aparecem nas estatísticas públicas.
 - **No Draft Lab**: a aba InHouse cria a sala, abre a sala dentro do app e mostra ao lado as sugestões de pick e ban e a composição dos times.
 
@@ -33,8 +33,7 @@ O plano grátis da Cloudflare (Workers + Durable Objects com SQLite) dá conta d
 POST https://SEU-ENDERECO/api/salas
 Content-Type: application/json
 
-{ "timeA": "Time do Zirigude", "timeB": "Time da Abelinha", "serie": 3, "fearless": true, "tempo": 30,
-  "webhook": "https://discord.com/api/webhooks/..." }
+{ "timeA": "Time do Zirigude", "timeB": "Time da Abelinha", "serie": 3, "fearless": true, "tempo": 30 }
 ```
 
 Resposta (201):

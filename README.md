@@ -114,7 +114,7 @@ A aba **Fearless ao vivo** acompanha as partidas do CBLOL, LCK, LEC, LPL, LTA, M
 
 ## InHouse (draft com os 10 jogadores)
 
-A aba **InHouse** cria uma sala de draft alternado de torneio para partidas personalizadas. Um link só para todos: cada jogador escolhe o time e a rota pelo navegador, sem instalar nada; os capitães banem e cada jogador trava o próprio campeão. O nome e a senha da personalizada são gerados pelo servidor (o número sobe a cada partida). Séries MD3 e MD5 com Fearless, placar, escolha de lado de quem perdeu, resultado no Discord em uma linha e estatísticas por campeão de todas as InHouses.
+A aba **InHouse** cria uma sala de draft alternado de torneio para partidas personalizadas. Um link só para todos: cada jogador escolhe o time e a rota pelo navegador, sem instalar nada; os capitães banem e cada jogador trava o próprio campeão. O nome e a senha da personalizada são gerados pelo servidor (o número sobe a cada partida). Séries MD3 e MD5 com Fearless, placar, escolha de lado de quem perdeu, mensagem curta para colar no Discord e estatísticas por campeão de todas as InHouses.
 
 No Draft Lab, a sala abre dentro do app com as sugestões de pick e ban e a composição dos times ao lado (já sem os campeões travados pelo Fearless).
 

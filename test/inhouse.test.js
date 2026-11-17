@@ -30,8 +30,9 @@ test('criar sala repassa só os campos conhecidos e traduz os erros', async () =
   assert.equal(enviado.corpo.serie, 3);
   assert.equal('extra' in enviado.corpo, false);
   assert.equal('titulo' in enviado.corpo, false, 'o nome da partida é do servidor');
-  const ruim = async () => new Response(JSON.stringify({ erro: 'O webhook precisa ser um link de webhook do Discord.' }), { status: 400 });
-  await assert.rejects(criarSala('https://ih.dev', {}, { fetchImpl: ruim }), /webhook/);
+  assert.equal('webhook' in enviado.corpo, false);
+  const ruim = async () => new Response(JSON.stringify({ erro: 'Envie os dados da sala em JSON.' }), { status: 400 });
+  await assert.rejects(criarSala('https://ih.dev', {}, { fetchImpl: ruim }), /JSON/);
   await assert.rejects(criarSala('https://ih.dev', {}, { fetchImpl: async () => { throw new Error('rede'); } }), /Não consegui falar/);
   await assert.rejects(criarSala('', {}), /Configure/);
 });

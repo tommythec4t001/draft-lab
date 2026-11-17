@@ -51,7 +51,7 @@
     try {
       CRIADA = await api('/api/inhouse/criar', {
         method: 'POST',
-        body: JSON.stringify({ timeA: $('ihTimeA').value, timeB: $('ihTimeB').value, serie: Number(serie.value), fearless: $('ihFearless').checked, tempo: Number($('ihTempo').value), webhook: $('ihWebhook').value }),
+        body: JSON.stringify({ timeA: $('ihTimeA').value, timeB: $('ihTimeB').value, serie: Number(serie.value), fearless: $('ihFearless').checked, tempo: Number($('ihTempo').value) }),
       });
       msg('Sala criada. Mande a mensagem no Discord e entre na sala.', 'ok');
       mostrarCriada();

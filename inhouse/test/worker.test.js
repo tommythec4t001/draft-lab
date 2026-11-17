@@ -4,8 +4,7 @@ import { writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { iniciar } from '../dev.js';
-import { linhaResultado, mensagemDiscord, nomePartida } from '../src/worker.js';
-import { novaSala } from '../src/draft.js';
+import { mensagemDiscord, nomePartida } from '../src/worker.js';
 
 const fixture = join(tmpdir(), 'dl-inhouse-dd.json');
 const data = Object.fromEntries(['Aatrox', 'Ahri', 'Akali', 'MonkeyKing', 'Zed', 'Lux', 'Jinx', 'Thresh', 'LeeSin', 'Garen', 'Darius', 'Annie', 'Ashe', 'Braum', 'Brand', 'Caitlyn', 'Ekko', 'Fiora', 'Gwen', 'Irelia', 'Jax', 'Karma'].map((id) => [id, { id, name: id === 'MonkeyKing' ? 'Wukong' : id, tags: ['Fighter'] }]));
@@ -25,7 +24,7 @@ function conectar(id, cid) {
 }
 
 test('cria sala com link único, nome da partida em sequência e senha sorteada; ignora nome escolhido', async () => {
-  const ruim = await criar({ timeA: 'A', timeB: 'B', webhook: 'https://exemplo.com/x' });
+  const ruim = await fetch(`${srv.url}/api/salas`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: 'não é json' });
   assert.equal(ruim.status, 400);
   const r = await criar({ timeA: 'Zirigude', timeB: 'Abelinha', serie: 5, tempo: 20, titulo: 'nome que eu quero', partida: { nome: 'x' } });
   assert.equal(r.status, 201);
@@ -77,14 +76,7 @@ test('WebSocket: entrar, erro só para quem errou, tempo esgotado pelo alarme', 
   a.ws.close(); b.ws.close();
 });
 
-test('Discord: uma linha por resultado, sem picks; nome da partida segue o modelo', () => {
-  const s = novaSala({ id: 'abcdefgh', campeoes: Object.keys(data), config: { timeA: 'Azuis', timeB: 'Verm', serie: 3 } });
-  s.jogos[0].vencedor = 'A';
-  const l = linhaResultado(s, 1, 'https://x.dev');
-  assert.equal(l, '**Azuis** venceu o jogo 1 contra **Verm** · placar 1 x 0 · https://x.dev/sala/abcdefgh');
-  assert.equal(l.split('\n').length, 1);
-  s.fase = 'encerrada';
-  assert.match(linhaResultado(s, 1, ''), /^🏆 \*\*Azuis\*\* venceu a série contra \*\*Verm\*\* \(1 x 0\)$/);
+test('mensagem para copiar no Discord e nome da partida seguem o modelo', () => {
   assert.equal(nomePartida('KABUM_s4_l{n} : Open Low', 2229), 'KABUM_s4_l2229 : Open Low');
   assert.equal(nomePartida(undefined, 5), 'DraftLab 5');
   const msg = mensagemDiscord({ link: 'L', partida: { nome: 'N', senha: 'S' }, config: { timeA: 'X', timeB: 'Y', serie: 1 } });

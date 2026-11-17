@@ -51,7 +51,6 @@ pre{background:var(--fundo);border:1px solid var(--linha2);border-radius:10px;pa
         <div class="campo"><label for="serie">Formato</label><select id="serie"><option value="1">MD1 (um jogo)</option><option value="3">MD3 (melhor de 3)</option><option value="5">MD5 (melhor de 5)</option></select></div>
         <div class="campo"><label for="tempo">Tempo por ação</label><select id="tempo"><option value="20">20 segundos</option><option value="30" selected>30 segundos</option><option value="45">45 segundos</option><option value="60">60 segundos</option><option value="90">90 segundos</option></select></div>
         <label class="chave cheio" id="linha-fearless" hidden><input type="checkbox" id="fearless" checked> Fearless: campeão escolhido num jogo fica bloqueado nos próximos jogos da série</label>
-        <div class="campo cheio"><label for="webhook">Webhook do Discord (opcional)</label><input id="webhook" placeholder="https://discord.com/api/webhooks/…"><small>Se preencher, o resultado de cada jogo aparece no canal em uma linha só.</small></div>
         <div class="cheio"><button class="btn primario" type="submit" id="criar">Criar sala</button></div>
       </form>
       <div id="resultado">
@@ -90,7 +89,7 @@ pre{background:var(--fundo);border:1px solid var(--linha2);border-radius:10px;pa
   let toastT;
   const toast = (m, ok) => { const t = $('toast'); t.textContent = m; t.className = `toast on${ok ? ' ok' : ''}`; clearTimeout(toastT); toastT = setTimeout(() => (t.className = 'toast'), 3500); };
   const copiar = async (txt, ok) => { try { await navigator.clipboard.writeText(txt); toast(ok, true); } catch { prompt('Copie:', txt); } };
-  $('exemplo-api').textContent = `POST ${location.origin}/api/salas\nContent-Type: application/json\n\n{\n  "timeA": "Time do Zirigude",\n  "timeB": "Time da Abelinha",\n  "serie": 3,\n  "fearless": true,\n  "tempo": 30,\n  "webhook": "https://discord.com/api/webhooks/..."\n}`;
+  $('exemplo-api').textContent = `POST ${location.origin}/api/salas\nContent-Type: application/json\n\n{\n  "timeA": "Time do Zirigude",\n  "timeB": "Time da Abelinha",\n  "serie": 3,\n  "fearless": true,\n  "tempo": 30\n}`;
   const serie = $('serie');
   const ajustar = () => { $('linha-fearless').hidden = serie.value === '1'; };
   serie.addEventListener('change', ajustar);
@@ -105,7 +104,7 @@ pre{background:var(--fundo);border:1px solid var(--linha2);border-radius:10px;pa
       const r = await fetch('/api/salas', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ timeA: $('timeA').value, timeB: $('timeB').value, serie: Number(serie.value), fearless: $('fearless').checked, tempo: Number($('tempo').value), webhook: $('webhook').value }),
+        body: JSON.stringify({ timeA: $('timeA').value, timeB: $('timeB').value, serie: Number(serie.value), fearless: $('fearless').checked, tempo: Number($('tempo').value) }),
       });
       const d = await r.json();
       if (!r.ok) throw new Error(d.erro || 'Não consegui criar a sala.');
