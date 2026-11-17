@@ -56,7 +56,7 @@ export function mensagemDiscord(r) {
     `**${config.timeA}** x **${config.timeB}** · ${serie}`,
     `Nome: \`${partida.nome}\``,
     `Senha: \`${partida.senha}\``,
-    `Draft: ${link}`,
+    `Draft: <${link}>`, // entre < > o Discord não abre o cartão de pré-visualização
   ].join('\n');
 }
 

@@ -88,5 +88,5 @@ test('Discord: uma linha por resultado, sem picks; nome da partida segue o model
   assert.equal(nomePartida('KABUM_s4_l{n} : Open Low', 2229), 'KABUM_s4_l2229 : Open Low');
   assert.equal(nomePartida(undefined, 5), 'DraftLab 5');
   const msg = mensagemDiscord({ link: 'L', partida: { nome: 'N', senha: 'S' }, config: { timeA: 'X', timeB: 'Y', serie: 1 } });
-  assert.equal(msg, '**X** x **Y** · MD1\nNome: `N`\nSenha: `S`\nDraft: L');
+  assert.equal(msg, '**X** x **Y** · MD1\nNome: `N`\nSenha: `S`\nDraft: <L>');
 });
