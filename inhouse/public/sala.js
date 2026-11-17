@@ -9,9 +9,6 @@
   const sem = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
   const id = location.pathname.split('/')[2];
-  const q = new URLSearchParams(location.search);
-  const meuTime = q.get('time') === 'A' || q.get('time') === 'B' ? q.get('time') : null;
-  const token = meuTime ? q.get('t') : null;
   const embutido = window.parent !== window;
   if (embutido) document.body.classList.add('embutido');
 
@@ -121,7 +118,7 @@
     $('placar').innerHTML = `<span class="tA">${esc(E.times.A.nome)}</span><span class="n">${E.times.A.vitorias}</span><span class="meio"><span class="sep">x</span><span class="info">${esc(serie)}</span></span><span class="n">${E.times.B.vitorias}</span><span class="tB">${esc(E.times.B.nome)}</span>`;
     let quem;
     if (E.eu) quem = `Você: <b>${NOME_VAGA[E.eu.vaga]}</b> · ${esc(E.times[E.eu.time].nome)}${E.eu.capitao ? ' · <b>capitão</b>' : ''}`;
-    else if (meuTime) quem = `Link do time <b>${esc(E.times[meuTime].nome)}</b> · escolha sua rota`;
+    else if (E.fase === 'lobby') quem = 'Escolha o seu time e a sua rota';
     else quem = 'Você está assistindo';
     $('quem').innerHTML = quem;
   }
@@ -143,7 +140,7 @@
         const hv = !pk && E.hovers?.[t]?.[v];
         const c = pk?.champ || hv || null;
         const agindo = vez && vez.tipo === 'pick' && vez.time === t && !pk && (!!p || (E.eu?.capitao && E.eu.time === t));
-        const clicavel = E.fase === 'lobby' && meuTime === t && !p;
+        const clicavel = E.fase === 'lobby' && !p;
         const cls = ['vaga', c ? 'tem' : '', hv ? 'marcando' : '', agindo ? 'agindo' : '', !p && !pk ? 'livre' : '', clicavel ? 'clicavel' : ''].filter(Boolean).join(' ');
         const jog = p ? `<span class="jog">${p.capitao ? '<span class="cap" title="Capitão">♛</span>' : ''}${esc(p.nome)}${p.eu ? '<span class="eu">você</span>' : ''}</span>` : `<span class="jog vazio">${clicavel ? 'Clique para entrar' : 'Vaga livre'}</span>`;
         html += `<div class="${cls}" data-vaga="${v}" data-time="${t}">${c ? `<div class="arte" style="background-image:url('${esc(arte(c))}')"></div>` : '<div class="arte"></div>'}<div class="txt"><span class="rota">${NOME_VAGA[v]}</span><span class="camp">${c ? esc(nome(c)) : '&nbsp;'}</span>${jog}</div></div>`;
@@ -211,7 +208,7 @@
   function renderMeio() {
     const m = $('meio');
     let modo = E.fase;
-    if (E.fase === 'lobby') modo = `lobby:${E.eu ? 'dentro' : meuTime ? 'entrar' : 'ver'}`;
+    if (E.fase === 'lobby') modo = `lobby:${E.eu ? 'dentro' : 'entrar'}`;
     if (E.fase === 'draft') modo = camps ? 'draft' : 'carregando';
     if (modo !== modoMeio) {
       modoMeio = modo;
@@ -226,6 +223,15 @@
     if (E.fase === 'encerrada') return encerrada(m);
   }
 
+  // Nome e senha da personalizada: gerados pelo servidor, iguais para todos.
+  function partidaHTML() {
+    const P = E.partida;
+    if (!P) return '';
+    return `<div class="partida"><span class="rot">Partida personalizada</span>
+      <div class="dado"><small>Nome</small><code>${esc(P.nome)}</code><button class="btn peq" data-copiar="${esc(P.nome)}" type="button">Copiar</button></div>
+      <div class="dado"><small>Senha</small><code>${esc(P.senha)}</code><button class="btn peq" data-copiar="${esc(P.senha)}" type="button">Copiar</button></div></div>`;
+  }
+
   function lobby(m) {
     const statusTimes = `<div class="status-times">${['A', 'B'].map((t) => {
       const T = E.times[t];
@@ -234,57 +240,57 @@
     }).join('')}</div>`;
     if (E.eu) {
       const T = E.times[E.eu.time];
-      const companheiros = VAGAS.map((v) => T.vagas[v]).filter((p) => p && !p.eu);
+      const outros = VAGAS.filter((v) => T.vagas[v] && !T.vagas[v].eu);
       const cap = E.eu.capitao
         ? `<div class="linha-acoes">
             <button class="btn ${T.pronto ? '' : 'primario'}" id="btn-pronto">${T.pronto ? 'Cancelar pronto' : 'Time pronto'}</button>
-            <button class="btn" id="btn-link">Copiar link do time</button>
-            ${companheiros.length ? `<select id="sel-cap" class="btn"><option value="">Passar capitania…</option>${VAGAS.filter((v) => T.vagas[v] && !T.vagas[v].eu).map((v) => `<option value="${v}">${esc(T.vagas[v].nome)} (${NOME_VAGA[v]})</option>`).join('')}</select>` : ''}
+            ${outros.length ? `<select id="sel-cap" class="btn"><option value="">Passar capitania…</option>${outros.map((v) => `<option value="${v}">${esc(T.vagas[v].nome)} (${NOME_VAGA[v]})</option>`).join('')}</select>
+            <select id="sel-tirar" class="btn"><option value="">Tirar do time…</option>${outros.map((v) => `<option value="${v}">${esc(T.vagas[v].nome)} (${NOME_VAGA[v]})</option>`).join('')}</select>` : ''}
           </div>
-          <p style="margin-top:12px">Você é o capitão: faz os bans, confirma que o time está pronto e informa o resultado. Os picks são de cada jogador, e você pode escolher por quem não apareceu.</p>`
-        : `<div class="linha-acoes"><button class="btn" id="btn-link">Copiar link do time</button><button class="btn" id="btn-sair">Sair da vaga</button></div><p style="margin-top:12px">Na vez do seu time, trave o seu campeão. O capitão faz os bans.</p>`;
-      m.innerHTML = `<div class="painel"><h2>Você está no ${NOME_VAGA[E.eu.vaga]} de ${esc(T.nome)}</h2>${cap}${trocarRota(E.eu.time)}${statusTimes}</div>`;
+          <p style="margin-top:12px">Você é o capitão: faz os bans, confirma que o time está pronto e informa o resultado. Os picks são de cada jogador, e você pode escolher por quem não apareceu. Se alguém entrar no lugar errado, tire do time.</p>`
+        : `<div class="linha-acoes"><button class="btn" id="btn-sair">Sair da vaga</button></div><p style="margin-top:12px">Na vez do seu time, trave o seu campeão. O capitão faz os bans.</p>`;
+      m.innerHTML = `<div class="painel"><h2>Você está no ${NOME_VAGA[E.eu.vaga]} de ${esc(T.nome)}</h2>${partidaHTML()}${cap}${statusTimes}</div>`;
       $('btn-pronto')?.addEventListener('click', () => enviar({ t: 'pronto', valor: !T.pronto }));
       $('btn-sair')?.addEventListener('click', () => enviar({ t: 'sair' }));
-      $('btn-link')?.addEventListener('click', () => copiar(location.href, 'Link do time copiado. Mande só para o seu time!'));
-      $('sel-cap')?.addEventListener('change', (e) => {
+      $('sel-cap')?.addEventListener('change', (e) => { if (e.target.value) enviar({ t: 'capitao', vaga: e.target.value }); });
+      $('sel-tirar')?.addEventListener('change', (e) => {
         const v = e.target.value;
-        if (!v) return;
-        enviar({ t: 'capitao', vaga: v });
+        if (v && confirm(`Tirar ${T.vagas[v].nome} do time?`)) enviar({ t: 'remover', vaga: v });
+        e.target.value = '';
       });
-      ligarRotas();
+      ligarCopiar(m);
       return;
     }
-    if (meuTime) {
-      const T = E.times[meuTime];
-      m.innerHTML = `<div class="painel"><h2>Entrar em ${esc(T.nome)}</h2><p>Digite o seu nick e escolha a sua rota.</p>
-        <div class="campo"><label for="nick">Seu nick (Riot ID)</label><input id="nick" maxlength="24" placeholder="Nome#TAG" value="${esc(ler('dl-inhouse-nick') || '')}"></div>
-        ${trocarRota(meuTime)}${statusTimes}</div>`;
-      ligarRotas();
-      return;
-    }
-    m.innerHTML = `<div class="painel"><h2>Aguardando os times</h2><p>Os jogadores entram pelo link do próprio time. O draft começa quando os dois capitães confirmarem.</p>${statusTimes}</div>`;
+    m.innerHTML = `<div class="painel"><h2>Entrar na partida</h2><p>Digite o seu nick e clique na sua rota, no seu time. Quem só vai assistir não precisa fazer nada.</p>
+      <div class="campo"><label for="nick">Seu nick (Riot ID)</label><input id="nick" maxlength="24" placeholder="Nome#TAG" value="${esc(ler('dl-inhouse-nick') || '')}"></div>
+      <div class="escolha-times">${['A', 'B'].map((t) => `<div><span class="rot-time">${esc(E.times[t].nome)}</span>${trocarRota(t)}</div>`).join('')}</div>
+      ${partidaHTML()}${statusTimes}</div>`;
+    ligarRotas();
+    ligarCopiar(m);
+  }
+
+  function ligarCopiar(m) {
+    for (const b of m.querySelectorAll('[data-copiar]')) b.addEventListener('click', () => copiar(b.dataset.copiar, 'Copiado.'));
   }
 
   function trocarRota(t) {
     const T = E.times[t];
     return `<div class="rotas">${VAGAS.map((v) => {
       const p = T.vagas[v];
-      return `<button data-rota="${v}" class="${p?.eu ? 'minha' : ''}" ${p && !p.eu ? 'disabled' : ''}>${NOME_VAGA[v]}<small>${p ? esc(p.nome) : 'livre'}</small></button>`;
+      return `<button data-rota="${v}" data-time="${t}" class="${p?.eu ? 'minha' : ''}" ${p && !p.eu ? 'disabled' : ''}>${NOME_VAGA[v]}<small>${p ? esc(p.nome) : 'livre'}</small></button>`;
     }).join('')}</div>`;
   }
 
-  function entrar(v) {
-    const t = E.eu?.time || meuTime;
+  function entrar(v, t) {
     const atual = E.eu ? E.times[E.eu.time].vagas[E.eu.vaga]?.nome : null;
     const nick = ($('nick')?.value ?? atual ?? ler('dl-inhouse-nick') ?? '').trim();
     if (!nick) { toast('Digite o seu nick primeiro.'); $('nick')?.focus(); return; }
     guardar('dl-inhouse-nick', nick);
-    enviar({ t: 'entrar', time: t, token, vaga: v, nome: nick });
+    enviar({ t: 'entrar', time: t, vaga: v, nome: nick });
   }
 
   function ligarRotas() {
-    for (const b of document.querySelectorAll('[data-rota]')) b.addEventListener('click', () => entrar(b.dataset.rota));
+    for (const b of document.querySelectorAll('[data-rota]')) b.addEventListener('click', () => entrar(b.dataset.rota, b.dataset.time));
   }
 
   // grade de campeões (montada uma vez por draft; depois só muda classes)
@@ -376,13 +382,14 @@
 
   function jogando(m) {
     const cap = E.eu?.capitao;
-    m.innerHTML = `<div class="painel"><h2>Draft encerrado</h2><p>Criem a partida personalizada no LoL e joguem. ${cap ? 'Depois, informe quem venceu:' : 'Depois do jogo, um capitão informa o resultado aqui.'}</p>
+    m.innerHTML = `<div class="painel"><h2>Draft encerrado</h2><p>Entrem na personalizada no LoL, cada um com o campeão que travou aqui. ${cap ? 'Depois do jogo, informe quem venceu:' : 'Depois do jogo, um capitão informa o resultado aqui.'}</p>${partidaHTML()}
       ${cap ? `<div class="resultado"><button class="btn azul" data-venc="${jogo().azul}">${esc(E.times[jogo().azul].nome)} venceu</button><button class="btn verm" data-venc="${timeNoLado('vermelho')}">${esc(E.times[timeNoLado('vermelho')].nome)} venceu</button></div>` : ''}
       <div class="linha-acoes" style="margin-top:14px"><button class="btn peq" id="btn-copiar-draft">Copiar draft em texto</button></div></div>`;
     for (const b of m.querySelectorAll('[data-venc]')) b.addEventListener('click', () => {
       if (confirm(`Confirmar vitória de ${E.times[b.dataset.venc].nome}?`)) enviar({ t: 'resultado', vencedor: b.dataset.venc });
     });
     $('btn-copiar-draft').addEventListener('click', () => copiar(textoDraft(), 'Draft copiado.'));
+    ligarCopiar(m);
   }
 
   function escolherLado(m) {
@@ -442,7 +449,7 @@
   document.addEventListener('click', (e) => {
     const v = e.target.closest('.vaga.clicavel');
     if (!v) return;
-    entrar(v.dataset.vaga);
+    entrar(v.dataset.vaga, v.dataset.time);
   });
 
   if (!/^[A-Za-z0-9]{8}$/.test(id || '')) {

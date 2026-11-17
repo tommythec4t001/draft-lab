@@ -2,13 +2,19 @@
 
 Salas de draft alternado de torneio para partidas personalizadas (InHouse): os 10 jogadores escolhem pelo navegador, cada time com o seu link, e o espectador acompanha tudo em tempo real.
 
-- **Capitães** banem, confirmam que o time está pronto e informam o resultado. O primeiro a entrar pelo link do time vira capitão (dá para passar a capitania).
+- **Um link para todos**: cada jogador abre o link, digita o nick e clica na rota do seu time. Quem não entra num time assiste.
+- **Capitães**: o primeiro a entrar em cada time. Banem, confirmam que o time está pronto, informam o resultado, passam a capitania e tiram do time quem entrou no lugar errado.
 - **Cada jogador** trava o próprio campeão na vez do time. O capitão pode escolher por quem não apareceu.
+- **Nome e senha da personalizada** saem prontos: o servidor gera o nome com um número que sobe 1 a cada sala, e sorteia a senha. Ninguém escolhe.
 - **Tempo por ação** (20 a 90 s). Acabou o tempo: no ban, trava o que o capitão marcou (ou fica sem ban); no pick, trava a marcação mais antiga de quem ainda não escolheu; sem marcação, o draft espera alguém travar.
 - **Séries MD3 e MD5 com Fearless**: campeão escolhido num jogo fica bloqueado nos próximos. Quem perde escolhe o lado do próximo jogo.
-- **Discord**: com um webhook, o draft e o resultado de cada jogo aparecem no canal.
+- **Discord**: com um webhook, cada resultado vira uma linha no canal (sem os picks, para não encher o chat; o link da sala mostra o draft).
 - **Estatísticas**: todo jogo com resultado entra nas estatísticas por campeão (`/estatisticas`). Os nicks não aparecem nas estatísticas públicas.
 - **No Draft Lab**: a aba InHouse cria a sala, abre a sala dentro do app e mostra ao lado as sugestões de pick e ban e a composição dos times.
+
+## Nome da partida
+
+O modelo fica em `wrangler.jsonc`, em `vars`: `NOME_PARTIDA` (com `{n}` no lugar do número) e `PARTIDA_INICIAL` (o primeiro número). Exemplo: `"NOME_PARTIDA": "KABUM_s4_l{n} : Open Low"` e `"PARTIDA_INICIAL": "2228"`. Depois de mudar, rode o `.bat` de publicar de novo.
 
 ## Publicar (uma vez)
 
@@ -28,23 +34,22 @@ POST https://SEU-ENDERECO/api/salas
 Content-Type: application/json
 
 { "timeA": "Time do Zirigude", "timeB": "Time da Abelinha", "serie": 3, "fearless": true, "tempo": 30,
-  "titulo": "KABUM_s4_l2227 : Open Low", "webhook": "https://discord.com/api/webhooks/..." }
+  "webhook": "https://discord.com/api/webhooks/..." }
 ```
 
 Resposta (201):
 
 ```
 { "id": "r96dpVLi",
-  "links": { "A": ".../sala/r96dpVLi?time=A&t=...", "B": ".../sala/r96dpVLi?time=B&t=...", "espectador": ".../sala/r96dpVLi" },
+  "link": "https://.../sala/r96dpVLi",
+  "partida": { "nome": "DraftLab 2228", "senha": "1GCn" },
   "config": { ... },
   "mensagem": "texto pronto para colar no Discord" }
 ```
 
-- `GET /api/salas/{id}`: estado público da sala (fase, placar, picks e bans de cada jogo). Nunca traz os links dos times.
+- `GET /api/salas/{id}`: estado público da sala (fase, placar, nome da partida, picks e bans de cada jogo).
 - `GET /api/estatisticas?dias=30`: picks, bans, vitórias e presença por campeão.
 - `GET /api/jogos?limite=20`: últimos jogos registrados.
-
-Os links dos times são a senha de cada time: mande cada um só para o próprio time.
 
 ## Testar no PC
 

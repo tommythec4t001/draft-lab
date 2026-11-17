@@ -149,7 +149,7 @@
 
   <div class="view" id="view-inhouse" hidden>
     <div class="vhead"><h1 class="page-title">InHouse</h1><span class="ih-serv" id="ihServInfo" hidden>Servidor: <b id="ihServTxt"></b> <button class="linkbtn" id="ihTrocarServ" type="button">trocar</button></span></div>
-    <p class="note ih-intro">Draft alternado de torneio com os 10 jogadores, para partidas personalizadas: cada time recebe um link, os capitães banem e cada jogador trava o próprio campeão. Funciona no navegador de qualquer um; aqui no Draft Lab a sala vem com a análise ao lado.</p>
+    <p class="note ih-intro">Draft alternado de torneio com os 10 jogadores, para partidas personalizadas: um link só para todos, cada um escolhe o time e a rota, os capitães banem e cada jogador trava o próprio campeão. O nome e a senha da personalizada saem prontos. Funciona no navegador de qualquer um; aqui no Draft Lab a sala vem com a análise ao lado.</p>
     <p class="note" id="ihMsg" role="status"></p>
 
     <section class="ih-card" id="ihServidor" hidden>
@@ -167,7 +167,6 @@
           <label class="field" for="ihSerie">Formato<select id="ihSerie"><option value="1">MD1</option><option value="3">MD3</option><option value="5">MD5</option></select></label>
           <label class="field" for="ihTempo">Tempo por ação<select id="ihTempo"><option value="20">20 s</option><option value="30" selected>30 s</option><option value="45">45 s</option><option value="60">60 s</option><option value="90">90 s</option></select></label>
           <label class="check ih-cheio" id="ihLinhaFearless"><input type="checkbox" id="ihFearless" checked> Fearless: campeão escolhido num jogo fica bloqueado nos próximos jogos da série</label>
-          <label class="field ih-cheio" for="ihTitulo">Nome da partida (opcional)<input id="ihTitulo" maxlength="60" placeholder="Nome e senha da personalizada, por exemplo"></label>
           <label class="field ih-cheio" for="ihWebhook">Webhook do Discord (opcional)<input id="ihWebhook" placeholder="https://discord.com/api/webhooks/…" autocomplete="off" spellcheck="false"></label>
           <div class="ih-cheio"><button class="btn primary" id="ihCriar" type="submit">Criar sala</button></div>
         </form>
@@ -178,7 +177,7 @@
       </section>
       <section class="ih-card">
         <h2 class="ih-h">Entrar numa sala</h2>
-        <p class="note">Cole o link que recebeu no Discord: o do seu time para jogar, ou o de espectador para assistir.</p>
+        <p class="note">Cole o link da sala que recebeu no Discord. Lá dentro você escolhe o time e a rota, ou só assiste.</p>
         <form class="ih-row" id="ihAbrirForm"><label class="field wide" for="ihLink">Link da sala<input id="ihLink" placeholder="https://…/sala/…" autocomplete="off" spellcheck="false"></label><button class="btn primary" type="submit">Abrir</button></form>
       </section>
     </div>

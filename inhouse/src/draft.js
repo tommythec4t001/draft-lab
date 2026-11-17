@@ -31,7 +31,8 @@ const vencidos = (s, t) => s.jogos.filter((j) => j.vencedor === t).length;
 
 // ---------- criação ----------
 
-export function novaSala({ id, tokens, campeoes, nomes, versao, dd, agora = Date.now(), config = {} }) {
+// partida: nome e senha da personalizada no LoL, gerados pelo servidor (ninguém escolhe).
+export function novaSala({ id, campeoes, nomes, versao, dd, partida = null, agora = Date.now(), config = {} }) {
   const serie = SERIES.includes(Number(config.serie)) ? Number(config.serie) : 1;
   const tempo = TEMPOS.includes(Number(config.tempo)) ? Number(config.tempo) : 30;
   const nomeA = limpa(config.timeA) || 'Time 1';
@@ -46,10 +47,11 @@ export function novaSala({ id, tokens, campeoes, nomes, versao, dd, agora = Date
     dd: dd || 'https://ddragon.leagueoflegends.com',
     campeoes: [...new Set(campeoes || [])],
     nomes: nomes || {}, // id -> nome do campeão, para as mensagens do Discord
-    config: { serie, fearless: serie > 1 && config.fearless !== false, tempo, titulo: limpa(config.titulo, 60) },
+    config: { serie, fearless: serie > 1 && config.fearless !== false, tempo },
+    partida: partida ? { nome: limpa(partida.nome, 60), senha: limpa(partida.senha, 20) } : null,
     times: {
-      A: { nome: nomeA, token: tokens.A, capitao: null, vagas: vagasVazias() },
-      B: { nome: nomeB, token: tokens.B, capitao: null, vagas: vagasVazias() },
+      A: { nome: nomeA, capitao: null, vagas: vagasVazias(), fora: [] },
+      B: { nome: nomeB, capitao: null, vagas: vagasVazias(), fora: [] },
     },
     jogos: [novoJogo('A')],
     fase: 'lobby', // lobby | draft | jogando | lado | encerrada
@@ -129,6 +131,7 @@ export function aplicar(s, cid, msg, agora = Date.now()) {
   switch (msg?.t) {
     case 'entrar': entrar(s, cid, msg); break;
     case 'sair': sair(s, cid); break;
+    case 'remover': remover(s, cid, msg.vaga); break;
     case 'capitao': passarCapitao(s, cid, msg.vaga); break;
     case 'pronto': pronto(s, cid, !!msg.valor, agora); break;
     case 'hover': hover(s, cid, msg.champ, agora); break;
@@ -141,10 +144,11 @@ export function aplicar(s, cid, msg, agora = Date.now()) {
   return ev;
 }
 
-function entrar(s, cid, { time, token, vaga, nome }) {
+// Um link só para todos: cada um escolhe o time e a rota. O capitão pode tirar quem entrou no lugar errado.
+function entrar(s, cid, { time, vaga, nome }) {
   if (!cid) erro('Conexão sem identificação.');
-  if (time !== 'A' && time !== 'B') erro('Time inválido.');
-  if (!token || token !== s.times[time].token) erro('Este link não é deste time.');
+  if (time !== 'A' && time !== 'B') erro('Escolha um time.');
+  if (s.times[time].fora.includes(cid)) erro('O capitão tirou você deste time. Fale com ele na call.');
   if (!VAGAS.includes(vaga)) erro('Escolha uma rota.');
   const n = limpa(nome);
   if (!n) erro('Digite seu nick.');
@@ -169,6 +173,19 @@ function sair(s, cid) {
   s.times[a.time].vagas[a.vaga] = null;
   delete s.hover[cid];
   if (s.times[a.time].capitao === cid) novoCapitao(s, a.time);
+  s.prontos[a.time] = false;
+}
+
+function remover(s, cid, vaga) {
+  const a = assentoDe(s, cid);
+  if (!a || !ehCapitao(s, cid, a.time)) erro('Só o capitão pode tirar alguém do time.');
+  if (s.fase === 'draft') erro('Não dá para tirar ninguém durante o draft.');
+  const p = VAGAS.includes(vaga) && s.times[a.time].vagas[vaga];
+  if (!p) erro('Essa rota já está livre.');
+  if (p.cid === cid) erro('Para sair, passe a capitania antes.');
+  s.times[a.time].vagas[vaga] = null;
+  s.times[a.time].fora.push(p.cid);
+  delete s.hover[p.cid];
   s.prontos[a.time] = false;
 }
 
@@ -358,6 +375,7 @@ export function visao(s, cid, agora = Date.now()) {
     versao: s.versao,
     dd: s.dd,
     config: s.config,
+    partida: s.partida,
     fase: s.fase,
     times,
     jogos: s.jogos.map((j) => ({
@@ -395,7 +413,7 @@ export function resumoJogo(s, n) {
     jogo: n,
     serie: s.config.serie,
     fearless: s.config.fearless,
-    titulo: s.config.titulo,
+    titulo: s.partida?.nome || null,
     versao: s.versao,
     inicio: j.inicio,
     fimDraft: j.fimDraft,

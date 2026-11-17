@@ -51,9 +51,9 @@
     try {
       CRIADA = await api('/api/inhouse/criar', {
         method: 'POST',
-        body: JSON.stringify({ timeA: $('ihTimeA').value, timeB: $('ihTimeB').value, serie: Number(serie.value), fearless: $('ihFearless').checked, tempo: Number($('ihTempo').value), titulo: $('ihTitulo').value, webhook: $('ihWebhook').value }),
+        body: JSON.stringify({ timeA: $('ihTimeA').value, timeB: $('ihTimeB').value, serie: Number(serie.value), fearless: $('ihFearless').checked, tempo: Number($('ihTempo').value), webhook: $('ihWebhook').value }),
       });
-      msg('Sala criada. Mande a mensagem no Discord e entre pelo link do seu time.', 'ok');
+      msg('Sala criada. Mande a mensagem no Discord e entre na sala.', 'ok');
       mostrarCriada();
     } catch (err) { msg(err.message, 'err'); }
     finally { btn.disabled = false; }
@@ -63,13 +63,13 @@
     const c = CRIADA;
     $('ihCriada').hidden = !c;
     if (!c) return;
-    const linha = (cls, rot, url, entrar) => `<div class="ih-link ${cls}"><b>${esc(rot)}</b><code title="${esc(url)}">${esc(url)}</code><button class="btn small" data-copiar="${esc(url)}" type="button">Copiar</button><button class="btn small primary" data-abrir="${esc(url)}" type="button">${entrar}</button></div>`;
-    $('ihLinks').innerHTML = linha('a', c.config.timeA, c.links.A, 'Entrar') + linha('b', c.config.timeB, c.links.B, 'Entrar') + linha('', 'Espectador', c.links.espectador, 'Assistir');
+    const linha = (rot, valor, entrar) => `<div class="ih-link"><b>${esc(rot)}</b><code title="${esc(valor)}">${esc(valor)}</code><button class="btn small" data-copiar="${esc(valor)}" type="button">Copiar</button>${entrar ? `<button class="btn small primary" data-abrir="${esc(valor)}" type="button">Entrar</button>` : '<span></span>'}</div>`;
+    $('ihLinks').innerHTML = linha('Link da sala', c.link, true) + linha('Nome', c.partida.nome, false) + linha('Senha', c.partida.senha, false);
   }
   $('ihLinks').onclick = (e) => {
     const b = e.target.closest('button');
     if (!b) return;
-    if (b.dataset.copiar) copiar(b.dataset.copiar, 'Link copiado.');
+    if (b.dataset.copiar) copiar(b.dataset.copiar, 'Copiado.');
     if (b.dataset.abrir) abrir(b.dataset.abrir);
   };
   $('ihCopiarMsg').onclick = () => CRIADA && copiar(CRIADA.mensagem, 'Mensagem copiada. É só colar no Discord.');
@@ -84,7 +84,7 @@
       store.set('dl-ih-aberta', ok);
       ESTADO = null;
       $('ihFrame').src = ok;
-      $('ihSalaInfo').textContent = new URL(ok).searchParams.get('time') ? 'Você entrou pelo link do seu time.' : 'Você está assistindo.';
+      $('ihSalaInfo').textContent = 'Escolha o seu time e a sua rota na sala, ou só assista.';
       $('ihNavegador').href = ok;
       $('ihSala').hidden = false;
       $('ihInicio').hidden = true;

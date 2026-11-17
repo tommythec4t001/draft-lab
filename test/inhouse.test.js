@@ -13,11 +13,10 @@ test('endereço do servidor: https ou localhost, só o domínio', () => {
   assert.equal(urlDe({ inhouse: 'https://a.dev' }), process.env.INHOUSE_URL ? normalizarUrl(process.env.INHOUSE_URL) : 'https://a.dev');
 });
 
-test('link de sala: só do servidor configurado, mantém o token do time', () => {
+test('link de sala: só do servidor configurado, um link para todos', () => {
   const base = 'https://ih.dev';
-  assert.equal(linkDeSala(base, 'https://ih.dev/sala/AbCd2345?time=A&t=tok123456789'), 'https://ih.dev/sala/AbCd2345?time=A&t=tok123456789');
   assert.equal(linkDeSala(base, 'https://ih.dev/sala/AbCd2345'), 'https://ih.dev/sala/AbCd2345');
-  assert.equal(linkDeSala(base, 'https://ih.dev/sala/AbCd2345?time=C&t=x'), 'https://ih.dev/sala/AbCd2345');
+  assert.equal(linkDeSala(base, ' https://ih.dev/sala/AbCd2345/?x=1 '), 'https://ih.dev/sala/AbCd2345');
   assert.equal(linkDeSala(base, 'https://outro.dev/sala/AbCd2345'), null);
   assert.equal(linkDeSala(base, 'https://ih.dev/estatisticas'), null);
   assert.equal(linkDeSala('', 'https://ih.dev/sala/AbCd2345'), null);
@@ -26,10 +25,11 @@ test('link de sala: só do servidor configurado, mantém o token do time', () =>
 test('criar sala repassa só os campos conhecidos e traduz os erros', async () => {
   let enviado;
   const ok = async (url, init) => { enviado = { url, corpo: JSON.parse(init.body) }; return new Response(JSON.stringify({ id: 'x', links: {} }), { status: 201 }); };
-  await criarSala('https://ih.dev', { timeA: 'A', timeB: 'B', serie: '3', extra: 'não vai' }, { fetchImpl: ok });
+  await criarSala('https://ih.dev', { timeA: 'A', timeB: 'B', serie: '3', extra: 'não vai', titulo: 'nome escolhido' }, { fetchImpl: ok });
   assert.equal(enviado.url, 'https://ih.dev/api/salas');
   assert.equal(enviado.corpo.serie, 3);
   assert.equal('extra' in enviado.corpo, false);
+  assert.equal('titulo' in enviado.corpo, false, 'o nome da partida é do servidor');
   const ruim = async () => new Response(JSON.stringify({ erro: 'O webhook precisa ser um link de webhook do Discord.' }), { status: 400 });
   await assert.rejects(criarSala('https://ih.dev', {}, { fetchImpl: ruim }), /webhook/);
   await assert.rejects(criarSala('https://ih.dev', {}, { fetchImpl: async () => { throw new Error('rede'); } }), /Não consegui falar/);

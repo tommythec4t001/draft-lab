@@ -4,13 +4,13 @@ import { writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { iniciar } from '../dev.js';
-import { embedDraft, mensagemDiscord } from '../src/worker.js';
-import { novaSala, aplicar, resumoJogo, VAGAS } from '../src/draft.js';
+import { linhaResultado, mensagemDiscord, nomePartida } from '../src/worker.js';
+import { novaSala } from '../src/draft.js';
 
 const fixture = join(tmpdir(), 'dl-inhouse-dd.json');
 const data = Object.fromEntries(['Aatrox', 'Ahri', 'Akali', 'MonkeyKing', 'Zed', 'Lux', 'Jinx', 'Thresh', 'LeeSin', 'Garen', 'Darius', 'Annie', 'Ashe', 'Braum', 'Brand', 'Caitlyn', 'Ekko', 'Fiora', 'Gwen', 'Irelia', 'Jax', 'Karma'].map((id) => [id, { id, name: id === 'MonkeyKing' ? 'Wukong' : id, tags: ['Fighter'] }]));
 writeFileSync(fixture, JSON.stringify({ version: '16.22.1', data }));
-const srv = await iniciar({ porta: 0, ddFixture: fixture, quieto: true });
+const srv = await iniciar({ porta: 0, ddFixture: fixture, quieto: true, vars: { NOME_PARTIDA: 'KABUM_s4_l{n} : Open Low', PARTIDA_INICIAL: '2227' } });
 after(() => srv.fechar());
 
 const criar = (corpo) => fetch(`${srv.url}/api/salas`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(corpo) });
@@ -24,34 +24,38 @@ function conectar(id, cid) {
   return new Promise((ok) => { ws.onopen = () => { ws.send(JSON.stringify({ t: 'ola', cid })); ok({ ws, proxima, enviar: (m) => ws.send(JSON.stringify(m)) }); }; });
 }
 
-test('cria sala, recusa webhook que não é do Discord e não mostra tokens no estado público', async () => {
+test('cria sala com link único, nome da partida em sequência e senha sorteada; ignora nome escolhido', async () => {
   const ruim = await criar({ timeA: 'A', timeB: 'B', webhook: 'https://exemplo.com/x' });
   assert.equal(ruim.status, 400);
-  const r = await criar({ timeA: 'Zirigude', timeB: 'Abelinha', serie: 5, tempo: 20 });
+  const r = await criar({ timeA: 'Zirigude', timeB: 'Abelinha', serie: 5, tempo: 20, titulo: 'nome que eu quero', partida: { nome: 'x' } });
   assert.equal(r.status, 201);
   const d = await r.json();
-  assert.match(d.links.A, /\/sala\/[A-Za-z0-9]{8}\?time=A&t=/);
+  assert.match(d.link, /\/sala\/[A-Za-z0-9]{8}$/);
+  assert.equal(d.partida.nome, 'KABUM_s4_l2227 : Open Low');
+  assert.match(d.partida.senha, /^[A-Za-z0-9]{4}$/);
   assert.match(d.mensagem, /MD5 Fearless/);
-  const pub = await (await fetch(`${srv.url}/api/salas/${d.id}`)).text();
-  assert.equal(pub.includes(d.links.A.split('t=')[1]), false);
+  assert.match(d.mensagem, /Senha: `/);
+  const d2 = await (await criar({ timeA: 'X', timeB: 'Y' })).json();
+  assert.equal(d2.partida.nome, 'KABUM_s4_l2228 : Open Low');
+  const pub = await (await fetch(`${srv.url}/api/salas/${d.id}`)).json();
+  assert.equal(pub.partida.nome, 'KABUM_s4_l2227 : Open Low');
   assert.equal((await fetch(`${srv.url}/api/salas/naoexiste`)).status, 404);
   assert.equal((await fetch(`${srv.url}/api/salas/abcdefgh`)).status, 404);
 });
 
 test('WebSocket: entrar, erro só para quem errou, tempo esgotado pelo alarme', async () => {
   const d = await (await criar({ timeA: 'Azuis', timeB: 'Vermelhos', tempo: 20 })).json();
-  const tok = (t) => new URL(d.links[t]).searchParams.get('t');
   const a = await conectar(d.id, 'jogadorA_123');
   const b = await conectar(d.id, 'jogadorB_123');
   assert.equal((await a.proxima()).estado.fase, 'lobby');
   await b.proxima();
-  a.enviar({ t: 'entrar', time: 'A', token: tok('B'), vaga: 'T', nome: 'x' });
-  assert.deepEqual(await a.proxima(), { t: 'erro', msg: 'Este link não é deste time.' });
-  a.enviar({ t: 'entrar', time: 'A', token: tok('A'), vaga: 'T', nome: 'Capitão A' });
+  a.enviar({ t: 'entrar', time: 'A', vaga: 'T', nome: '' });
+  assert.deepEqual(await a.proxima(), { t: 'erro', msg: 'Digite seu nick.' });
+  a.enviar({ t: 'entrar', time: 'A', vaga: 'T', nome: 'Capitão A' });
   const ea = (await a.proxima()).estado;
   assert.equal(ea.eu.capitao, true);
   assert.equal((await b.proxima()).estado.times.A.vagas.T.nome, 'Capitão A');
-  b.enviar({ t: 'entrar', time: 'B', token: tok('B'), vaga: 'M', nome: 'Capitão B' });
+  b.enviar({ t: 'entrar', time: 'B', vaga: 'M', nome: 'Capitão B' });
   await a.proxima(); await b.proxima();
   a.enviar({ t: 'pronto', valor: true });
   await a.proxima(); await b.proxima();
@@ -73,12 +77,16 @@ test('WebSocket: entrar, erro só para quem errou, tempo esgotado pelo alarme', 
   a.ws.close(); b.ws.close();
 });
 
-test('mensagem e embed do Discord usam os nomes em português dos campeões', () => {
-  const s = novaSala({ id: 'abcdefgh', tokens: { A: 'a', B: 'b' }, campeoes: Object.keys(data), nomes: Object.fromEntries(Object.values(data).map((c) => [c.id, c.name])), config: { timeA: 'Azuis', timeB: 'Verm' } });
-  for (const t of ['A', 'B']) for (const v of VAGAS) aplicar(s, `${t}${v}xxxxxxx`, { t: 'entrar', time: t, token: t.toLowerCase(), vaga: v, nome: `${t}${v}` });
-  s.jogos[0].acoes.push({ n: 6, lado: 'azul', time: 'A', tipo: 'pick', champ: 'MonkeyKing', vaga: 'J' });
-  const e = embedDraft(s, resumoJogo(s, 1), 'https://x.dev');
-  assert.match(e.fields[0].value, /\*\*Selva:\*\* Wukong \(AJ\)/);
-  assert.equal(e.url, 'https://x.dev/sala/abcdefgh');
-  assert.match(mensagemDiscord('', { links: { A: 'la', B: 'lb', espectador: 'le' }, config: { timeA: 'X', timeB: 'Y', serie: 1 } }), /MD1/);
+test('Discord: uma linha por resultado, sem picks; nome da partida segue o modelo', () => {
+  const s = novaSala({ id: 'abcdefgh', campeoes: Object.keys(data), config: { timeA: 'Azuis', timeB: 'Verm', serie: 3 } });
+  s.jogos[0].vencedor = 'A';
+  const l = linhaResultado(s, 1, 'https://x.dev');
+  assert.equal(l, '**Azuis** venceu o jogo 1 contra **Verm** · placar 1 x 0 · https://x.dev/sala/abcdefgh');
+  assert.equal(l.split('\n').length, 1);
+  s.fase = 'encerrada';
+  assert.match(linhaResultado(s, 1, ''), /^🏆 \*\*Azuis\*\* venceu a série contra \*\*Verm\*\* \(1 x 0\)$/);
+  assert.equal(nomePartida('KABUM_s4_l{n} : Open Low', 2229), 'KABUM_s4_l2229 : Open Low');
+  assert.equal(nomePartida(undefined, 5), 'DraftLab 5');
+  const msg = mensagemDiscord({ link: 'L', partida: { nome: 'N', senha: 'S' }, config: { timeA: 'X', timeB: 'Y', serie: 1 } });
+  assert.equal(msg, '**X** x **Y** · MD1\nNome: `N`\nSenha: `S`\nDraft: L');
 });

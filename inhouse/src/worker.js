@@ -1,15 +1,15 @@
 // Servidor das salas InHouse do Draft Lab (Cloudflare Workers + Durable Objects).
 //
-//   POST /api/salas              cria uma sala e devolve os links (usado pela página e pelo bot do Discord)
+//   POST /api/salas              cria uma sala e devolve o link, o nome e a senha da partida (página e bot do Discord)
 //   GET  /api/salas/{id}         estado público da sala (placar, picks e bans)
 //   GET  /api/estatisticas       estatísticas por campeão de todas as InHouses registradas
 //   GET  /api/jogos              últimos jogos registrados
-//   GET  /sala/{id}              página da sala (link de time: ?time=A&t=token)
+//   GET  /sala/{id}              página da sala: um link só, cada um escolhe o time e a rota
 //   GET  /sala/{id}/ws           WebSocket da sala
 //
 // Cada sala é um Durable Object "Sala"; os resultados vão para um único Durable Object "Arquivo" (SQLite).
 
-import { novaSala, aplicar, tempoEsgotado, visao, resumoJogo, ErroSala, VAGAS, NOME_VAGA } from './draft.js';
+import { novaSala, aplicar, tempoEsgotado, visao, resumoJogo, ErroSala } from './draft.js';
 
 const DD_PADRAO = 'https://ddragon.leagueoflegends.com';
 const LIMPEZA = 3 * 24 * 3600 * 1000; // sala parada há 3 dias é apagada
@@ -42,17 +42,21 @@ async function campeoes(env) {
 const sala = (env, id) => env.SALAS.get(env.SALAS.idFromName(id));
 const arquivo = (env) => env.ARQUIVO.get(env.ARQUIVO.idFromName('inhouse'));
 
-export function mensagemDiscord(origem, r) {
-  const { id, links, config } = r;
+// Nome da partida: o modelo vem da configuração do servidor (NOME_PARTIDA, com {n} no lugar do número).
+// O número sobe 1 a cada sala criada; a senha é sorteada. Ninguém escolhe nenhum dos dois.
+export function nomePartida(modelo, n) {
+  const m = typeof modelo === 'string' && modelo.includes('{n}') ? modelo : 'DraftLab {n}';
+  return m.replace('{n}', String(n)).slice(0, 60);
+}
+
+export function mensagemDiscord(r) {
+  const { link, config, partida } = r;
   const serie = config.serie > 1 ? `MD${config.serie}${config.fearless ? ' Fearless' : ''}` : 'MD1';
   return [
-    `**Draft Lab InHouse** · ${config.timeA} x ${config.timeB} · ${serie}`,
-    '',
-    `Link do time **${config.timeA}**: ${links.A}`,
-    `Link do time **${config.timeB}**: ${links.B}`,
-    `Link de espectador: ${links.espectador}`,
-    '',
-    'Abra o link do seu time, escolha a sua rota e digite o seu nick. O primeiro a entrar vira capitão (dá para passar a capitania).',
+    `**${config.timeA}** x **${config.timeB}** · ${serie}`,
+    `Nome: \`${partida.nome}\``,
+    `Senha: \`${partida.senha}\``,
+    `Draft: ${link}`,
   ].join('\n');
 }
 
@@ -65,20 +69,21 @@ async function criarSala(req, env, origem) {
   let lista;
   try { lista = await campeoes(env); } catch { return json({ erro: 'Não consegui carregar a lista de campeões. Tente de novo.' }, 502); }
   const id = aleatorio(8);
-  const tokens = { A: aleatorio(12), B: aleatorio(12) };
+  const { n } = await (await arquivo(env).fetch('https://arquivo/contador', { method: 'POST' })).json();
+  const partida = { nome: nomePartida(env.NOME_PARTIDA, n), senha: aleatorio(4) };
   const r = await sala(env, id).fetch('https://sala/criar', {
     method: 'POST',
-    body: JSON.stringify({ id, tokens, campeoes: lista.ids, nomes: lista.nomes, versao: lista.versao, dd: lista.dd, config: corpo, webhook, origem }),
+    body: JSON.stringify({ id, campeoes: lista.ids, nomes: lista.nomes, versao: lista.versao, dd: lista.dd, config: corpo, partida, webhook, origem }),
   });
   if (!r.ok) return json({ erro: 'Não consegui criar a sala.' }, 500);
   const { config } = await r.json();
-  const base = `${origem}/sala/${id}`;
   const out = {
     id,
-    links: { A: `${base}?time=A&t=${tokens.A}`, B: `${base}?time=B&t=${tokens.B}`, espectador: base },
+    link: `${origem}/sala/${id}`,
+    partida,
     config: { timeA: config.timeA, timeB: config.timeB, serie: config.serie, fearless: config.fearless, tempo: config.tempo },
   };
-  out.mensagem = mensagemDiscord(origem, out);
+  out.mensagem = mensagemDiscord(out);
   return json(out, 201);
 }
 
@@ -141,7 +146,7 @@ export class Sala {
     if (url.pathname === '/criar') {
       if (await this.carregar()) return json({ erro: 'Sala já existe.' }, 409);
       const d = await req.json();
-      this.s = novaSala({ id: d.id, tokens: d.tokens, campeoes: d.campeoes, nomes: d.nomes, versao: d.versao, dd: d.dd, config: d.config });
+      this.s = novaSala({ id: d.id, campeoes: d.campeoes, nomes: d.nomes, versao: d.versao, dd: d.dd, partida: d.partida, config: d.config });
       this.extra = { webhook: d.webhook || null, origem: d.origem || '' };
       await this.ctx.storage.put('extra', this.extra);
       await this.salvar();
@@ -226,59 +231,33 @@ export class Sala {
     await this.agendar();
   }
 
-  // Avisos: arquivo de estatísticas e canal do Discord.
+  // Avisos: arquivo de estatísticas e canal do Discord. No Discord vai só uma linha por resultado:
+  // os picks ficam na sala (o link mostra tudo), para não encher o chat.
   async avisar(ev) {
-    if (ev.tipo === 'resultado') {
-      const resumo = resumoJogo(this.s, ev.jogo);
-      await arquivo(this.env).fetch('https://arquivo/jogo', { method: 'POST', body: JSON.stringify(resumo) });
-      await this.discord(embedResultado(this.s, resumo, this.extra?.origem));
-    } else if (ev.tipo === 'draft-fim') {
-      await this.discord(embedDraft(this.s, resumoJogo(this.s, ev.jogo), this.extra?.origem));
-    }
+    if (ev.tipo !== 'resultado') return;
+    const resumo = resumoJogo(this.s, ev.jogo);
+    await arquivo(this.env).fetch('https://arquivo/jogo', { method: 'POST', body: JSON.stringify(resumo) });
+    await this.discord(linhaResultado(this.s, ev.jogo, this.extra?.origem));
   }
 
-  async discord(embed) {
+  async discord(texto) {
     const url = this.extra?.webhook;
-    if (!url || !embed) return;
-    await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ username: 'Draft Lab InHouse', embeds: [embed], allowed_mentions: { parse: [] } }) });
+    if (!url || !texto) return;
+    await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ username: 'Draft Lab InHouse', content: texto, allowed_mentions: { parse: [] }, flags: 4 }) });
   }
 }
 
-const AZUL = 0x2f6fde;
-const VERMELHO = 0xd8382c;
-const nomeCamp = (s, c) => (c ? s.nomes?.[c] || c : '—');
 const placar = (s) => `${s.jogos.filter((j) => j.vencedor === 'A').length} x ${s.jogos.filter((j) => j.vencedor === 'B').length}`;
 
-export function embedDraft(s, r, origem) {
-  const campo = (t) => {
-    const T = r.times[t];
-    const picks = T.picks.map((p) => `**${NOME_VAGA[p.vaga]}:** ${nomeCamp(s, p.champ)}${p.jogador ? ` (${p.jogador})` : ''}`).join('\n');
-    const bans = T.bans.map((c) => nomeCamp(s, c)).join(', ');
-    return { name: `${T.lado === 'azul' ? '🔵' : '🔴'} ${T.nome}`, value: `${picks}\n*Bans:* ${bans}`, inline: true };
-  };
-  const azul = r.times.A.lado === 'azul' ? 'A' : 'B';
-  return {
-    title: `Draft do jogo ${r.jogo} · ${s.times.A.nome} x ${s.times.B.nome}`,
-    url: origem ? `${origem}/sala/${s.id}` : undefined,
-    color: AZUL,
-    fields: [campo(azul), campo(azul === 'A' ? 'B' : 'A')],
-    footer: { text: `Draft Lab InHouse${s.config.serie > 1 ? ` · MD${s.config.serie}${s.config.fearless ? ' Fearless' : ''} · placar ${placar(s)}` : ''}` },
-  };
-}
-
-export function embedResultado(s, r, origem) {
-  const t = r.vencedor;
-  const fim = s.fase === 'encerrada';
-  return {
-    title: fim ? `${s.times[t].nome} venceu a série${s.config.serie > 1 ? ` (${placar(s)})` : ''}` : `${s.times[t].nome} venceu o jogo ${r.jogo} · placar ${placar(s)}`,
-    url: origem ? `${origem}/sala/${s.id}` : undefined,
-    color: r.times[t].lado === 'azul' ? AZUL : VERMELHO,
-    description: VAGAS.map((v) => {
-      const p = r.times[t].picks.find((x) => x.vaga === v);
-      return `${NOME_VAGA[v]}: ${nomeCamp(s, p?.champ)}`;
-    }).join(' · '),
-    footer: { text: 'Draft Lab InHouse' },
-  };
+// Uma linha por resultado, com o link da sala para quem quiser ver o draft.
+export function linhaResultado(s, n, origem) {
+  const j = s.jogos[n - 1];
+  if (!j?.vencedor) return null;
+  const v = s.times[j.vencedor].nome;
+  const p = s.times[j.vencedor === 'A' ? 'B' : 'A'].nome;
+  const link = origem ? ` · ${origem}/sala/${s.id}` : '';
+  if (s.fase === 'encerrada') return `🏆 **${v}** venceu ${s.config.serie > 1 ? `a série contra **${p}** (${placar(s)})` : `contra **${p}**`}${link}`;
+  return `**${v}** venceu o jogo ${n} contra **${p}** · placar ${placar(s)}${link}`;
 }
 
 // ---------------- Arquivo (estatísticas) ----------------
@@ -294,10 +273,17 @@ export class Arquivo {
     this.sql.exec(`CREATE TABLE IF NOT EXISTS escolhas (
       sala TEXT NOT NULL, jogo INTEGER NOT NULL, lado TEXT, tipo TEXT, vaga TEXT, champ TEXT, venceu INTEGER)`);
     this.sql.exec('CREATE INDEX IF NOT EXISTS escolhas_champ ON escolhas (champ)');
+    this.sql.exec('CREATE TABLE IF NOT EXISTS contador (k TEXT PRIMARY KEY, n INTEGER NOT NULL)');
   }
 
   async fetch(req) {
     const url = new URL(req.url);
+    if (url.pathname === '/contador' && req.method === 'POST') {
+      // Número da próxima partida: sobe 1 a cada sala criada.
+      const inicio = Math.max(Number(this.env.PARTIDA_INICIAL) || 1, 1);
+      this.sql.exec('INSERT INTO contador (k, n) VALUES (\'partida\', ?) ON CONFLICT(k) DO UPDATE SET n = n + 1', inicio);
+      return json({ n: this.sql.exec('SELECT n FROM contador WHERE k = \'partida\'').one().n });
+    }
     if (url.pathname === '/jogo' && req.method === 'POST') {
       this.registrar(await req.json());
       return json({ ok: true });

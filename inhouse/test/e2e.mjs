@@ -8,7 +8,7 @@ const { chromium } = await import(pw);
 const VAGAS = ['T', 'J', 'M', 'A', 'S'];
 const NOME = { T: 'Topo', J: 'Selva', M: 'Meio', A: 'Atirador', S: 'Suporte' };
 
-const srv = await iniciar({ porta: 0, ddFixture: fixture, quieto: true });
+const srv = await iniciar({ porta: 0, ddFixture: fixture, quieto: true, vars: { NOME_PARTIDA: 'KABUM_s4_l{n} : Open Low', PARTIDA_INICIAL: '2227' } });
 const navegador = await chromium.launch();
 const erros = [];
 try {
@@ -26,13 +26,15 @@ try {
     return p;
   };
 
-  const esp = await abrir(salaInfo.links.espectador);
+  const esp = await abrir(salaInfo.link);
+  await esp.waitForSelector('text=Entrar na partida');
+  await esp.screenshot({ path: `${capturas}/ih-entrar.png` });
   const jog = { A: {}, B: {} };
   for (const t of ['A', 'B']) {
     for (const v of VAGAS) {
-      const p = await abrir(salaInfo.links[t], 1280);
+      const p = await abrir(salaInfo.link, 1280);
       await p.fill('#nick', `${t === 'A' ? 'Zi' : 'Abe'}${NOME[v]}#BR1`);
-      await p.click(`[data-rota="${v}"]`);
+      await p.click(`[data-rota="${v}"][data-time="${t}"]`);
       await p.waitForSelector(`text=Você está no ${NOME[v]}`);
       jog[t][v] = p;
     }
@@ -138,7 +140,7 @@ try {
   await pag.screenshot({ path: `${capturas}/ih-estatisticas.png`, fullPage: true });
   const criar = await abrir(`${srv.url}/`);
   await criar.screenshot({ path: `${capturas}/ih-criar.png` });
-  const cel = await abrir(salaInfo.links.espectador, 390);
+  const cel = await abrir(salaInfo.link, 390);
   await cel.waitForSelector('text=Série encerrada');
   await cel.screenshot({ path: `${capturas}/ih-celular.png`, fullPage: true });
 

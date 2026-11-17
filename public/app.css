@@ -799,7 +799,7 @@ td.up{color:var(--verde-claro)} td.down{color:var(--vermelho-claro)}
 .ih-row{display:flex;gap:10px;align-items:flex-end;margin-top:8px}
 .ih-row .field{flex:1}
 .ih-criada{display:flex;flex-direction:column;gap:8px;margin-top:14px}
-.ih-link{display:grid;grid-template-columns:110px minmax(0,1fr) auto auto;gap:8px;align-items:center;background:var(--sup2);border-radius:10px;padding:8px 10px;margin-bottom:6px}
+.ih-link{display:grid;grid-template-columns:110px minmax(0,1fr) auto 72px;gap:8px;align-items:center;background:var(--sup2);border-radius:10px;padding:8px 10px;margin-bottom:6px}
 .ih-link b{font-size:14px}.ih-link.a b{color:#4C8DFF}.ih-link.b b{color:#FF5A4E}
 .ih-link code{font:12.5px ui-monospace,Consolas,monospace;color:var(--apagado);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ih-sala{margin-top:10px}

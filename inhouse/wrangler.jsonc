@@ -17,5 +17,10 @@
   "migrations": [
     { "tag": "v1", "new_sqlite_classes": ["Sala", "Arquivo"] }
   ],
+  "vars": {
+    // Nome da partida personalizada: {n} vira o número, que sobe 1 a cada sala criada.
+    "NOME_PARTIDA": "DraftLab {n}",
+    "PARTIDA_INICIAL": "1"
+  },
   "observability": { "enabled": true }
 }

@@ -3,11 +3,10 @@ import { test } from 'node:test';
 import { novaSala, aplicar, tempoEsgotado, visao, vezAtual, podeAgir, indisponiveis, resumoJogo, ORDEM, VAGAS, ErroSala } from '../src/draft.js';
 
 const CAMPS = Array.from({ length: 80 }, (_, i) => `C${i}`);
-const tokens = { A: 'tokA', B: 'tokB' };
 
 function sala(config = {}) {
-  const s = novaSala({ id: 'sala1', tokens, campeoes: CAMPS, versao: '16.22.1', agora: 0, config: { timeA: 'Azuis', timeB: 'Vermelhos', ...config } });
-  for (const t of ['A', 'B']) for (const v of VAGAS) aplicar(s, `${t}${v}`, { t: 'entrar', time: t, token: tokens[t], vaga: v, nome: `${t}-${v}` }, 1);
+  const s = novaSala({ id: 'sala1', campeoes: CAMPS, versao: '16.22.1', partida: { nome: 'DraftLab 7', senha: 'ab12' }, agora: 0, config: { timeA: 'Azuis', timeB: 'Vermelhos', ...config } });
+  for (const t of ['A', 'B']) for (const v of VAGAS) aplicar(s, `${t}${v}`, { t: 'entrar', time: t, vaga: v, nome: `${t}-${v}` }, 1);
   return s;
 }
 const capitao = (s, t) => s.times[t].capitao;
@@ -34,15 +33,15 @@ test('ordem de torneio tem 10 bans e 10 picks, 5 de cada lado', () => {
   for (const lado of ['azul', 'vermelho']) for (const tipo of ['ban', 'pick']) assert.equal(ORDEM.filter(([l, t]) => l === lado && t === tipo).length, 5);
 });
 
-test('entrada: token do time, rota livre, primeiro vira capitão', () => {
-  const s = novaSala({ id: 'x', tokens, campeoes: CAMPS, agora: 0 });
-  assert.throws(() => aplicar(s, 'c1', { t: 'entrar', time: 'A', token: 'tokB', vaga: 'T', nome: 'a' }), ErroSala);
-  aplicar(s, 'c1', { t: 'entrar', time: 'A', token: 'tokA', vaga: 'T', nome: 'Zirigude' });
+test('entrada pelo link único: escolhe time e rota, primeiro vira capitão', () => {
+  const s = novaSala({ id: 'x', campeoes: CAMPS, agora: 0 });
+  assert.throws(() => aplicar(s, 'c1', { t: 'entrar', time: 'C', vaga: 'T', nome: 'a' }), /Escolha um time/);
+  aplicar(s, 'c1', { t: 'entrar', time: 'A', vaga: 'T', nome: 'Zirigude' });
   assert.equal(s.times.A.capitao, 'c1');
-  assert.throws(() => aplicar(s, 'c2', { t: 'entrar', time: 'A', token: 'tokA', vaga: 'T', nome: 'b' }), /Topo já está com Zirigude/);
-  aplicar(s, 'c2', { t: 'entrar', time: 'A', token: 'tokA', vaga: 'J', nome: 'b' });
+  assert.throws(() => aplicar(s, 'c2', { t: 'entrar', time: 'A', vaga: 'T', nome: 'b' }), /Topo já está com Zirigude/);
+  aplicar(s, 'c2', { t: 'entrar', time: 'A', vaga: 'J', nome: 'b' });
   assert.equal(s.times.A.capitao, 'c1');
-  aplicar(s, 'c1', { t: 'entrar', time: 'A', token: 'tokA', vaga: 'M', nome: 'Zirigude' }); // troca de rota no lobby
+  aplicar(s, 'c1', { t: 'entrar', time: 'A', vaga: 'M', nome: 'Zirigude' }); // troca de rota no lobby
   assert.equal(s.times.A.vagas.T, null);
   assert.equal(s.times.A.vagas.M.cid, 'c1');
   aplicar(s, 'c1', { t: 'sair' });
@@ -118,7 +117,7 @@ test('marcações: só o próprio time vê, exceto o time da vez', () => {
   assert.equal(visao(s, 'BJ').hovers.B.M, 'C3');
   aplicar(s, 'AT', { t: 'hover', champ: 'C4' });
   assert.equal(visao(s, 'espectador').hovers.A.T, 'C4');
-  assert.equal(JSON.stringify(visao(s, 'AT')).includes('tok'), false, 'tokens nunca vão para o navegador');
+  assert.deepEqual(visao(s, null).partida, { nome: 'DraftLab 7', senha: 'ab12' });
 });
 
 test('série MD3 Fearless: campeões escolhidos ficam bloqueados; perdedor escolhe o lado', () => {
@@ -177,9 +176,24 @@ test('draft-fim é avisado e o resumo traz picks por rota com jogador', () => {
 });
 
 test('nomes e configurações são limpos', () => {
-  const s = novaSala({ id: 'x', tokens, campeoes: CAMPS, config: { timeA: '<script>x</script>', serie: 7, tempo: 999 } });
+  const s = novaSala({ id: 'x', campeoes: CAMPS, config: { timeA: '<script>x</script>', serie: 7, tempo: 999 } });
   assert.equal(s.times.A.nome.includes('<'), false);
   assert.equal(s.config.serie, 1);
   assert.equal(s.config.tempo, 30);
   assert.throws(() => aplicar(s, 'c', { t: 'qualquer' }), /Ação desconhecida/);
+});
+
+test('capitão tira do time quem entrou no lugar errado, e a pessoa não volta para esse time', () => {
+  const s = sala();
+  assert.throws(() => aplicar(s, 'AJ', { t: 'remover', vaga: 'M' }), /Só o capitão/);
+  assert.throws(() => aplicar(s, 'AT', { t: 'remover', vaga: 'T' }), /passe a capitania/);
+  aplicar(s, 'AT', { t: 'pronto', valor: true });
+  aplicar(s, 'AT', { t: 'remover', vaga: 'M' });
+  assert.equal(s.times.A.vagas.M, null);
+  assert.equal(s.prontos.A, false);
+  assert.throws(() => aplicar(s, 'AM', { t: 'entrar', time: 'A', vaga: 'M', nome: 'de novo' }), /tirou você/);
+  aplicar(s, 'novo', { t: 'entrar', time: 'A', vaga: 'M', nome: 'Certo' });
+  assert.equal(s.times.A.vagas.M.nome, 'Certo');
+  comecar(s);
+  assert.throws(() => aplicar(s, 'AT', { t: 'remover', vaga: 'J' }), /durante o draft/);
 });

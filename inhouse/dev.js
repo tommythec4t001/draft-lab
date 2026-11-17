@@ -117,9 +117,9 @@ function aceitarWebSocket(req, socket) {
 
 // ---------- servidor ----------
 
-export async function iniciar({ porta = 8787, ddFixture = null, quieto = false } = {}) {
+export async function iniciar({ porta = 8787, ddFixture = null, quieto = false, vars = {} } = {}) {
   const worker = await import(pathToFileURL(join(AQUI, 'src', 'worker.js')).href);
-  const env = {};
+  const env = { NOME_PARTIDA: 'DraftLab {n}', PARTIDA_INICIAL: '1', ...vars };
   const assets = {
     async fetch(req) {
       const u = new URL(req.url);

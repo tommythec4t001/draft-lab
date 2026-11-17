@@ -164,3 +164,16 @@ body.embutido .fase .grande{font-size:22px}
   body.embutido .sala{grid-template-columns:1fr 1fr}
   body.embutido .centro{grid-column:1 / -1;order:-1}
 }
+
+/* nome e senha da personalizada */
+.partida{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:8px 14px;background:var(--sup2);border:1px solid var(--linha2);border-radius:12px;padding:10px 14px 12px;margin:12px 0}
+.partida .rot{grid-column:1 / -1;font:700 11px var(--texto);letter-spacing:.12em;text-transform:uppercase;color:var(--fraco)}
+.partida .dado{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:8px;align-items:center;min-width:0}
+.partida .dado small{grid-column:1 / -1;color:var(--fraco);font-size:12px}
+.partida code{font:600 15px/1.35 ui-monospace,Consolas,monospace;color:var(--creme);overflow-wrap:anywhere;min-width:0}
+.escolha-times{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+.escolha-times .rot-time{font:700 15px var(--texto);display:block;margin-bottom:-4px}
+.escolha-times .rotas{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:8px 0 0}
+.escolha-times .rotas button{padding:10px 2px;font-size:13px}
+@media (max-width:1300px){.escolha-times{grid-template-columns:1fr}}
+@media (max-width:640px){.partida{grid-template-columns:1fr}.escolha-times .rotas{grid-template-columns:repeat(3,1fr)}}

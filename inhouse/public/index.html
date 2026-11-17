@@ -43,7 +43,7 @@ pre{background:var(--fundo);border:1px solid var(--linha2);border-radius:10px;pa
 <main class="wrap">
   <section>
     <h1>Draft de torneio para a sua <em>InHouse</em></h1>
-    <p class="lead">Cada time recebe o seu link. Os capitães banem, cada jogador trava o próprio campeão e o espectador acompanha tudo em tempo real. Séries MD3 e MD5 com Fearless.</p>
+    <p class="lead">Um link só para todos: cada jogador escolhe o time e a rota, os capitães banem, cada um trava o próprio campeão e quem não entra num time assiste em tempo real. Nome e senha da personalizada saem prontos. Séries MD3 e MD5 com Fearless.</p>
     <div class="cartao">
       <form class="form" id="form">
         <div class="campo"><label for="timeA">Time 1</label><input id="timeA" maxlength="24" placeholder="Time do Zirigude" required></div>
@@ -51,15 +51,14 @@ pre{background:var(--fundo);border:1px solid var(--linha2);border-radius:10px;pa
         <div class="campo"><label for="serie">Formato</label><select id="serie"><option value="1">MD1 (um jogo)</option><option value="3">MD3 (melhor de 3)</option><option value="5">MD5 (melhor de 5)</option></select></div>
         <div class="campo"><label for="tempo">Tempo por ação</label><select id="tempo"><option value="20">20 segundos</option><option value="30" selected>30 segundos</option><option value="45">45 segundos</option><option value="60">60 segundos</option><option value="90">90 segundos</option></select></div>
         <label class="chave cheio" id="linha-fearless" hidden><input type="checkbox" id="fearless" checked> Fearless: campeão escolhido num jogo fica bloqueado nos próximos jogos da série</label>
-        <div class="campo cheio"><label for="titulo">Nome da partida (opcional)</label><input id="titulo" maxlength="60" placeholder="KABUM_s4_l2227 : Open Low"></div>
-        <div class="campo cheio"><label for="webhook">Webhook do Discord (opcional)</label><input id="webhook" placeholder="https://discord.com/api/webhooks/…"><small>Se preencher, o draft e o resultado de cada jogo aparecem no canal desse webhook.</small></div>
+        <div class="campo cheio"><label for="webhook">Webhook do Discord (opcional)</label><input id="webhook" placeholder="https://discord.com/api/webhooks/…"><small>Se preencher, o resultado de cada jogo aparece no canal em uma linha só.</small></div>
         <div class="cheio"><button class="btn primario" type="submit" id="criar">Criar sala</button></div>
       </form>
       <div id="resultado">
         <div class="links" id="links"></div>
         <div class="linha-acoes" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
           <button class="btn primario" id="copiar-msg">Copiar mensagem para o Discord</button>
-          <a class="btn" id="abrir-esp" target="_blank" rel="noopener">Abrir como espectador</a>
+          <a class="btn" id="abrir-esp" target="_blank" rel="noopener">Abrir a sala</a>
           <button class="btn" id="nova">Criar outra sala</button>
         </div>
       </div>
@@ -69,8 +68,8 @@ pre{background:var(--fundo);border:1px solid var(--linha2);border-radius:10px;pa
     <div class="cartao">
       <h2>Como funciona</h2>
       <ol class="passos">
-        <li><span><b>Crie a sala</b> com os nomes dos times e mande a mensagem no Discord.</span></li>
-        <li><span><b>Cada jogador abre o link do seu time</b>, digita o nick e escolhe a rota. O primeiro a entrar vira capitão.</span></li>
+        <li><span><b>Crie a sala</b> com os nomes dos times e mande a mensagem no Discord: link, nome e senha da personalizada.</span></li>
+        <li><span><b>Todos abrem o mesmo link</b>, digitam o nick e clicam na rota do seu time. O primeiro de cada time vira capitão e pode tirar quem entrou no lugar errado.</span></li>
         <li><span><b>Os capitães confirmam</b> e o draft alternado de torneio começa: 10 bans e 10 picks com tempo.</span></li>
         <li><span><b>Joguem a personalizada</b> e o capitão informa quem venceu. Numa série Fearless, quem perdeu escolhe o lado do próximo jogo.</span></li>
       </ol>
@@ -79,7 +78,7 @@ pre{background:var(--fundo);border:1px solid var(--linha2);border-radius:10px;pa
       <h2>Para o bot do servidor</h2>
       <p style="color:var(--apagado);margin:0;font-size:14px">O bot pode criar salas sozinho e colar os links no canal:</p>
       <pre id="exemplo-api"></pre>
-      <p style="color:var(--apagado);margin:10px 0 0;font-size:14px">A resposta traz <code>links.A</code>, <code>links.B</code>, <code>links.espectador</code> e uma <code>mensagem</code> pronta para o Discord. O placar fica em <code>GET /api/salas/{id}</code>.</p>
+      <p style="color:var(--apagado);margin:10px 0 0;font-size:14px">A resposta traz o <code>link</code> da sala, a <code>partida</code> (nome e senha) e uma <code>mensagem</code> pronta para o Discord. O placar fica em <code>GET /api/salas/{id}</code>.</p>
     </div>
   </aside>
 </main>
@@ -91,7 +90,7 @@ pre{background:var(--fundo);border:1px solid var(--linha2);border-radius:10px;pa
   let toastT;
   const toast = (m, ok) => { const t = $('toast'); t.textContent = m; t.className = `toast on${ok ? ' ok' : ''}`; clearTimeout(toastT); toastT = setTimeout(() => (t.className = 'toast'), 3500); };
   const copiar = async (txt, ok) => { try { await navigator.clipboard.writeText(txt); toast(ok, true); } catch { prompt('Copie:', txt); } };
-  $('exemplo-api').textContent = `POST ${location.origin}/api/salas\nContent-Type: application/json\n\n{\n  "timeA": "Time do Zirigude",\n  "timeB": "Time da Abelinha",\n  "serie": 3,\n  "fearless": true,\n  "tempo": 30,\n  "titulo": "KABUM_s4_l2227 : Open Low",\n  "webhook": "https://discord.com/api/webhooks/..."\n}`;
+  $('exemplo-api').textContent = `POST ${location.origin}/api/salas\nContent-Type: application/json\n\n{\n  "timeA": "Time do Zirigude",\n  "timeB": "Time da Abelinha",\n  "serie": 3,\n  "fearless": true,\n  "tempo": 30,\n  "webhook": "https://discord.com/api/webhooks/..."\n}`;
   const serie = $('serie');
   const ajustar = () => { $('linha-fearless').hidden = serie.value === '1'; };
   serie.addEventListener('change', ajustar);
@@ -106,15 +105,15 @@ pre{background:var(--fundo);border:1px solid var(--linha2);border-radius:10px;pa
       const r = await fetch('/api/salas', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ timeA: $('timeA').value, timeB: $('timeB').value, serie: Number(serie.value), fearless: $('fearless').checked, tempo: Number($('tempo').value), titulo: $('titulo').value, webhook: $('webhook').value }),
+        body: JSON.stringify({ timeA: $('timeA').value, timeB: $('timeB').value, serie: Number(serie.value), fearless: $('fearless').checked, tempo: Number($('tempo').value), webhook: $('webhook').value }),
       });
       const d = await r.json();
       if (!r.ok) throw new Error(d.erro || 'Não consegui criar a sala.');
       ultima = d;
       const linha = (cls, rot, url) => `<div class="link ${cls}"><b>${esc(rot)}</b><code title="${esc(url)}">${esc(url)}</code><button class="btn peq" data-url="${esc(url)}">Copiar</button></div>`;
-      $('links').innerHTML = linha('azul', d.config.timeA, d.links.A) + linha('verm', d.config.timeB, d.links.B) + linha('', 'Espectador', d.links.espectador);
-      for (const b of $('links').querySelectorAll('[data-url]')) b.addEventListener('click', () => copiar(b.dataset.url, 'Link copiado.'));
-      $('abrir-esp').href = d.links.espectador;
+      $('links').innerHTML = linha('', 'Link da sala', d.link) + linha('', 'Nome', d.partida.nome) + linha('', 'Senha', d.partida.senha);
+      for (const b of $('links').querySelectorAll('[data-url]')) b.addEventListener('click', () => copiar(b.dataset.url, 'Copiado.'));
+      $('abrir-esp').href = d.link;
       $('form').hidden = true;
       $('resultado').className = 'on';
     } catch (err) {
