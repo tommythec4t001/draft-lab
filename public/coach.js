@@ -1,11 +1,10 @@
-// Draft Lab — coach pós-partida (aba Partidas) e as opções do coach (Configurações).
+// Draft Lab — coach pós-partida (aba Partidas) e o tom do coach (Configurações).
 // O servidor tira os fatos da partida (lib/coach.js) e escreve o texto no tom escolhido (lib/coach-falas.js).
 (() => {
   const $ = (id) => document.getElementById(id);
   const { api, esc } = window.DL;
-  const VOZ = window.DLVoz;
   const TONS = { serio: 'Sério', divertido: 'Divertido' };
-  let CFG = { tom: 'serio', voz: '', velocidade: 1, aoVivo: false };
+  let CFG = { tom: 'serio' };
   const cache = new Map(); // `${id}:${tom}` -> resposta
 
   const pronto = api('/api/config').then((c) => { if (c.coach) CFG = { ...CFG, ...c.coach }; preencherOpcoes(); }).catch(() => {});
@@ -30,7 +29,6 @@
         <div class="coach-tit"><small>Coach do Draft Lab</small><h4>${esc(t.titulo)}</h4></div>
         <div class="coach-acoes">
           <div class="seg" role="group" aria-label="Tom do coach">${Object.entries(TONS).map(([k, n]) => `<button class="chip" data-tom="${k}" aria-pressed="${t.tom === k}">${n}</button>`).join('')}</div>
-          ${VOZ?.disponivel ? '<button class="btn small" data-ouvir type="button">Ouvir</button>' : ''}
         </div>
       </div>
       <ul class="coach-blocos">${t.blocos.map((b) => `<li class="${esc(b.tipo)}">${esc(b.texto)}</li>`).join('')}</ul>
@@ -54,33 +52,14 @@
     for (const b of el.querySelectorAll('[data-tom]')) b.onclick = (e) => {
       e.stopPropagation();
       if (b.dataset.tom === r.texto.tom) return;
-      VOZ?.parar();
       salvar({ tom: b.dataset.tom });
       montar(el, id, b.dataset.tom);
-    };
-    const ouvir = el.querySelector('[data-ouvir]');
-    if (ouvir) ouvir.onclick = (e) => {
-      e.stopPropagation();
-      if (VOZ.falando()) { VOZ.parar(); ouvir.textContent = 'Ouvir'; return; }
-      VOZ.falar(r.texto.falado, { voz: CFG.voz, velocidade: CFG.velocidade });
-      ouvir.textContent = 'Parar';
-      const espera = setInterval(() => { if (!VOZ.falando()) { ouvir.textContent = 'Ouvir'; clearInterval(espera); } }, 400);
     };
   }
 
   // ---------- Configurações > Coach ----------
-  async function preencherOpcoes() {
-    if (!$('coachPanel')) return;
+  function preencherOpcoes() {
     for (const b of document.querySelectorAll('[data-coach-tom]')) b.setAttribute('aria-pressed', String(b.dataset.coachTom === CFG.tom));
-    $('coachVel').value = CFG.velocidade;
-    $('coachVelTxt').textContent = `${Number(CFG.velocidade).toFixed(1).replace('.', ',')}x`;
-    const sel = $('coachVoz');
-    const vozes = VOZ ? await VOZ.vozes() : [];
-    sel.innerHTML = vozes.length
-      ? vozes.map((v) => `<option value="${esc(v.nome)}">${esc(v.nome.replace(/^Microsoft\s+/, '').replace(/\s+-\s+.*$/, ''))} (${esc(v.lingua)})</option>`).join('')
-      : '<option value="">Nenhuma voz em português instalada no Windows</option>';
-    sel.disabled = !vozes.length;
-    if (vozes.some((v) => v.nome === CFG.voz)) sel.value = CFG.voz;
   }
   const msg = (t, k = 'ok') => { const m = $('coachMsg'); if (m) { m.className = 'note ' + k; m.textContent = t; } };
   for (const b of document.querySelectorAll('[data-coach-tom]')) b.onclick = async () => {
@@ -88,17 +67,6 @@
     const r = await salvar({ tom: b.dataset.coachTom });
     msg(r === true ? `Tom ${TONS[b.dataset.coachTom].toLowerCase()}.` : r.message, r === true ? 'ok' : 'err');
   };
-  if ($('coachVoz')) {
-    $('coachVoz').onchange = async () => { const r = await salvar({ voz: $('coachVoz').value }); msg(r === true ? 'Voz salva.' : r.message, r === true ? 'ok' : 'err'); };
-    $('coachVel').oninput = () => { $('coachVelTxt').textContent = `${Number($('coachVel').value).toFixed(1).replace('.', ',')}x`; };
-    $('coachVel').onchange = () => salvar({ velocidade: Number($('coachVel').value) });
-    $('coachTestar').onclick = () => {
-      const frase = CFG.tom === 'divertido'
-        ? 'Oi! Eu sou o coach do Draft Lab. Prometo pegar leve. Mais ou menos.'
-        : 'Olá. Eu sou o coach do Draft Lab. Depois de cada partida, eu digo o que funcionou e o que ajustar.';
-      if (!VOZ?.falar(frase, { voz: $('coachVoz').value, velocidade: Number($('coachVel').value) })) msg('Este computador não tem vozes para ler em voz alta.', 'err');
-    };
-  }
 
   window.DLCoach = { montar, get cfg() { return CFG; } };
 })();

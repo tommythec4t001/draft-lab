@@ -87,7 +87,6 @@ test('texto sério e divertido: mesmas observações, tons diferentes, estável 
   assert.match(s.blocos.map((b) => b.texto).join(' '), /Vi/);
   assert.ok(['mortesCedo', 'perdido', 'rota', 'sozinho'].includes(s.focoChave), s.focoChave);
   assert.deepEqual(textoCoach(f, 'serio'), s, 'a mesma partida lê sempre igual');
-  assert.ok(s.falado.startsWith(s.titulo) && s.falado.endsWith(s.foco));
   assert.equal(textoCoach(f, 'outro').tom, 'serio');
   for (const b of [...s.blocos, ...d.blocos]) assert.doesNotMatch(b.texto, /\{|\}|undefined|NaN/);
 });

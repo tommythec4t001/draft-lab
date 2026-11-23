@@ -49,8 +49,8 @@ const TYPES = {
 // ---------- Configuração ----------
 const DEFAULT_CFG = { riotKey: '', platform: 'br1', elo: 'EMERALD+', coleta: true, painelOuro: true };
 const getConfig = async () => ({ ...DEFAULT_CFG, ...(await readJSON(CONFIG, {})) });
-// Coach: tom do texto e da voz, voz do Windows escolhida, velocidade e (só na versão pessoal) a voz durante a partida.
-export const coachCfg = (c) => ({ tom: TONS[c?.coach?.tom] ? c.coach.tom : 'serio', voz: c?.coach?.voz || '', velocidade: c?.coach?.velocidade || 1, aoVivo: c?.coach?.aoVivo === true });
+// Coach pós-partida: tom do texto (sério ou divertido).
+export const coachCfg = (c) => ({ tom: TONS[c?.coach?.tom] ? c.coach.tom : 'serio' });
 const publicConfig = (c) => ({ hasKey: !!c.riotKey, platform: c.platform, elo: c.elo, coleta: c.coleta, painelOuro: c.painelOuro !== false, coach: coachCfg(c), pessoal: !!live, platforms: PLATFORMS, elos: Object.fromEntries(Object.keys(ELOS).map((k) => [k, ELO_NOME[k]])) });
 
 // ---------- Jogador ----------
@@ -127,7 +127,7 @@ async function autoRefresh() {
 // versão pública). Sem ela, nada da partida em andamento é lido.
 const PESSOAL = join(ROOT, 'pessoal');
 export const live = existsSync(join(PESSOAL, 'live-game.js'))
-  ? new (await import(pathToFileURL(join(PESSOAL, 'live-game.js')).href)).LiveGame({ prices: async () => getItemPrices((await champions()).version), coach: async () => coachCfg(await getConfig()) })
+  ? new (await import(pathToFileURL(join(PESSOAL, 'live-game.js')).href)).LiveGame({ prices: async () => getItemPrices((await champions()).version) })
   : null;
 if (live) {
   // Liga quando o cliente diz que a partida começou; lê o jogo a cada segundo e soma o valor dos itens.
@@ -467,11 +467,10 @@ async function handle(req, res) {
     const pushSolo = (s) => res.write(`event: soloq\ndata: ${JSON.stringify(s)}\n\n`);
     const pushHist = (x) => res.write(`event: partidas\ndata: ${JSON.stringify(x)}\n\n`);
     const pushLive = (x) => res.write(`event: aovivo\ndata: ${JSON.stringify(liveView(x))}\n\n`);
-    const pushFala = (x) => res.write(`event: voz\ndata: ${JSON.stringify(x)}\n\n`); // voz ao vivo (versão pessoal)
     pushLcu(lcu.snapshot()); pushSolo(collector.status()); if (live) pushLive(live.snapshot());
-    lcu.on('update', pushLcu); collector.on('update', pushSolo); events.on('partidas', pushHist); live?.on('update', pushLive); live?.on('fala', pushFala);
+    lcu.on('update', pushLcu); collector.on('update', pushSolo); events.on('partidas', pushHist); live?.on('update', pushLive);
     const keep = setInterval(() => res.write(': ok\n\n'), 20000);
-    req.on('close', () => { streams--; clearInterval(keep); lcu.off('update', pushLcu); collector.off('update', pushSolo); events.off('partidas', pushHist); live?.off('update', pushLive); live?.off('fala', pushFala); });
+    req.on('close', () => { streams--; clearInterval(keep); lcu.off('update', pushLcu); collector.off('update', pushSolo); events.off('partidas', pushHist); live?.off('update', pushLive); });
     return;
   }
 
@@ -689,11 +688,7 @@ async function handle(req, res) {
     if (b.coach && typeof b.coach === 'object') {
       const c = { ...coachCfg(cfg) };
       if (TONS[b.coach.tom]) c.tom = b.coach.tom;
-      if (typeof b.coach.voz === 'string') c.voz = b.coach.voz.slice(0, 120);
-      if (Number.isFinite(b.coach.velocidade)) c.velocidade = Math.min(1.5, Math.max(0.7, b.coach.velocidade));
-      if (typeof b.coach.aoVivo === 'boolean') c.aoVivo = b.coach.aoVivo;
       cfg.coach = c;
-      events.emit('coach', c);
     }
     await writeJSON(CONFIG, cfg);
     const changed = ['riotKey', 'platform', 'elo'].some((k) => cfg[k] !== before[k]);

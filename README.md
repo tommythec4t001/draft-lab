@@ -172,8 +172,7 @@ A aba **Partidas** mostra o seu histórico: resultado, campeão contra o oponent
 Abra uma partida na aba **Partidas**: o coach dá uma nota (S, A, B, C ou D) para a sua atuação, aponta o que funcionou e o que pesou e sugere um foco para a próxima partida. Ele lê a partida e a linha do tempo pela API da Riot e compara com as ranqueadas do seu elo coletadas pelo Draft Lab, na mesma rota (sem elas, usa uma referência aproximada de Esmeralda+ e avisa).
 
 - **O que ele olha:** a diferença de ouro e de CS para o adversário de rota aos 10 e aos 14 minutos, as mortes antes dos 14 (e quais tiveram o caçador inimigo), as mortes no um contra um, os objetivos que o inimigo pegou enquanto você esperava para renascer, farm, dano, participação em abates e visão.
-- **Dois tons:** Sério, direto e focado em subir de elo, ou Divertido, para rir de si mesmo e para stream. Troque na própria partida ou em Configurações → Coach.
-- **Em voz alta:** o botão **Ouvir** lê a análise com as vozes em português do Windows. A voz e a velocidade ficam em Configurações → Coach.
+- **Dois tons:** Sério, direto e focado em subir de elo, ou Divertido, para rir de si mesmo e para stream. Troque na própria partida ou em Configurações → Coach (o app guarda a escolha).
 - A análise de cada partida fica salva em `data/coach/`.
 
 ## Desempenho
