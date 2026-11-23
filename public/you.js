@@ -81,6 +81,7 @@
         </span>
         <span class="mscore">${d ? ring(d.score, 10, tone(d.score), `Nota do draft ${d.score}`) + '<small>Nota do draft</small>' : ''}</span>
       </button>
+      ${isOpen && !m.remake ? `<div class="coach-slot" data-coach="${esc(m.id)}"></div>` : ''}
       ${isOpen && d ? detailHTML(m, d) : ''}
     </article>`;
   }
@@ -113,6 +114,8 @@
     if (!MATCHES.length) { list.innerHTML = `<p class="idle-line">Nenhuma partida salva ainda. Clique em Buscar partidas novas.</p>`; return; }
     list.innerHTML = MATCHES.map(matchHTML).join('');
     for (const a of list.querySelectorAll('.match')) a.querySelector('.mrow').onclick = () => { open = open === a.dataset.id ? null : a.dataset.id; renderMatches(); };
+    // Coach pós-partida no topo da partida aberta (public/coach.js)
+    for (const el of list.querySelectorAll('[data-coach]')) window.DLCoach?.montar(el, el.dataset.coach);
   }
 
   let loading = false;

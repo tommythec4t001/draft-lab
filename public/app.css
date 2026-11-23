@@ -821,3 +821,35 @@ td.up{color:var(--verde-claro)} td.down{color:var(--vermelho-claro)}
 @media (max-width:1200px){.ih-grid{grid-template-columns:1fr}.ih-analise{max-height:none;min-height:0}.ih-inicio{grid-template-columns:1fr}}
 /* Sala aberta: a página usa a largura toda da janela */
 .page:has(#view-inhouse:not([hidden]) #ihSala:not([hidden])){max-width:1760px}
+
+/* ---------- Coach pós-partida ---------- */
+.coach{margin:4px 18px 6px;padding:18px 20px;border:1px solid var(--linha2);border-radius:var(--r-grande);background:var(--sup-2)}
+.coach.carregando{padding:14px 20px}
+.coach-cab{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center}
+.coach-nota{width:58px;height:58px;border-radius:14px;display:grid;place-items:center;font:700 32px var(--display);border:2px solid var(--linha2)}
+.coach-nota.n-S{color:#F3C969;border-color:#F3C969;background:rgba(243,201,105,.12)}
+.coach-nota.n-A{color:var(--verde-claro);border-color:var(--verde-claro);background:rgba(47,203,114,.12)}
+.coach-nota.n-B{color:var(--creme)}
+.coach-nota.n-C{color:#E8A35A;border-color:#E8A35A}
+.coach-nota.n-D{color:#FF6B5E;border-color:#FF6B5E;background:rgba(255,107,94,.1)}
+.coach-tit small{font:700 11px var(--texto);letter-spacing:.12em;text-transform:uppercase;color:var(--verde-claro)}
+.coach-tit h4{margin:2px 0 0;font:600 19px/1.3 var(--display);font-stretch:condensed;color:var(--creme)}
+.coach-acoes{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.coach-blocos{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.coach-blocos li{position:relative;padding:8px 12px 8px 34px;border-radius:10px;background:var(--sup);color:var(--apagado);font-size:14.5px;line-height:1.45}
+.coach-blocos li::before{position:absolute;left:12px;top:8px;font-weight:700}
+.coach-blocos li.bom::before{content:"+";color:var(--verde-claro)}
+.coach-blocos li.ruim::before{content:"−";color:#FF6B5E}
+.coach-blocos li.info::before{content:"·";color:var(--fraco)}
+.coach-foco{margin:12px 0 0;padding:10px 14px;border-left:3px solid var(--verde-claro);background:rgba(47,203,114,.08);border-radius:0 10px 10px 0;color:var(--creme);font-size:14.5px}
+.coach-foco b{display:block;font:700 11px var(--texto);letter-spacing:.12em;text-transform:uppercase;color:var(--verde-claro);margin-bottom:2px}
+.coach-mortes{display:flex;gap:10px;align-items:baseline;margin-top:12px;font-size:13px;color:var(--fraco)}
+.coach-mortes>span{white-space:nowrap;font-weight:600}
+.coach-mortes ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 14px}
+.coach-mortes li{color:var(--apagado)}
+.coach-mortes b{color:var(--creme)}
+.coach-mortes .tag-gank{font-size:11px;color:#FF6B5E;border:1px solid rgba(255,107,94,.5);border-radius:999px;padding:0 6px}
+.coach .fine{margin:10px 0 0}
+.range-row{display:flex;align-items:center;gap:10px}
+@media (max-width:760px){.coach-cab{grid-template-columns:auto 1fr}.coach-acoes{grid-column:1 / -1;justify-content:flex-start}}
+#coachVel{accent-color:var(--verde)}

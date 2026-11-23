@@ -20,6 +20,8 @@ import { collector, ELOS, ELO_NOME, patchOf } from './lib/soloq.js';
 import { RiotApi, KeyError } from './lib/riot-api.js';
 import { history, QUEUES } from './lib/history.js';
 import { METRICS, GROUPS, percentile, median } from './lib/metrics.js';
+import { fatos as fatosCoach } from './lib/coach.js';
+import { textoCoach, TONS } from './lib/coach-falas.js';
 import { getAssets, assetUrl, getItemPrices, getItemData, SHARDS, SHARD_ROWS } from './lib/assets.js';
 import { importRunes, importItemSet, importSpells, PaginasCheias } from './lib/importar.js';
 import { REGIOES, LB_REGIOES, FILAS, leaderboard, buscarJogador, campeaoDetalhe, abilityImageUrl } from './lib/mundo.js';
@@ -47,7 +49,9 @@ const TYPES = {
 // ---------- Configuração ----------
 const DEFAULT_CFG = { riotKey: '', platform: 'br1', elo: 'EMERALD+', coleta: true, painelOuro: true };
 const getConfig = async () => ({ ...DEFAULT_CFG, ...(await readJSON(CONFIG, {})) });
-const publicConfig = (c) => ({ hasKey: !!c.riotKey, platform: c.platform, elo: c.elo, coleta: c.coleta, painelOuro: c.painelOuro !== false, pessoal: !!live, platforms: PLATFORMS, elos: Object.fromEntries(Object.keys(ELOS).map((k) => [k, ELO_NOME[k]])) });
+// Coach: tom do texto e da voz, voz do Windows escolhida, velocidade e (só na versão pessoal) a voz durante a partida.
+export const coachCfg = (c) => ({ tom: TONS[c?.coach?.tom] ? c.coach.tom : 'serio', voz: c?.coach?.voz || '', velocidade: c?.coach?.velocidade || 1, aoVivo: c?.coach?.aoVivo === true });
+const publicConfig = (c) => ({ hasKey: !!c.riotKey, platform: c.platform, elo: c.elo, coleta: c.coleta, painelOuro: c.painelOuro !== false, coach: coachCfg(c), pessoal: !!live, platforms: PLATFORMS, elos: Object.fromEntries(Object.keys(ELOS).map((k) => [k, ELO_NOME[k]])) });
 
 // ---------- Jogador ----------
 // Quem é você: vem do cliente do LoL quando ele está aberto, ou do Riot ID digitado na tela.
@@ -123,7 +127,7 @@ async function autoRefresh() {
 // versão pública). Sem ela, nada da partida em andamento é lido.
 const PESSOAL = join(ROOT, 'pessoal');
 export const live = existsSync(join(PESSOAL, 'live-game.js'))
-  ? new (await import(pathToFileURL(join(PESSOAL, 'live-game.js')).href)).LiveGame({ prices: async () => getItemPrices((await champions()).version) })
+  ? new (await import(pathToFileURL(join(PESSOAL, 'live-game.js')).href)).LiveGame({ prices: async () => getItemPrices((await champions()).version), coach: async () => coachCfg(await getConfig()) })
   : null;
 if (live) {
   // Liga quando o cliente diz que a partida começou; lê o jogo a cada segundo e soma o valor dos itens.
@@ -166,6 +170,33 @@ async function performance({ role, queue, n }) {
     return { ...g, pct: ps.length ? Math.round(ps.reduce((a, b) => a + b, 0) / ps.length) : null };
   });
   return { role: rota, roles: count, games: games.length, elo: ELO_NOME[cfg.elo], eloSamples: samples.csm?.v?.length || 0, metrics, groups };
+}
+
+// ---------- Coach pós-partida ----------
+// Baixa a partida e a linha do tempo uma vez, tira os fatos e guarda em data/coach/. O texto sai na hora, no tom pedido.
+const COACH_DIR = join(DATA, 'coach');
+const erroCoach = (msg) => Object.assign(new Error(msg), { coach: true });
+async function coachDe(cfg, id) {
+  const arq = join(COACH_DIR, `${id}.json`);
+  const owner = ownerOf(cfg.player);
+  const salvo = await readJSON(arq);
+  if (salvo?.v === 1 && salvo.owner === owner) return salvo;
+  if (!cfg.riotKey) throw erroCoach('Cole a sua chave da Riot em Configurações para o coach analisar a partida.');
+  const api = apiFor(cfg);
+  const puuid = await apiPuuid(cfg, api);
+  const [match, timeline] = await Promise.all([
+    api.urgent('region', `/lol/match/v5/matches/${id}`),
+    api.urgent('region', `/lol/match/v5/matches/${id}/timeline`).catch(() => null),
+  ]);
+  if (!match?.info) throw erroCoach('A Riot não encontrou essa partida.');
+  const eu = match.info.participants?.find((x) => x.puuid === puuid);
+  if (!eu) throw erroCoach('Essa partida não é da conta configurada.');
+  await soloqData(); // amostras do elo carregadas
+  const rota = { TOP: 'T', JUNGLE: 'J', MIDDLE: 'M', BOTTOM: 'A', UTILITY: 'S' }[eu.teamPosition];
+  const f = fatosCoach({ match, timeline, puuid, samples: (rota && collector.samples()[rota]) || {}, nome: await nameOfKey() });
+  f.owner = owner;
+  await writeJSON(arq, f, true);
+  return f;
 }
 
 // ---------- Campeões ----------
@@ -436,10 +467,11 @@ async function handle(req, res) {
     const pushSolo = (s) => res.write(`event: soloq\ndata: ${JSON.stringify(s)}\n\n`);
     const pushHist = (x) => res.write(`event: partidas\ndata: ${JSON.stringify(x)}\n\n`);
     const pushLive = (x) => res.write(`event: aovivo\ndata: ${JSON.stringify(liveView(x))}\n\n`);
+    const pushFala = (x) => res.write(`event: voz\ndata: ${JSON.stringify(x)}\n\n`); // voz ao vivo (versão pessoal)
     pushLcu(lcu.snapshot()); pushSolo(collector.status()); if (live) pushLive(live.snapshot());
-    lcu.on('update', pushLcu); collector.on('update', pushSolo); events.on('partidas', pushHist); live?.on('update', pushLive);
+    lcu.on('update', pushLcu); collector.on('update', pushSolo); events.on('partidas', pushHist); live?.on('update', pushLive); live?.on('fala', pushFala);
     const keep = setInterval(() => res.write(': ok\n\n'), 20000);
-    req.on('close', () => { streams--; clearInterval(keep); lcu.off('update', pushLcu); collector.off('update', pushSolo); events.off('partidas', pushHist); live?.off('update', pushLive); });
+    req.on('close', () => { streams--; clearInterval(keep); lcu.off('update', pushLcu); collector.off('update', pushSolo); events.off('partidas', pushHist); live?.off('update', pushLive); live?.off('fala', pushFala); });
     return;
   }
 
@@ -619,6 +651,21 @@ async function handle(req, res) {
     out.names = { spells: Object.fromEntries(Object.entries(a.spells).map(([k, v]) => [k, v.name])), runes: Object.fromEntries(Object.entries(a.runes).map(([k, v]) => [k, v.name])) };
     return send(res, 200, out);
   }
+  // --- Coach pós-partida ---
+  const mc = p.match(/^\/api\/coach\/([A-Z0-9]{2,5}_\d{3,15})$/);
+  if (mc && m === 'GET') {
+    const cfg = await getConfig();
+    if (!cfg.player?.gameName) return fail(res, 400, 'Configure o seu Riot ID primeiro.');
+    const tom = TONS[url.searchParams.get('tom')] ? url.searchParams.get('tom') : coachCfg(cfg).tom;
+    try {
+      const f = await coachDe(cfg, mc[1]);
+      return send(res, 200, { fatos: f, texto: textoCoach(f, tom) });
+    } catch (err) {
+      if (err.coach || err instanceof KeyError) return fail(res, err instanceof KeyError ? 401 : 400, err.message);
+      logError(p, err);
+      return fail(res, 502, friendly(err));
+    }
+  }
   if (p === '/api/desempenho' && m === 'GET') {
     const n = Math.min(100, Math.max(5, Number(url.searchParams.get('n')) || 20));
     const rota = url.searchParams.get('rota');
@@ -639,6 +686,15 @@ async function handle(req, res) {
     if (b.elo && ELOS[b.elo]) cfg.elo = b.elo;
     if (typeof b.coleta === 'boolean') cfg.coleta = b.coleta;
     if (typeof b.painelOuro === 'boolean' && b.painelOuro !== (cfg.painelOuro !== false)) { cfg.painelOuro = b.painelOuro; events.emit('painel', b.painelOuro); }
+    if (b.coach && typeof b.coach === 'object') {
+      const c = { ...coachCfg(cfg) };
+      if (TONS[b.coach.tom]) c.tom = b.coach.tom;
+      if (typeof b.coach.voz === 'string') c.voz = b.coach.voz.slice(0, 120);
+      if (Number.isFinite(b.coach.velocidade)) c.velocidade = Math.min(1.5, Math.max(0.7, b.coach.velocidade));
+      if (typeof b.coach.aoVivo === 'boolean') c.aoVivo = b.coach.aoVivo;
+      cfg.coach = c;
+      events.emit('coach', c);
+    }
     await writeJSON(CONFIG, cfg);
     const changed = ['riotKey', 'platform', 'elo'].some((k) => cfg[k] !== before[k]);
     if (cfg.coleta && cfg.riotKey && (changed || !collector.running)) { soloqView = null; startCollector().catch((err) => logError('iniciar coleta', err)); }
