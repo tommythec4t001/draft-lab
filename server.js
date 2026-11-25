@@ -21,6 +21,7 @@ import { RiotApi, KeyError } from './lib/riot-api.js';
 import { history, QUEUES } from './lib/history.js';
 import { METRICS, GROUPS, percentile, median } from './lib/metrics.js';
 import { fatos as fatosCoach } from './lib/coach.js';
+import { bansSugeridos, rotaMaisJogada, MIN_JOGOS } from './lib/bans.js';
 import { textoCoach, TONS } from './lib/coach-falas.js';
 import { getAssets, assetUrl, getItemPrices, getItemData, SHARDS, SHARD_ROWS } from './lib/assets.js';
 import { importRunes, importItemSet, importSpells, PaginasCheias } from './lib/importar.js';
@@ -649,6 +650,17 @@ async function handle(req, res) {
     const a = await getAssets(version);
     out.names = { spells: Object.fromEntries(Object.entries(a.spells).map(([k, v]) => [k, v.name])), runes: Object.fromEntries(Object.entries(a.runes).map(([k, v]) => [k, v.name])) };
     return send(res, 200, out);
+  }
+  // --- Bans pela sua conta (draft ao vivo) ---
+  if (p === '/api/bans' && m === 'GET') {
+    const cfg = await getConfig();
+    if (!cfg.player?.gameName) return send(res, 200, { erro: 'player', lista: [] });
+    const all = (await history.list({ owner: ownerOf(cfg.player), limit: 300 })).filter((x) => !x.remake);
+    const pedida = url.searchParams.get('rota');
+    const rota = /^[TJMAS]$/.test(pedida || '') ? pedida : rotaMaisJogada(all);
+    const roles = Object.fromEntries((await champions()).champions.filter((c) => c.key).map((c) => [String(c.key), c.roles || '']));
+    const lista = bansSugeridos(all, { rota, rolesOf: (id) => roles[String(id)] });
+    return send(res, 200, { rota, rotaDoCliente: rota === pedida, partidas: all.length, min: MIN_JOGOS, lista });
   }
   // --- Coach pós-partida ---
   const mc = p.match(/^\/api\/coach\/([A-Z0-9]{2,5}_\d{3,15})$/);

@@ -851,3 +851,21 @@ td.up{color:var(--verde-claro)} td.down{color:var(--vermelho-claro)}
 .coach-mortes .tag-gank{font-size:11px;color:#FF6B5E;border:1px solid rgba(255,107,94,.5);border-radius:999px;padding:0 6px}
 .coach .fine{margin:10px 0 0}
 @media (max-width:760px){.coach-cab{grid-template-columns:auto 1fr}.coach-acoes{grid-column:1 / -1;justify-content:flex-start}}
+
+/* Bans pela sua conta (draft ao vivo) */
+.bt-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:4px 28px}
+.bt{width:100%;border-collapse:collapse}
+.bt th{font:600 12px var(--texto);text-transform:uppercase;letter-spacing:.05em;color:var(--fraco);text-align:left;padding:0 8px 6px;border-bottom:1px solid var(--linha)}
+.bt th:nth-child(n+3){text-align:right}
+.bt td{padding:6px 8px;border-bottom:1px solid var(--linha);vertical-align:middle}
+.bt tr:last-child td{border-bottom:0}
+.bt tbody tr:hover{background:var(--sup-2)}
+.bt .bt-n{width:22px;color:var(--fraco);font:600 13px var(--texto)}
+.bt .bt-c{display:flex;align-items:center;gap:10px}
+.bt .bt-c img,.bt .bt-c .noimg{width:36px;height:36px;border-radius:6px;background:var(--fundo);flex:none}
+.bt .pn{font-family:var(--display);font-weight:600;font-size:17px;font-stretch:condensed;line-height:1.1}
+.bt .bt-wr{font-family:var(--display);font-weight:600;font-size:17px;text-align:right;line-height:1.1;white-space:nowrap}
+.bt .bt-wr.down{color:var(--vermelho-claro)} .bt .bt-wr.up{color:var(--verde-claro)}
+.bt .bt-g{text-align:right;font-size:14px;color:var(--apagado);white-space:nowrap}
+.bt small{display:block;font:12px var(--texto);color:var(--fraco)}
+.bt .chip1{background:var(--sup-2);white-space:nowrap}

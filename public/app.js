@@ -273,6 +273,54 @@
     setHTML($('suggest'), oneList(s.groups));
   }
 
+  // ---------- Bans pela sua conta ----------
+  // Campeões inimigos contra quem você tem a menor taxa de vitória (servidor: lib/bans.js), com a sua rota primeiro.
+  // A lista é pedida uma vez por rota; aqui só saem os campeões que não dá mais para banir.
+  let BANS = null, bansRota, bansBusy = false;
+  async function loadBans(rota) {
+    bansRota = rota; bansBusy = true;
+    try { BANS = await api('/api/bans' + (rota ? `?rota=${rota}` : '')); } catch { BANS = { erro: 'falha', lista: [] }; }
+    bansBusy = false;
+    render();
+  }
+  document.addEventListener('dl:partidas', () => { bansRota = undefined; if (SNAP?.session) render(); });
+
+  function bansTable(rows, start) {
+    const tr = (x, i) => {
+      const c = champ(x.champ);
+      const img = c?.icon ? `<img src="${c.icon}" alt="" loading="lazy" data-fail="noimg">` : '<span class="noimg"></span>';
+      const cls = x.wr < 50 ? 'down' : x.wr > 50 ? 'up' : '';
+      const naRota = x.naRota.jogos ? `<small>${fmt(x.naRota.jogos)} na sua rota</small>` : '';
+      return `<tr><td class="bt-n">${start + i + 1}</td>
+        <td class="bt-c">${img}<span class="pn">${esc(c?.name || 'Campeão ' + x.champ)}</span>${x.daRota ? '<span class="chip1">Sua rota</span>' : ''}</td>
+        <td class="bt-wr wr ${cls}">${x.wr}%<small>${fmt(x.vitorias)}V ${fmt(x.jogos - x.vitorias)}D</small></td>
+        <td class="bt-g">${fmt(x.jogos)} jogos${naRota}</td></tr>`;
+    };
+    return `<table class="bt"><thead><tr><th>#</th><th>Campeão</th><th>Vitórias contra</th><th>Jogos</th></tr></thead><tbody>${rows.map(tr).join('')}</tbody></table>`;
+  }
+
+  function renderBans(d) {
+    const box = $('banBox');
+    const show = !!d.hasBans && !d.done && !d.spectating && (d.bans[d.mySide] || []).length < 5;
+    box.hidden = !show;
+    if (!show) return;
+    const me = d.players[d.mySide].find((p) => p.isMe);
+    const rota = me?.role || '';
+    if (bansRota !== rota && !bansBusy) loadBans(rota);
+    const b = BANS;
+    if (!b || bansRota !== rota) { $('banSub').textContent = ''; return setHTML($('banList'), '<p class="empty-col">Lendo o seu histórico…</p>'); }
+    if (b.erro === 'player') { $('banSub').textContent = ''; return setHTML($('banList'), '<p class="empty-col">Informe o seu Riot ID na aba Partidas para ver os bans pela sua conta.</p>'); }
+    if (b.erro) { $('banSub').textContent = ''; return setHTML($('banList'), '<p class="empty-col">Não consegui ler o seu histórico agora.</p>'); }
+    // Fora da lista: já banidos, já escolhidos e o que qualquer aliado (você incluído) declarou.
+    const fora = new Set([...d.bans.B, ...d.bans.R, ...(d.fora || [])].filter((c) => c > 0));
+    for (const side of ['B', 'R']) for (const p of d.players[side]) { if (p.champion) fora.add(p.champion); if (p.ally && p.hover) fora.add(p.hover); }
+    const rows = b.lista.filter((x) => !fora.has(x.champ)).slice(0, 10);
+    const rotaTxt = b.rota ? `${E.ROLE_NAME[b.rota]}${b.rotaDoCliente ? '' : ', a sua rota mais jogada'}` : '';
+    $('banSub').textContent = `Campeões inimigos contra quem você tem a menor taxa de vitória nas suas ${fmt(b.partidas)} partidas salvas${rotaTxt ? `, primeiro os da sua rota (${rotaTxt})` : ''}. Só entram campeões que você enfrentou ${b.min} vezes ou mais.`;
+    if (!rows.length) return setHTML($('banList'), `<p class="empty-col">Nenhum campeão inimigo com ${b.min} jogos ou mais contra você. Busque mais partidas na aba Partidas.</p>`);
+    setHTML($('banList'), `<div class="bt-wrap">${bansTable(rows.slice(0, 5), 0)}${rows.length > 5 ? bansTable(rows.slice(5), 5) : ''}</div>`);
+  }
+
   // Composição dos dois times.
   function compHTML(a, o, ally, side, title = null) {
     const head = title != null ? `<h3>${title}</h3>` : `<h3>${ally ? 'Seu time' : 'Time inimigo'}<span>lado ${side === 'B' ? 'azul' : 'vermelho'}</span></h3>`;
@@ -316,7 +364,7 @@
     $('board').hidden = !d;
     $('empty').hidden = !!d;
     if (!d) {
-      $('sugBox').hidden = true; $('compBox').hidden = true;
+      $('sugBox').hidden = true; $('compBox').hidden = true; $('banBox').hidden = true;
       $('emptyTitle').textContent = s?.status === 'conectado' ? 'Cliente conectado. Esperando o champ select' : 'Esperando o champ select';
       return;
     }
@@ -342,6 +390,7 @@
       turn.className = 'turn';
       bar.className = 'clock-bar';
     }
+    renderBans(d);
     renderSuggest(d);
     renderComp(d);
   }
